@@ -254,7 +254,8 @@ class LLMClient:
             num = word_num_map.get(val, int(val) if val.isdigit() else 1)
             well_id = f"WELL-{num:04d}"
         else:
-            well_id = None
+            mnt_match = re.search(r"\b(mnt-\d{4}-\d{3})\b", q)
+            well_id = mnt_match.group(1).upper() if mnt_match else None
 
         # Check for area IDs or names
         area_match = re.search(r"\b(ne|se|nw|sw)-?(\d+)\b", q)

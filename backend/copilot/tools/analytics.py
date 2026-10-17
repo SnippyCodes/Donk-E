@@ -664,12 +664,20 @@ def tool_get_well_equipment_and_maintenance(
     norm_id = resolver.resolve_well_id(well_id) or well_id
 
     cursor = conn.cursor()
+    target_mnt_id = None
+    if norm_id.upper().startswith("MNT-"):
+        target_mnt_id = norm_id.upper()
+        cursor.execute("SELECT asset_id FROM maintenance WHERE maintenance_id = ?", (target_mnt_id,))
+        m_row = cursor.fetchone()
+        if m_row:
+            norm_id = m_row[0]
+
     cursor.execute("SELECT asset_id, name, well_type, area_id FROM assets WHERE asset_id = ?", (norm_id,))
     asset_row = cursor.fetchone()
     if not asset_row:
         if close_conn:
             conn.close()
-        return {"error": f"Well {norm_id} not found."}
+        return {"error": f"Well or maintenance record '{well_id}' not found."}
 
     cursor.execute("""
         SELECT equipment_id, kind, model
@@ -679,14 +687,22 @@ def tool_get_well_equipment_and_maintenance(
     """, (norm_id,))
     equipment = [dict(r) for r in cursor.fetchall()]
 
-    cursor.execute("""
-        SELECT maintenance_id, equipment_kind, started_at, completed_at,
-               issue, action_taken, maintenance_type, downtime_hours, report_file
-        FROM maintenance
-        WHERE asset_id = ?
-        ORDER BY started_at DESC
-        LIMIT ?
-    """, (norm_id, limit))
+    if target_mnt_id:
+        cursor.execute("""
+            SELECT maintenance_id, equipment_kind, started_at, completed_at,
+                   issue, action_taken, maintenance_type, downtime_hours, report_file
+            FROM maintenance
+            WHERE asset_id = ? AND maintenance_id = ?
+        """, (norm_id, target_mnt_id))
+    else:
+        cursor.execute("""
+            SELECT maintenance_id, equipment_kind, started_at, completed_at,
+                   issue, action_taken, maintenance_type, downtime_hours, report_file
+            FROM maintenance
+            WHERE asset_id = ?
+            ORDER BY started_at DESC
+            LIMIT ?
+        """, (norm_id, limit))
     maintenance = [dict(r) for r in cursor.fetchall()]
 
     evidence_ids = [eq["equipment_id"] for eq in equipment] + [m["maintenance_id"] for m in maintenance]
