@@ -294,11 +294,11 @@ export const Chat: React.FC<ChatProps> = ({
         style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '24px 20px',
+          padding: '24px 24px',
           display: 'flex',
           flexDirection: 'column',
           gap: '20px',
-          maxWidth: '860px',
+          maxWidth: '1280px',
           margin: '0 auto',
           width: '100%',
         }}
@@ -784,8 +784,8 @@ export const Chat: React.FC<ChatProps> = ({
 
       {/* Unified Chat Composer Bar (Linear / Vercel Industrial Console) */}
       <div style={{
-        padding: '12px 20px 18px 20px',
-        maxWidth: '860px',
+        padding: '12px 24px 18px 24px',
+        maxWidth: '1280px',
         margin: '0 auto',
         width: '100%',
       }}>

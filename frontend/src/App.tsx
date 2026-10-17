@@ -13,6 +13,7 @@ import {
   X,
   Radar,
   ArrowRight,
+  BookOpen,
 } from 'lucide-react'
 
 const DEFAULT_USERS: UserOption[] = [
@@ -127,6 +128,7 @@ export const App: React.FC = () => {
   const [radarData, setRadarData] = useState<any | null>(null)
 
   const [qaModalOpen, setQaModalOpen] = useState(false)
+  const [scenariosModalOpen, setScenariosModalOpen] = useState(false)
   const [isQaRunning, setIsQaRunning] = useState(false)
   const [qaSuiteResult, setQaSuiteResult] = useState<any | null>(null)
 
@@ -418,6 +420,34 @@ export const App: React.FC = () => {
             <span>Fleet Radar {radarData?.summary ? `(${radarData.summary.fleet_risk_level})` : ''}</span>
           </button>
 
+          {/* Golden Scenarios (Q1–Q18) Library Trigger */}
+          <button
+            onClick={() => setScenariosModalOpen(true)}
+            style={{
+              height: '32px',
+              padding: '0 10px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: 500,
+              background: '#121215',
+              border: '1px solid #27272a',
+              color: '#f4f4f5',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap',
+              lineHeight: '1',
+              userSelect: 'none',
+              transition: 'all 0.15s ease'
+            }}
+            title="Open Golden Scenarios Library (Q1–Q18 & M7)"
+          >
+            <BookOpen size={13} color="#f59e0b" style={{ flexShrink: 0 }} />
+            <span>Scenarios (Q1–Q18)</span>
+          </button>
+
           {/* QA Verification Suite (18/18) Trigger */}
           <button
             onClick={() => {
@@ -486,150 +516,191 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* 2. BODY WORKBENCH (Left Sidebar + Center Canvas) */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        {/* Left Collapsible Golden Scenarios & Query Library (w-72, 288px) */}
-        <aside style={{
-          width: '288px',
-          flexShrink: 0,
-          background: '#0c0c0e',
-          borderRight: '1px solid #27272a',
+      {/* 2. FULL-WIDTH OPERATIONAL WORKBENCH (No cramped sidebar) */}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
+        <Chat
+          messages={messages}
+          onSendMessage={handleSendMessage}
+          onVisionCheck={handleVisionCheck}
+          isLoading={isLoading}
+          currentUser={currentUser}
+        />
+      </main>
+
+      {/* Golden Scenarios (Q1–Q18) Modal Library */}
+      {scenariosModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(6px)',
           display: 'flex',
-          flexDirection: 'column',
-          overflowY: 'auto'
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+          padding: '16px'
         }}>
-          {/* Sidebar Section Title */}
           <div style={{
-            padding: '12px 14px',
-            borderBottom: '1px solid #1f1f23',
-            fontSize: '11px',
-            fontWeight: 600,
-            color: '#71717a',
-            textTransform: 'uppercase',
-            letterSpacing: '0.4px',
-            fontFamily: "'JetBrains Mono', monospace",
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <span>Golden Scenarios Library</span>
-            <span style={{ color: '#10b981' }}>Q1–Q18</span>
-          </div>
-
-          <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {CATEGORIZED_PROMPTS.map(cat => {
-              const Icon = cat.icon
-              return (
-                <div key={cat.category}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#71717a',
-                    marginBottom: '6px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.3px',
-                    fontFamily: "'JetBrains Mono', monospace"
-                  }}>
-                    <Icon size={12} color="#a1a1aa" />
-                    <span>{cat.category}</span>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    {cat.prompts.map(p => (
-                      <button
-                        key={p.id}
-                        onClick={() => handleSendMessage(p.text)}
-                        disabled={isLoading}
-                        style={{
-                          background: '#121215',
-                          border: '1px solid #1f1f23',
-                          borderRadius: '6px',
-                          padding: '7px 9px',
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          transition: 'all 0.15s ease'
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.background = '#18181b'
-                          e.currentTarget.style.borderColor = '#27272a'
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.background = '#121215'
-                          e.currentTarget.style.borderColor = '#1f1f23'
-                        }}
-                      >
-                        <span style={{
-                          fontSize: '10px',
-                          fontFamily: "'JetBrains Mono', monospace",
-                          fontWeight: 700,
-                          padding: '1px 5px',
-                          borderRadius: '3px',
-                          background: '#09090b',
-                          border: '1px solid #27272a',
-                          color: '#f59e0b',
-                          flexShrink: 0
-                        }}>
-                          {p.id}
-                        </span>
-                        <span style={{
-                          fontSize: '11.5px',
-                          color: '#d4d4d8',
-                          lineHeight: 1.35,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }} title={p.label}>
-                          {p.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Sidebar Footer */}
-          <div style={{
-            marginTop: 'auto',
-            padding: '12px 14px',
-            borderTop: '1px solid #1f1f23',
-            background: '#09090b',
+            width: '100%',
+            maxWidth: '960px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            background: '#121215',
+            border: '1px solid #27272a',
+            borderRadius: '10px',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            padding: '22px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '4px',
-            fontSize: '11px',
-            fontFamily: "'JetBrains Mono', monospace",
-            color: '#71717a'
+            gap: '16px'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>DATA_END:</span>
-              <strong style={{ color: '#f4f4f5' }}>{systemStats.data_end || '2026-10-16'}</strong>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1f1f23', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  background: '#18181b',
+                  border: '1px solid #27272a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#f59e0b'
+                }}>
+                  <BookOpen size={16} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#f4f4f5' }}>
+                    Golden Scenarios & Evaluation Library
+                  </span>
+                  <div style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+                    Select any scenario to run deterministic analysis end-to-end
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setScenariosModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Inspections:</span>
-              <strong style={{ color: '#f4f4f5' }}>{systemStats.inspections || '2000+'}</strong>
+
+            {/* Categorized Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+              {CATEGORIZED_PROMPTS.map(cat => {
+                const Icon = cat.icon
+                return (
+                  <div
+                    key={cat.category}
+                    style={{
+                      background: '#09090b',
+                      border: '1px solid #27272a',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px'
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      color: '#a1a1aa',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.4px',
+                      fontFamily: "'JetBrains Mono', monospace",
+                      borderBottom: '1px solid #1f1f23',
+                      paddingBottom: '6px'
+                    }}>
+                      <Icon size={13} color="#f59e0b" />
+                      <span>{cat.category}</span>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {cat.prompts.map(p => (
+                        <button
+                          key={p.id}
+                          onClick={() => {
+                            setScenariosModalOpen(false)
+                            handleSendMessage(p.text)
+                          }}
+                          disabled={isLoading}
+                          style={{
+                            background: '#121215',
+                            border: '1px solid #1f1f23',
+                            borderRadius: '5px',
+                            padding: '8px 10px',
+                            textAlign: 'left',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            transition: 'all 0.15s ease'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = '#18181b'
+                            e.currentTarget.style.borderColor = '#3f3f46'
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = '#121215'
+                            e.currentTarget.style.borderColor = '#1f1f23'
+                          }}
+                        >
+                          <span style={{
+                            fontSize: '10px',
+                            fontFamily: "'JetBrains Mono', monospace",
+                            fontWeight: 700,
+                            padding: '1px 5px',
+                            borderRadius: '3px',
+                            background: '#09090b',
+                            border: '1px solid #27272a',
+                            color: '#f59e0b',
+                            flexShrink: 0,
+                            marginTop: '1px'
+                          }}>
+                            {p.id}
+                          </span>
+                          <span style={{
+                            fontSize: '12px',
+                            color: '#e4e4e7',
+                            lineHeight: 1.4
+                          }}>
+                            {p.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #1f1f23', paddingTop: '12px' }}>
+              <button
+                type="button"
+                onClick={() => setScenariosModalOpen(false)}
+                style={{
+                  height: '32px',
+                  padding: '0 14px',
+                  borderRadius: '6px',
+                  background: '#18181b',
+                  border: '1px solid #27272a',
+                  color: '#f4f4f5',
+                  fontSize: '12px',
+                  cursor: 'pointer'
+                }}
+              >
+                Close Library
+              </button>
             </div>
           </div>
-        </aside>
-
-        {/* Center Operational Canvas */}
-        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <Chat
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onVisionCheck={handleVisionCheck}
-            isLoading={isLoading}
-            currentUser={currentUser}
-          />
-        </main>
-      </div>
+        </div>
+      )}
 
       {/* QA Verification Suite Modal */}
       {qaModalOpen && (
