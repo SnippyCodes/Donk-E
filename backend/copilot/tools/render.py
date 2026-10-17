@@ -155,3 +155,18 @@ def render_conflict(
         "recommendation": recommendation,
         "evidence_ids": evidence_ids,
     }
+
+
+def render_evidence(
+    title: str,
+    evidence_items: List[Dict[str, Any]],
+    evidence_ids: List[str],
+) -> Dict[str, Any]:
+    """Generate visual block payload for Evidence audit drawer/chips."""
+    return {
+        "block_type": "evidence",
+        "title": title,
+        "evidence_items": evidence_items,
+        "evidence_ids": evidence_ids,
+    }
+

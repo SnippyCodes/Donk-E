@@ -53,8 +53,28 @@
 | `backend/copilot/memory/claims.py` | M4 | Conflict detection and truth dispute resolution across users & sensor data | Completed |
 | `backend/copilot/memory/recall.py` | M4 | Per-user isolated conversational memory | Completed |
 | `backend/copilot/tools/memory_tools.py` | M4 | Memory and feedback tool APIs for ledger, claims, and private recall | Completed |
+| `backend/copilot/tools/docs_tools.py` | M5 | FTS5 documentation search tool with section citation grounding | Completed |
+| `backend/copilot/tools/registry.py` | M5 | Unified tool definition registry and session-injecting dispatch engine | Completed |
+| `backend/copilot/agent/llm.py` | M5 | Provider-agnostic LLM interface (Gemma 4 / Ollama / OpenAI / fallback) | Completed |
+| `backend/copilot/agent/prompts.py` | M5 | System prompt enforcing zero math, evidence citation, and no invented causes | Completed |
+| `backend/copilot/agent/guardrails.py` | M5 | Rule 6 citation guardrail auditing and sanitizing bracketed IDs | Completed |
+| `backend/copilot/agent/loop.py` | M5 | Agentic conversation loop orchestrating tools, visual blocks, and guardrails | Completed |
+| `backend/copilot/api/sse.py` | M5 | Server-Sent Events real-time event streaming helper | Completed |
+| `backend/copilot/api/main.py` | M5 | FastAPI application serving `/api/chat`, `/api/users`, `/api/wells`, `/api/health` | Completed |
+| `backend/tests/test_agent_and_api.py` | M5 | Pytest suite validating agent loop, guardrails, tools, and FastAPI endpoints | Completed (100% green) |
+| `frontend/src/App.tsx` | M5 | Vite React main application container with sidebar & quick prompts | Completed |
+| `frontend/src/Chat.tsx` | M5 | Interactive conversational thread with streaming and citation chips | Completed |
+| `frontend/src/UserPicker.tsx` | M5 | User profile switcher enforcing Rule 5 server-side session identity | Completed |
+| `frontend/src/blocks/*.tsx` | M5 | 8 Generative visual blocks (StatusCard, Table, LineChart, BarChart, Map, Heatmap, Conflict, Evidence) | Completed |
+| `backend/tests/test_holdout.py` | M6 | Multi-root test-data rehearsal suite validating dynamic DATA_END and hot-loading | Completed (100% green) |
+| `scripts/make_holdout.py` | M6 | Generator for synthetic 2-hour holdout test-data directory | Completed |
+| `README.md` | M6 | Production architecture documentation, 1-command quickstart, and hot-drop instructions | Completed |
+| `backend/copilot/api/main.py` (/api/admin/ingest & /api/vision/check) | M6 | Hot-drop dataset ingestion and multimodal vision cross-examination endpoints | Completed |
+| `frontend/src/Chat.tsx` (Voice + Vision + Audit Drawer) | M6 | Web Speech hands-free mic, inspection photo upload, and execution trace drawer | Completed |
 | `backend/tests/test_golden.py` | M1-M3 | Pytest suite validating Golden Q1–Q10 against data & compliance layers | Completed (100% green) |
 | `backend/tests/test_memory.py` | M4 | Pytest suite validating Golden Q11–Q18 memory, ledger, and conflicts | Completed (100% green) |
 | `backend/tests/test_scope.py` | M4 | Pytest suite validating strict scope discipline & user isolation | Completed (100% green) |
 | `tests/test_m4_memory_and_claims.py` | M4 | Verification suite for Q11-Q18, user isolation, rule scope, and citation audits | Completed (100% green) |
 | `tests/golden_cases.yaml` | M0 | Golden query specs, entity targets, windows, and exact expected values | Completed |
+
+

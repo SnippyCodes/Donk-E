@@ -1,12 +1,16 @@
 import os
 from pathlib import Path
 from typing import List
+from dotenv import load_dotenv
 
 # Root project directory
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Load .env file from project root if present
+load_dotenv(BASE_DIR / ".env")
+
 # Reference date (configurable via env var)
-AS_OF = os.getenv("AS_OF", "2026-10-17")
+AS_OF = os.getenv("COPILOT_REFERENCE_DATE", os.getenv("AS_OF", "2026-10-17"))
 
 # Dataset roots (comma-separated paths)
 _raw_roots = os.getenv("DATASET_ROOTS", "data/sample-data")
