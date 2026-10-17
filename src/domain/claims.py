@@ -215,7 +215,7 @@ def check_claim(
 
     conflicting_record_id = conflicts[0]["evidence_id"] if conflicts else None
     primary_description = conflicts[0]["detail"] if conflicts else "Claim is consistent with data."
-    primary_author = conflicts[0].get("other_user") or inspector_name
+    primary_author = (conflicts[0].get("other_user") if conflicts else None) or inspector_name
 
     # De-duplicate citations
     seen = set()

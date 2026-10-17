@@ -41,9 +41,15 @@ class AgentLoop:
                 messages.extend(history)
             messages.append({"role": "user", "content": message})
 
-            # LLM invocation
-            llm_resp = self.llm.chat_completion(messages, tools=TOOL_DEFINITIONS)
-            tool_calls = llm_resp.get("tool_calls", [])
+            # Fast-path deterministic route check (Rule 1 & Rule 2: Zero LLM Math)
+            deterministic_call = self.llm._route_query_to_tool(message)
+            if deterministic_call:
+                tool_calls = [{"id": "det_call_0", **deterministic_call}]
+                llm_resp = {"content": "", "tool_calls": tool_calls, "model": "deterministic-router"}
+            else:
+                # LLM invocation for conversational queries
+                llm_resp = self.llm.chat_completion(messages, tools=TOOL_DEFINITIONS)
+                tool_calls = llm_resp.get("tool_calls", [])
 
             visual_blocks: List[Dict[str, Any]] = []
             collected_evidence: List[str] = []
@@ -62,6 +68,9 @@ class AgentLoop:
                         target_asset_id = fn_args["asset_id"]
                     elif "well_id" in fn_args:
                         target_asset_id = fn_args["well_id"]
+
+                    if fn_name == "get_area_spills_map" and "reportable" in message.lower():
+                        fn_args["reportable_only"] = True
 
                     t_tool = time.perf_counter()
                     tool_res = execute_tool(
@@ -95,9 +104,12 @@ class AgentLoop:
                         "evidence_count": len(ev_ids) if isinstance(ev_ids, list) else 0,
                     })
 
-                # Turn 2: Feed tool results back to LLM for conversational synthesis
+                # Turn 2: Deterministic fact synthesis or conversational LLM synthesis
                 if not raw_prose and raw_tool_results:
-                    if getattr(self.llm, "provider", "") in ("openrouter", "gemma", "ollama", "openai", "vllm") and getattr(self.llm, "api_key", None):
+                    if deterministic_call:
+                        # Deterministic synthesis guarantees 0 LLM math and strict citation grounding (Rule 1 & Rule 6)
+                        raw_prose = self.llm._synthesize_prose(raw_tool_results[0])
+                    elif getattr(self.llm, "provider", "") in ("openrouter", "gemma", "ollama", "openai", "vllm") and getattr(self.llm, "api_key", None):
                         try:
                             turn2_messages = list(messages)
                             turn2_messages.append({
@@ -144,6 +156,27 @@ class AgentLoop:
             audit_result = self.guardrail.audit(raw_prose, set(collected_evidence))
             final_prose = audit_result["cleaned_text"]
 
+            # Eliminate duplicate Markdown pipe tables when structured visual blocks are rendered
+            has_structured_visual = any(
+                b.get("block_type") in ("table", "bar_chart", "line_chart", "map", "map_view", "heatmap", "status_card")
+                for b in visual_blocks
+            )
+            if has_structured_visual:
+                from backend.copilot.agent.guardrails import strip_markdown_tables
+                final_prose = strip_markdown_tables(final_prose)
+
+            # Mentor Bonus: Live Deterministic QA Validation Pipeline
+            from backend.copilot.agent.guardrails import validate_turn_qa
+            qa_report = validate_turn_qa(
+                question=message,
+                tool_calls=tool_calls,
+                tool_outputs=raw_tool_results,
+                final_text=final_prose,
+                blocks=visual_blocks,
+                user_id=user_id,
+                conn=conn,
+            )
+
             # Save session recall for discussed well if present
             if target_asset_id:
                 execute_tool(
@@ -177,6 +210,7 @@ class AgentLoop:
                 "user_id": user_id,
                 "session_id": sess_id,
                 "agent_trace": agent_trace,
+                "qa_report": qa_report,
                 "citation_audit": {
                     "valid": audit_result["valid_citations"],
                     "stripped": audit_result["invalid_citations"],

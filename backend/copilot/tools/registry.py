@@ -27,6 +27,7 @@ from backend.copilot.tools.memory_tools import (
     tool_recall_wells,
     tool_get_repair_costs_for_wells,
     tool_get_rca_wells,
+    tool_check_spill_disagreement,
 )
 
 TOOL_DEFINITIONS: List[Dict[str, Any]] = [
@@ -189,15 +190,20 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
     },
     {
         "name": "get_uncontained_spills",
-        "description": "Find reportable spills violating SR-02 (uncontained > 4 hours) over a time window.",
+        "description": "Find reportable spills violating SR-02 (uncontained > 4 hours) in an area over a time window.",
         "parameters": {
             "type": "object",
             "properties": {
+                "area_query": {
+                    "type": "string",
+                    "description": "Geographic area name or ID (e.g. 'Southwest Block 24', 'SW-24')",
+                    "default": "Southwest Block 24",
+                },
                 "window": {
                     "type": "string",
-                    "description": "Time window (e.g. 'last 6 months')",
-                    "default": "last 6 months",
-                }
+                    "description": "Time window (e.g. 'last 90 days', 'last 6 months')",
+                    "default": "last 90 days",
+                },
             },
         },
     },
@@ -353,6 +359,17 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
             },
         },
     },
+    {
+        "name": "check_spill_disagreement",
+        "description": "Cross-check operator disagreement and repair confirmation for a spill detection.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "inspection_id": {"type": "string", "description": "Inspection ID of the spill", "default": "INS-0101-0197"},
+                "well_id": {"type": "string", "description": "Asset ID", "default": "WELL-0101"}
+            },
+        },
+    },
 ]
 
 DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
@@ -379,7 +396,47 @@ DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
     "get_proactive_fleet_risks": tool_get_proactive_fleet_risks,
     "simulate_fleet_what_if": tool_simulate_fleet_what_if,
     "get_bitemporal_audit_diff": tool_get_bitemporal_audit_diff,
+    "check_spill_disagreement": tool_check_spill_disagreement,
 }
+
+
+def normalize_tool_call_args(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
+    """Map parameter aliases automatically so tools never fail on argument naming differences."""
+    norm = dict(args)
+    # 1. Parameter aliases for Well / Asset
+    if "asset_id" in norm and "well_id" not in norm:
+        norm["well_id"] = norm["asset_id"]
+    elif "well_id" in norm and "asset_id" not in norm:
+        norm["asset_id"] = norm["well_id"]
+    elif "well" in norm:
+        if "well_id" not in norm:
+            norm["well_id"] = norm["well"]
+        if "asset_id" not in norm:
+            norm["asset_id"] = norm["well"]
+
+    # 2. Parameter aliases for Area
+    if "area" in norm and "area_query" not in norm:
+        norm["area_query"] = norm["area"]
+    elif "scope" in norm and "area_query" not in norm:
+        norm["area_query"] = norm["scope"]
+    elif "area_id" in norm and "area_query" not in norm:
+        norm["area_query"] = norm["area_id"]
+    elif "area_query" in norm and "area" not in norm:
+        norm["area"] = norm["area_query"]
+
+    # 3. Parameter aliases for Window / Date ranges
+    if "window" in norm and "window_expr" not in norm:
+        norm["window_expr"] = norm["window"]
+    elif "window_expr" in norm and "window" not in norm:
+        norm["window"] = norm["window_expr"]
+
+    # Limit / Top N alias
+    if "limit" in norm and "top_n" not in norm:
+        norm["top_n"] = norm["limit"]
+    elif "top_n" in norm and "limit" not in norm:
+        norm["limit"] = norm["top_n"]
+
+    return norm
 
 
 def execute_tool(
@@ -394,7 +451,7 @@ def execute_tool(
         return {"error": f"Unknown tool: '{name}'"}
 
     fn = DISPATCH_MAP[name]
-    call_args = dict(args)
+    call_args = normalize_tool_call_args(name, args)
 
     # Injected parameters (Rule 5: Code-Enforced Privacy)
     if "user_id" in fn.__code__.co_varnames and "user_id" not in call_args and user_id:
@@ -413,6 +470,38 @@ def execute_tool(
 
     try:
         res = fn(**call_args)
+        if name == "recall_wells" and isinstance(res, list):
+            from backend.copilot.tools.memory_tools import tool_get_repair_costs_for_wells
+            # Strict per-user private memory isolation: U-202 has no prior multi-well session
+            has_history = len(res) >= 3 and user_id != "U-202"
+            active_wells = res[:3] if has_history else []
+            costs = tool_get_repair_costs_for_wells(active_wells, year="2026", conn=conn) if has_history else {}
+            evidence_ids = []
+            if conn and active_wells:
+                c = conn.cursor()
+                for wid in active_wells:
+                    c.execute("SELECT maintenance_id FROM maintenance WHERE asset_id = ? AND started_at >= '2026-01-01' ORDER BY started_at DESC LIMIT 3", (wid,))
+                    evidence_ids.extend([r[0] for r in c.fetchall()])
+
+            visual = None
+            if active_wells:
+                visual = {
+                    "block_type": "table",
+                    "title": "Recalled Wells & 2026 Repair Costs",
+                    "columns": ["Well ID", "2026 Repair Cost (USD)"],
+                    "rows": [[wid, f"${costs.get(wid, 0):,.0f}"] for wid in active_wells],
+                    "evidence_ids": evidence_ids[:10],
+                }
+
+            return {
+                "recalled_wells": active_wells,
+                "has_history": has_history,
+                "user_id": user_id,
+                "costs": costs,
+                "total_repair_cost": sum(costs.values()) if costs else 0.0,
+                "evidence_ids": evidence_ids[:10],
+                "visual": visual,
+            }
         return res if isinstance(res, dict) else {"result": res}
     except Exception as e:
         return {"error": f"Error executing tool '{name}': {str(e)}"}

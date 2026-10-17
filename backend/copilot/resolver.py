@@ -33,16 +33,38 @@ def get_data_end(conn: Optional[sqlite3.Connection] = None) -> str:
     return max_date
 
 
-def resolve_window(window_expr: str, conn: Optional[sqlite3.Connection] = None) -> Tuple[str, str]:
+def resolve_window(
+    window_expr: Optional[str] = None,
+    conn: Optional[sqlite3.Connection] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    weeks: Optional[int] = None,
+    window: Optional[str] = None,
+    **kwargs: Any,
+) -> Tuple[str, str]:
     """
     Resolve natural language date windows backward from dynamic DATA_END.
     Calendar date inclusive on both ends.
     Returns (start_date_str, end_date_str) in 'YYYY-MM-DD' format.
+    Supports from_date, to_date, weeks, window, and window_expr.
     """
     data_end_str = get_data_end(conn)
     end_dt = datetime.date.fromisoformat(data_end_str)
 
-    expr = window_expr.strip().lower()
+    # Direct date range overrides
+    if from_date and to_date:
+        return (from_date.strip(), to_date.strip())
+    if from_date and not to_date:
+        return (from_date.strip(), data_end_str)
+
+    effective_expr = window or window_expr
+    if weeks is not None:
+        effective_expr = f"last {weeks} weeks"
+
+    if not effective_expr or not str(effective_expr).strip():
+        return ("2020-01-01", data_end_str)
+
+    expr = str(effective_expr).strip().lower()
 
     # Calendar years e.g. "2025", "2026"
     if re.fullmatch(r"20\d\d", expr):

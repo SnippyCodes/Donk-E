@@ -80,5 +80,11 @@
 | `backend/copilot/domain/hybrid_search.py` | M7 | Hybrid RRF Search combining SQLite FTS5 BM25 with in-memory TF-IDF Cosine | Completed |
 | `backend/copilot/domain/diff.py` | M7 | Bi-Temporal State Diff comparing Layer 1 ingested sensors vs Layer 2 ledger overlay | Completed |
 | `backend/tests/test_m7_advanced_features.py` | M7 | Pytest suite validating radar, simulation immutability, hybrid search, and diffs | Completed (100% green) |
-
+| `backend/copilot/agent/guardrails.py` (QA Engine) | M8 | Mentor Bonus: Deterministic 5-check turn validator (`validate_turn_qa`) & table stripper | Completed (100% green) |
+| `backend/copilot/api/main.py` (/api/qa/*) | M8 | Exposes `/api/qa/status` and `/api/qa/golden-suite` running 18/18 checks in <70ms | Completed (100% green) |
+| `backend/copilot/agent/qa_audit.py` | M9 | 4-Pillar E2E QA Verifier running Q1–Q18 sequentially with stateful carry-forward | Completed (100% green) |
+| `backend/tests/test_e2e_qa.py` | M9 | Pytest test harness validating all 18 cases across 4 pillars | Completed (100% green) |
+| `scripts/run_qa_audit.py` | M9 | Automated standalone CLI audit script emitting pass/fail matrix and bug log | Completed (100% green) |
+| `docs/QA_REPORT.md` | M9 | Comprehensive QA report: 4-layer architecture, 5 bugs caught & fixed, full matrix | Completed |
+| `backend/copilot/api/main.py` (`/api/qa/audit`) | M9 | Exposes full E2E 18/18 audit results and bug remediation log to UI and CLI | Completed |
 

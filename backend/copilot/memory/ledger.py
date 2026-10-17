@@ -349,5 +349,10 @@ def clear_ledger(conn: sqlite3.Connection, rebuild_derived: bool = True) -> None
     with conn:
         conn.execute("DELETE FROM ledger")
         conn.execute("DELETE FROM user_recall")
+        try:
+            conn.execute("DELETE FROM user_messages")
+            conn.execute("DELETE FROM user_sessions")
+        except Exception:
+            pass
     if rebuild_derived:
         materialize_derived_tables(conn)

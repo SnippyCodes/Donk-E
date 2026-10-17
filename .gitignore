@@ -28,3 +28,6 @@ dist/
 *.pdf
 .DS_Store
 Thumbs.db
+
+frontend/brag/
+

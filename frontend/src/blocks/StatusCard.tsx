@@ -1,5 +1,5 @@
 import React from 'react'
-import { Activity, AlertTriangle, CheckCircle2, XCircle, Calendar, ShieldCheck } from 'lucide-react'
+import { Activity, AlertTriangle, CheckCircle2, XCircle, Calendar, ShieldCheck, User } from 'lucide-react'
 
 export interface StatusCardProps {
   asset_id: string
@@ -43,150 +43,132 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
   }
 
   return (
-    <div className="visual-block-card status-card" id={`status-${data.asset_id}`}>
-      <div className="visual-block-header">
-        <div className="visual-block-title">
-          <Activity size={18} color="#38bdf8" />
-          <span>{data.asset_id} — {data.name}</span>
-          <span style={{
-            fontSize: '11px',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            background: 'rgba(255,255,255,0.06)',
-            color: '#94a3b8',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            {data.well_type}
-          </span>
+    <div
+      className="rounded-xl bg-[#121215] border border-zinc-800/80 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] p-4 text-zinc-100 font-sans my-3"
+      id={`status-${data.asset_id}`}
+    >
+      {/* Top Asset Title & Live Producing Badge */}
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-800/70">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <Activity className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono font-bold text-sm text-zinc-100">{data.asset_id}</span>
+              <span className="text-xs text-zinc-400 font-medium">({data.name || 'Well'})</span>
+              <span className="px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-400 uppercase">
+                {data.well_type}
+              </span>
+            </div>
+            <div className="text-[11px] text-zinc-500 font-mono">{data.area_name}</div>
+          </div>
         </div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: '4px 12px',
-          borderRadius: '20px',
-          fontSize: '12px',
-          fontWeight: 600,
-          background: isProducing ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-          color: isProducing ? '#10b981' : '#ef4444',
-          border: `1px solid ${isProducing ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
-        }}>
-          {isProducing ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-          <span>{isProducing ? 'PRODUCING OIL' : 'STOPPED / NOT PRODUCING'}</span>
+
+        <div
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-semibold tracking-wide border ${
+            isProducing
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+              : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+          }`}
+        >
+          {isProducing ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
+          <span>{isProducing ? 'PRODUCING' : 'STOPPED / NON-PRODUCING'}</span>
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-        gap: '12px',
-        margin: '16px 0',
-      }}>
-        <div style={{
-          background: 'rgba(0,0,0,0.25)',
-          padding: '12px',
-          borderRadius: '8px',
-          border: '1px solid var(--border-subtle)'
-        }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Wellhead Temp</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
+      {/* 4-Column Metric Bento Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-3">
+        {/* 1. Wellhead Temp */}
+        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">Wellhead Temp</div>
+          <div className="text-lg font-mono font-bold text-zinc-100 tabular-nums">
             {typeof metrics.wellhead_temp_c === 'number' ? `${metrics.wellhead_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
+          <div className="text-[10px] text-zinc-500 mt-0.5">Sensor Reading</div>
         </div>
 
-        <div style={{
-          background: 'rgba(0,0,0,0.25)',
-          padding: '12px',
-          borderRadius: '8px',
-          border: '1px solid var(--border-subtle)'
-        }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Ambient Air Temp</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#94a3b8' }}>
+        {/* 2. Ambient Temp */}
+        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">Ambient Air</div>
+          <div className="text-lg font-mono font-bold text-zinc-400 tabular-nums">
             {typeof metrics.ambient_temp_c === 'number' ? `${metrics.ambient_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
+          <div className="text-[10px] text-zinc-500 mt-0.5">Atmospheric</div>
         </div>
 
-        <div style={{
-          background: 'rgba(0,0,0,0.25)',
-          padding: '12px',
-          borderRadius: '8px',
-          border: `1px solid ${isProducing ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`
-        }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Temp Delta (ΔT)</div>
-          <div style={{
-            fontSize: '18px',
-            fontWeight: 700,
-            color: isProducing ? '#10b981' : '#ef4444'
-          }}>
+        {/* 3. Temp Delta (ΔT) */}
+        <div
+          className={`p-3 rounded-lg bg-[#09090b] border ${
+            isProducing ? 'border-emerald-500/30' : 'border-rose-500/30'
+          }`}
+        >
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">Thermal Margin ΔT</div>
+          <div
+            className={`text-lg font-mono font-bold tabular-nums ${
+              isProducing ? 'text-emerald-400' : 'text-rose-400'
+            }`}
+          >
             {typeof metrics.delta_temp_c === 'number' ? `+${metrics.delta_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
+          <div className="text-[10px] text-zinc-500 mt-0.5">Operating Delta</div>
         </div>
 
-        <div style={{
-          background: 'rgba(0,0,0,0.25)',
-          padding: '12px',
-          borderRadius: '8px',
-          border: '1px solid var(--border-subtle)'
-        }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Rule Threshold</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#38bdf8' }}>
+        {/* 4. Rule Threshold */}
+        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">SOP Threshold</div>
+          <div className="text-lg font-mono font-bold text-amber-400 tabular-nums">
             ≥ {typeof metrics.threshold_temp_delta === 'number' ? `${metrics.threshold_temp_delta.toFixed(1)}°C` : '15.0°C'}
           </div>
+          <div className="text-[10px] text-zinc-500 mt-0.5">{data.well_type} Manual Limit</div>
         </div>
       </div>
 
       {/* Discrepancy warning if telemetry contradicts recorded_status */}
       {isStale && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '10px 14px',
-          borderRadius: '8px',
-          background: 'rgba(245, 158, 11, 0.1)',
-          border: '1px solid rgba(245, 158, 11, 0.3)',
-          color: '#fbbf24',
-          fontSize: '12px',
-          marginBottom: '16px'
-        }}>
-          <AlertTriangle size={16} />
-          <div>
-            <strong>Status Discrepancy:</strong> System records show well as <em>{data.system_status?.recorded_status || 'active'}</em>, but telemetry delta is below {metrics.threshold_temp_delta}°C threshold.
+        <div className="flex items-start gap-2.5 p-2.5 mb-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
+          <div className="leading-snug">
+            <strong className="font-semibold text-amber-200">Stale Metadata Detected:</strong> System database records show well as{' '}
+            <code className="px-1 py-0.5 rounded bg-zinc-900 border border-amber-500/30 text-amber-200 font-mono text-[11px]">
+              {data.system_status?.recorded_status || 'active'}
+            </code>
+            , but empirical telemetry delta is only{' '}
+            <span className="font-mono font-semibold">{metrics.delta_temp_c?.toFixed(1)}°C</span> (below the{' '}
+            {metrics.threshold_temp_delta}°C SOP requirement).
           </div>
         </div>
       )}
 
       {/* Operational Reason & Inspector Info */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        padding: '12px 14px',
-        background: 'rgba(255,255,255,0.02)',
-        borderRadius: '8px',
-        fontSize: '12px',
-        border: '1px solid var(--border-subtle)'
-      }}>
-        <div>
-          <span style={{ color: 'var(--text-muted)' }}>Operational Reason: </span>
-          <span style={{ color: '#f8fafc', fontWeight: 500 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 rounded-lg bg-[#09090b] border border-zinc-800/80 text-xs">
+        <div className="flex items-center gap-1.5">
+          <span className="text-zinc-500 font-mono text-[11px]">Cause / Reason:</span>
+          <span className="text-zinc-200 font-medium">
             {data.reason || 'No recorded reason'}
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Calendar size={13} color="#94a3b8" />
-          <span style={{ color: 'var(--text-muted)' }}>{latestInsp.date} by {latestInsp.inspector}</span>
+        <div className="flex items-center gap-2 text-zinc-400 font-mono text-[11px] sm:justify-end">
+          <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+          <span>{latestInsp.date}</span>
+          <span className="text-zinc-600">·</span>
+          <User className="w-3.5 h-3.5 text-zinc-500" />
+          <span>{latestInsp.inspector}</span>
         </div>
       </div>
 
       {/* Evidence Chips */}
       {data.evidence_ids && data.evidence_ids.length > 0 && (
-        <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <ShieldCheck size={14} color="#38bdf8" />
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Verified Evidence:</span>
+        <div className="mt-3 pt-2.5 border-t border-zinc-800/60 flex items-center gap-2 flex-wrap text-xs">
+          <ShieldCheck className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+          <span className="text-zinc-500 font-mono text-[11px]">Verified Citations:</span>
           {data.evidence_ids.map(eid => (
-            <span key={eid} className="citation-badge">[{eid}]</span>
+            <span
+              key={eid}
+              className="px-1.5 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 text-[11px] font-mono text-amber-300"
+            >
+              [{eid}]
+            </span>
           ))}
         </div>
       )}

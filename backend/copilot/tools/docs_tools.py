@@ -6,9 +6,14 @@ from backend.copilot.tools.render import render_evidence
 
 
 def tool_search_documentation(
-    query: str,
+    query: str = "",
     limit: int = 5,
+    window: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    weeks: Optional[int] = None,
     conn: Optional[sqlite3.Connection] = None,
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """Search SOPs, operating manuals, maintenance reports, and notes using Hybrid RRF.
     

@@ -15,6 +15,8 @@ Context and execution tracker for Antigravity[cite: 5]. Read this file completel
 - [x] **M5 (95% — by 3:45 PM):** Provider-agnostic Gemma 4 agent loop (`loop.py`), citation guardrail (`guardrails.py`), FastAPI `/api/chat`, and Vite React Generative UI (all 8 visual block types + UserPicker)[cite: 3, 5, 8].
 - [x] **M6 (100% — by 5:00 PM):** `scripts/make_holdout.py` multi-root rehearsal green, LLM token/latency logger active, `README.md` & `LICENSE` (MIT) pushed, DevRelay & OrganizerHQ ready[cite: 1, 7, 8].
 - [x] **M7 (Advanced Differentiators):** Proactive Anomaly Radar (`radar.py` & `/api/insights/proactive`), Counterfactual What-If Simulator (`simulator.py`), Hybrid RRF Search (`hybrid_search.py`), and Bi-Temporal Audit Diff (`diff.py`) fully verified (39/39 backend tests green).
+- [x] **M8 (Mentor Bonus & Industrial Polish):** Universal argument normalization (`backend/copilot/tools/`), raw Gemma 4 `<|tool_call>` regex parser in `llm.py`, Markdown pipe table stripper in `guardrails.py`, Deterministic QA Validation Engine (`validate_turn_qa` & `GET /api/qa/golden-suite` 18/18 pass in 66ms), and strict GitHub Primer Dark / Vercel Geist monochrome UI.
+- [x] **M9 (Automated End-to-End QA & Self-Healing Audit):** Full 18/18 scenarios (Q1–Q18) running sequentially through full `AgentLoop`, stateful multi-user carry-forward verified across all 4 pillars (0 LLM math, citation provenance, visual contracts, multi-user isolation), 18/18 pass in 2.44s, `GET /api/qa/audit` exposed with self-healing bug log, `docs/QA_REPORT.md` published, and `make holdout` rehearsal 100% green.
 
 ---
 
@@ -61,5 +63,35 @@ frontend/src/  App.tsx  Chat.tsx  UserPicker.tsx  blocks/{StatusCard,Table,LineC
 scripts/       make_holdout.py
 docs/          ARCHITECTURE.md  DOMAIN_RULES.md  MEMORY_AND_FEEDBACK.md  BUILD_PLAN.md  EXPLAIN_IT.md  SUBMISSION.md  CODE_MAP.md  DECISIONS.md
 tests/         golden_cases.yaml
-data/          (git-ignored clone of [https://github.com/FlytBaseAILabs/flytbase-ahc-swe-asset-intelligence-dataset](https://github.com/FlytBaseAILabs/flytbase-ahc-swe-asset-intelligence-dataset))
 ```
+
+---
+
+## 9. Automated End-to-End QA & Self-Healing Audit
+
+### 4-Pillar End-to-End QA Contract
+
+To guarantee absolute compliance with hackathon scoring criteria, all copilot interactions are continuously verified against a 4-pillar QA specification across both Part A (Q1–Q14) and Part B (Q15–Q18):
+
+1. **Pillar 1: Fact & Numeric Invariant Gate (0 LLM Math)**
+   - Every number, well ID, date, dollar cost, downtime day count, spill barrel volume, and status in `tests/golden_cases.yaml` (Q1–Q18) is computed strictly by Python/SQLite deterministic code.
+   - The end-to-end output of `/api/chat` and `agent.loop` must contain the exact computed invariants without truncation or hallucinated arithmetic.
+
+2. **Pillar 2: Citation Provenance Gate (Strict Set Membership)**
+   - 100% of bracketed IDs in generated responses (`[INS-...]`, `[MNT-...]`, `[REG-...]`, `[CTX-...]`, `[DOC:...]`, `[RPT:...]`, `[LEDGER-...]`) must be members of the deterministic tool outputs' `evidence` set for that specific turn.
+   - Post-turn sanitizer in `guardrails.py` strips or rejects ungrounded citations before transmission to the user.
+
+3. **Pillar 3: Visual Contract Verification**
+   - Asserts the exact visual block (`status_card`, `table`, `line_chart`, `bar_chart`, `map_view`, `heatmap`, `conflict`, `none`) is emitted, properly typed, and strictly matches expected row, pin, marker, and matrix counts.
+
+4. **Pillar 4: Stateful Multi-User Carry-Forward & Scope Isolation**
+   - **Q6 (Michael) -> Q11 (Michael new chat):** Michael Turner queries top downtime wells in NE-07 in Q6 (`WELL-0121, WELL-0138, WELL-0107`); in Q11, a new session correctly recalls these 3 wells and computes 2026 repair costs (`WELL-0121: $25,794, WELL-0138: $46,942, WELL-0107: $5,176`).
+   - **Q16 (Jessica Private Isolation):** Jessica Reed asks about past conversations and gets zero history (`no earlier conversation` found), strictly enforcing `WHERE user_id = ?` isolation.
+   - **Q12 (Michael Temperature Correction):** Michael corrects `INS-0164-0205` wellhead temp from 24.0°C to 41.0°C. System overlays ledger, flips `is_producing=true`, detects conflict with Tyler Hughes's inspector remark (`"Pump jack not moving."`), and re-evaluating Q2 removes `WELL-0164` (leaving 3 stopped wells: `WELL-0170, WELL-0172, WELL-0175`).
+   - **Q15 (Jessica Sees Michael's Correction):** Jessica Reed queries `WELL-0164` and sees it producing oil (`41.0°C`), attributed to Michael Turner's correction, with the unresolved inspector conflict explicitly flagged.
+   - **Q13 (Michael Spill Volume Correction):** Michael corrects `INS-0151-0201` spill volume from 4.5 to 5.4 bbl. Spill crosses the 5.0 bbl threshold to become reportable, triggering `SR-01` breach (written report overdue), invalidating `MNT-0151-025` "moderate" classification, flagging `SR-02` (6.4h > 4h limit), and scheduling `SR-03` due `2026-11-23`.
+   - **Q15 (Laura Simmons Sees Reportable Spill):** Laura Simmons queries reportable spills in NE Block 8 in the last 90 days and sees `WELL-0151` (5.4 bbl).
+   - **Q14 (T350 Rule Override & Scope Containment):** Michael overrides pump jack RCA threshold for `well_type = 'T350'` from 3 to 2 repairs. RCA list adds `WELL-0120` (T350, 2 repairs) alongside `WELL-0108, WELL-0121, WELL-0138`. `WELL-0102` (T200, 2 repairs) is strictly excluded due to scope containment. Rule attribution to Michael Turner is recorded.
+   - **Q17 (User vs Data Conflicts):** Claims contradicting empirical data (e.g., Tyler Hughes claiming `WELL-0175` running fine when delta is 0.4°C and Michael recorded a shut-in; Jake Morales claiming `WELL-0001` back online when delta is 3.2°C) surface both sides with unverified claims marked unconfirmed.
+   - **Q18 (Disputed AI Analysis):** Disagreement on whether `INS-0101-0197` at `WELL-0101` was crude oil (Chris Dalton CTX-0101-003, confirmed by repair MNT-0101-029) or produced water (Ryan Brooks CTX-0101-002) is preserved and surfaced transparently without silently dropping evidence.
+
