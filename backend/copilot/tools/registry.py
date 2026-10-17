@@ -12,6 +12,9 @@ from backend.copilot.tools.analytics import (
     tool_get_spills_heatmap,
     tool_get_well_compliance_audit,
     tool_get_uncontained_spills,
+    tool_get_proactive_fleet_risks,
+    tool_simulate_fleet_what_if,
+    tool_get_bitemporal_audit_diff,
 )
 from backend.copilot.tools.docs_tools import tool_search_documentation
 from backend.copilot.tools.memory_tools import (
@@ -293,6 +296,43 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
             },
         },
     },
+    {
+        "name": "get_proactive_fleet_risks",
+        "description": "Scan the fleet proactively for thermal margin stalls, pre-RCA equipment watchlists, stale status wells, and operator conflicts.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "thermal_margin_deg": {
+                    "type": "number",
+                    "description": "Margin in degrees C from threshold to flag as at risk of stalling",
+                    "default": 2.5,
+                }
+            },
+        },
+    },
+    {
+        "name": "simulate_fleet_what_if",
+        "description": "Simulate counterfactual scenarios without mutating ledger (e.g. spill threshold changes, RCA threshold changes, temperature threshold shifts).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "scenario_query": {"type": "string", "description": "Natural language what-if question"},
+                "scenario_type": {"type": "string", "description": "spill_threshold | rca_threshold | temp_threshold"},
+                "target_well_type": {"type": "string", "description": "Target well type (e.g. T200, T350)"},
+                "simulated_value": {"type": "number", "description": "Simulated parameter target value"},
+            },
+        },
+    },
+    {
+        "name": "get_bitemporal_audit_diff",
+        "description": "Generate a bi-temporal state diff comparing Layer 1 ingested raw sensors against Layer 2 runtime ledger corrections and rule overrides.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max diff items to return", "default": 50}
+            },
+        },
+    },
 ]
 
 DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
@@ -315,6 +355,9 @@ DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
     "recall_wells": tool_recall_wells,
     "get_repair_costs_for_wells": tool_get_repair_costs_for_wells,
     "get_rca_wells": tool_get_rca_wells,
+    "get_proactive_fleet_risks": tool_get_proactive_fleet_risks,
+    "simulate_fleet_what_if": tool_simulate_fleet_what_if,
+    "get_bitemporal_audit_diff": tool_get_bitemporal_audit_diff,
 }
 
 

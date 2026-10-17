@@ -610,3 +610,40 @@ def tool_get_uncontained_spills(
         "visual": visual,
         "evidence_ids": list(set(evidence_ids)),
     }
+
+
+def tool_get_proactive_fleet_risks(
+    thermal_margin_deg: float = 2.5,
+    conn: Optional[sqlite3.Connection] = None,
+) -> Dict[str, Any]:
+    """M7 Deliverable A: Proactive Autonomous Anomaly & Risk Radar."""
+    from backend.copilot.domain.radar import scan_proactive_fleet_risks
+    return scan_proactive_fleet_risks(conn=conn, thermal_margin_deg=thermal_margin_deg)
+
+
+def tool_simulate_fleet_what_if(
+    scenario_query: Optional[str] = None,
+    scenario_type: Optional[str] = None,
+    target_well_type: Optional[str] = None,
+    simulated_value: Optional[float] = None,
+    conn: Optional[sqlite3.Connection] = None,
+) -> Dict[str, Any]:
+    """M7 Deliverable B: Counterfactual What-If Fleet Simulator."""
+    from backend.copilot.domain.simulator import simulate_fleet_what_if
+    return simulate_fleet_what_if(
+        scenario_query=scenario_query,
+        scenario_type=scenario_type,
+        target_well_type=target_well_type,
+        simulated_value=simulated_value,
+        conn=conn,
+    )
+
+
+def tool_get_bitemporal_audit_diff(
+    limit: int = 50,
+    conn: Optional[sqlite3.Connection] = None,
+) -> Dict[str, Any]:
+    """M7 Deliverable D: Bi-Temporal State Diff (Raw Sensors vs Ledger Overlay)."""
+    from backend.copilot.domain.diff import get_bitemporal_audit_diff
+    return get_bitemporal_audit_diff(conn=conn, limit=limit)
+

@@ -105,6 +105,14 @@ def get_wells(limit: int = 100) -> List[Dict[str, Any]]:
         conn.close()
 
 
+@app.get("/api/insights/proactive")
+def get_proactive_insights(thermal_margin: float = 2.5) -> Dict[str, Any]:
+    """M7 Deliverable A: Proactive Autonomous Anomaly & Risk Radar."""
+    from backend.copilot.domain.radar import scan_proactive_fleet_risks
+    return scan_proactive_fleet_risks(thermal_margin_deg=thermal_margin)
+
+
+
 @app.post("/api/chat")
 def chat_turn(req: ChatRequest) -> Dict[str, Any]:
     """Process a conversational query and return grounded prose and generative visual blocks."""

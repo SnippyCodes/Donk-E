@@ -52,7 +52,10 @@
 
 ## Decision 11: Live OpenRouter Gemma 4 Wiring, Multimodal Vision, and Hot-Drop Ingest Engine
 - **Context:** Evaluation requires live OpenRouter integration (`google/gemma-4-26b-a4b-it:free`), multimodal voice/image capabilities, and dynamic multi-root dataset ingestion when evaluators supply `./test-data` in the final 2-hour window.
-- **Decision:** Implemented OpenRouter connection with custom headers and resilient fallback to zero-crash local heuristics; added Web Speech hands-free voice recognition; enabled visual field inspection cross-checks with automated `claims.check` dispute detection; and built `POST /api/admin/ingest` which loads arbitrary dataset roots and recalculates dynamic `DATA_END` in under 2.5 seconds.
-- **Impact:** Production-ready resilience, hands-free field usability, and guaranteed compatibility with unseen test datasets.
+## Decision 12: Proactive Anomaly Radar, Counterfactual Simulator, Hybrid RRF Search, and Bi-Temporal Audit Diff
+- **Context:** Standard operational assistants wait passively for operator queries. High-value asset operations require proactive risk surfacing (stalling margins, near-threshold equipment), "what-if" policy simulation without state pollution, typo-tolerant semantic search over SOPs without external vector DB dependencies, and auditability comparing raw sensor truth against runtime operator overlays.
+- **Decision:** Built (1) `radar.py` scanning thermal margins (<= 2.5°C), pre-RCA equipment (threshold - 1 repairs), and contradictory operator notes (e.g. INS-0101-0197); (2) `simulator.py` executing non-destructive counterfactual scenarios (spill threshold shifts, RCA repair thresholds, temp delta margins) with guaranteed ledger immutability and visual comparative charts; (3) `hybrid_search.py` combining SQLite FTS5 BM25 keyword rankings with in-memory Character/Word N-gram TF-IDF Cosine similarity via Reciprocal Rank Fusion ($k=60$); and (4) `diff.py` producing side-by-side bi-temporal diffs of Layer 1 raw ingested data versus Layer 2 runtime ledger overlays.
+- **Impact:** Differentiates the copilot from passive chat bots into an active fleet risk intelligence and decision-support command center.
+
 
 

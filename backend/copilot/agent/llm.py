@@ -5,6 +5,15 @@ from typing import Any, Dict, List, Optional
 import httpx
 
 
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Ensure .env is loaded
+_env_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
+if _env_path.exists():
+    load_dotenv(_env_path)
+
+
 class LLMClient:
     """Provider-agnostic LLM client supporting OpenRouter Gemma 4, Ollama, OpenAI-compatible APIs, and offline fallback."""
 
@@ -196,9 +205,38 @@ class LLMClient:
         """Accurately route natural language query to the appropriate tool."""
         q = query.lower()
 
-        # Check for well IDs (e.g. WELL-0001)
-        well_match = re.search(r"\bwell-?(\d+)\b", q)
-        well_id = f"WELL-{int(well_match.group(1)):04d}" if well_match else None
+        # M7 Deliverable B: Counterfactual What-If Fleet Simulation
+        if "what if" in q or "counterfactual" in q or "simulate" in q or "what happens across the fleet" in q:
+            return {
+                "name": "simulate_fleet_what_if",
+                "args": {"scenario_query": query},
+            }
+
+        # M7 Deliverable A: Proactive Fleet Anomaly & Risk Radar
+        if "radar" in q or "proactive" in q or "risk of stalling" in q or "fleet risk" in q or "pre-rca" in q:
+            return {
+                "name": "get_proactive_fleet_risks",
+                "args": {"thermal_margin_deg": 2.5},
+            }
+
+        # M7 Deliverable D: Bi-Temporal State Diff
+        if "bi-temporal" in q or "audit diff" in q or "raw sensor" in q or "operator corrections vs" in q or "ground truth vs" in q:
+            return {
+                "name": "get_bitemporal_audit_diff",
+                "args": {"limit": 50},
+            }
+
+        # Robust check for well IDs (e.g. WELL-0001, Well 1, Well one, 0001)
+        word_num_map = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+        well_match = re.search(r"\b(?:well|wellhead)\s*#?\s*(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\b", q)
+        if not well_match:
+            well_match = re.search(r"\bwell-?(\d+)\b", q)
+        if well_match:
+            val = well_match.group(1).lower()
+            num = word_num_map.get(val, int(val) if val.isdigit() else 1)
+            well_id = f"WELL-{num:04d}"
+        else:
+            well_id = None
 
         # Check for area IDs or names
         area_match = re.search(r"\b(ne|se|nw|sw)-?(\d+)\b", q)
@@ -412,9 +450,48 @@ class LLMClient:
             count = tool_data["uncontained_count"]
             return f"Identified {count} reportable spills violating SR-02 (> 4 hours containment deadline). {citations_str}"
 
+        # M7 Deliverable B: Counterfactual What-If Simulation
+        if "scenario_name" in tool_data and "before_count" in tool_data:
+            s_name = tool_data["scenario_name"]
+            before = tool_data["before_count"]
+            after = tool_data["after_count"]
+            delta = tool_data["net_change"]
+            sign = "+" if delta > 0 else ""
+            flipped = tool_data.get("flipped_assets_count", 0)
+            return (
+                f"**Counterfactual What-If Simulation:** {s_name}. "
+                f"Baseline count: {before} -> Simulated count: {after} (Net change: {sign}{delta}, {flipped} flipped items). "
+                f"Full comparative visual chart and asset table rendered below. {citations_str}"
+            )
+
+        # M7 Deliverable A: Proactive Fleet Anomaly & Risk Radar
+        if "thermal_warnings" in tool_data and "pre_rca_watchlist" in tool_data:
+            summ = tool_data.get("summary", {})
+            tw_cnt = summ.get("thermal_margin_warnings_count", 0)
+            rca_cnt = summ.get("pre_rca_watchlist_count", 0)
+            stale_cnt = summ.get("stale_status_wells_count", 0)
+            conf_cnt = summ.get("unresolved_conflicts_count", 0)
+            lvl = summ.get("fleet_risk_level", "ELEVATED")
+            return (
+                f"**Proactive Fleet Risk Radar ({lvl}):** "
+                f"Detected {tw_cnt} wells at risk of stalling (thermal margin <= 2.5°C), "
+                f"{rca_cnt} equipment items on pre-RCA watchlist (1 breakdown from mandatory RCA), "
+                f"{stale_cnt} stale status wells, and {conf_cnt} unresolved operator conflicts. {citations_str}"
+            )
+
+        # M7 Deliverable D: Bi-Temporal State Diff
+        if "diff_entries" in tool_data and "layer_1_model" in tool_data.get("summary", {}):
+            total_diffs = tool_data["summary"].get("total_diff_count", 0)
+            return (
+                f"**Bi-Temporal State Diff (Ingested Ground Truth vs Runtime Ledger):** "
+                f"Surfaced {total_diffs} side-by-side parameter adjustments across inspections, spill overrides, "
+                f"and well-type thresholds. Full audit table with operator authorship rendered below. {citations_str}"
+            )
+
         # Memory / dispute tool
         if "claim_id" in tool_data:
             verdict = tool_data.get("conflict_verdict", "recorded")
             return f"Claim recorded: status is {verdict}. {citations_str}"
 
         return f"Query processed with {len(evidence_ids)} verified evidence sources. {citations_str}"
+

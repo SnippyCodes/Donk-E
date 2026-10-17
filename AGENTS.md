@@ -14,6 +14,7 @@ Context and execution tracker for Antigravity[cite: 5]. Read this file completel
 - [x] **M4 (85% — by 2:30 PM):** Append-only `ledger.py`, `claims.py` conflict detector, and `recall.py` per-user private memory. **Golden Q11–Q18, `test_memory.py`, and `test_scope.py` pass**[cite: 2, 6, 8].
 - [x] **M5 (95% — by 3:45 PM):** Provider-agnostic Gemma 4 agent loop (`loop.py`), citation guardrail (`guardrails.py`), FastAPI `/api/chat`, and Vite React Generative UI (all 8 visual block types + UserPicker)[cite: 3, 5, 8].
 - [x] **M6 (100% — by 5:00 PM):** `scripts/make_holdout.py` multi-root rehearsal green, LLM token/latency logger active, `README.md` & `LICENSE` (MIT) pushed, DevRelay & OrganizerHQ ready[cite: 1, 7, 8].
+- [x] **M7 (Advanced Differentiators):** Proactive Anomaly Radar (`radar.py` & `/api/insights/proactive`), Counterfactual What-If Simulator (`simulator.py`), Hybrid RRF Search (`hybrid_search.py`), and Bi-Temporal Audit Diff (`diff.py`) fully verified (39/39 backend tests green).
 
 ---
 

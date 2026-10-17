@@ -14,6 +14,7 @@ import {
   FileCheck,
   Split,
   Users,
+  Zap,
 } from 'lucide-react'
 
 const DEFAULT_USERS: UserOption[] = [
@@ -33,6 +34,27 @@ interface PromptCategory {
 }
 
 const CATEGORIZED_PROMPTS: PromptCategory[] = [
+  {
+    category: 'M7 Advanced AI Differentiators',
+    icon: Zap,
+    prompts: [
+      {
+        id: 'm7-whatif',
+        label: 'What-If: Spill Threshold to 3.0 bbl',
+        text: 'Run What-If Simulation: What happens across the fleet if reportable spill threshold drops to 3.0 bbl?',
+      },
+      {
+        id: 'm7-diff',
+        label: 'Bi-Temporal Audit Diff (L1 vs L2)',
+        text: 'Show Bi-Temporal Audit Diff of all runtime operator corrections vs. raw sensor data.',
+      },
+      {
+        id: 'm7-radar',
+        label: '⚡ Proactive Fleet Risk Radar',
+        text: 'Scan proactive fleet risk radar for stalling wells, pre-RCA equipment, and unresolved operator conflicts.',
+      },
+    ],
+  },
   {
     category: 'Fleet Status & Temp Rules (Q1–Q4)',
     icon: Flame,
@@ -96,9 +118,21 @@ export const App: React.FC = () => {
   const [isIngesting, setIsIngesting] = useState(false)
   const [ingestResult, setIngestResult] = useState<any | null>(null)
 
+  const [radarModalOpen, setRadarModalOpen] = useState(false)
+  const [radarData, setRadarData] = useState<any | null>(null)
+
   const API_BASE = (typeof window !== 'undefined' && window.location.port === '5173')
     ? 'http://127.0.0.1:8000'
     : ''
+
+  const fetchProactiveRadar = () => {
+    fetch(`${API_BASE}/api/insights/proactive`)
+      .then(r => r.json())
+      .then(d => {
+        setRadarData(d)
+      })
+      .catch(() => {})
+  }
 
   const fetchHealth = () => {
     fetch(`${API_BASE}/api/health`)
@@ -116,9 +150,10 @@ export const App: React.FC = () => {
       .catch(() => {})
   }
 
-  // Fetch health and users on mount
+  // Fetch health, users, and radar on mount
   useEffect(() => {
     fetchHealth()
+    fetchProactiveRadar()
 
     fetch(`${API_BASE}/api/users`)
       .then(r => r.json())
@@ -415,6 +450,31 @@ export const App: React.FC = () => {
               <RefreshCw size={12} />
               <span>Ingest / Hot-Reload Dataset</span>
             </button>
+
+            {/* Proactive Fleet Radar Trigger */}
+            <button
+              onClick={() => {
+                fetchProactiveRadar()
+                setRadarModalOpen(true)
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 12px',
+                borderRadius: '16px',
+                background: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                border: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)',
+                color: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? '#f87171' : '#34d399',
+                fontSize: '11px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              <Zap size={12} />
+              <span>⚡ Proactive Fleet Radar {radarData?.summary ? `(${radarData.summary.fleet_risk_level})` : ''}</span>
+            </button>
           </div>
 
           <UserPicker
@@ -538,6 +598,237 @@ export const App: React.FC = () => {
                 >
                   <RefreshCw size={13} className={isIngesting ? 'animate-spin' : ''} />
                   <span>{isIngesting ? 'Ingesting (<2.5s)...' : 'Execute Hot-Drop Ingest'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Proactive Fleet Radar Modal */}
+        {radarModalOpen && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 100,
+          }}>
+            <div style={{
+              background: '#0a0f1d',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              borderRadius: '16px',
+              padding: '24px',
+              width: '560px',
+              maxWidth: '90vw',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Zap size={20} color="#38bdf8" />
+                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#f8fafc' }}>
+                    ⚡ Proactive Fleet Risk & Anomaly Radar
+                  </h3>
+                </div>
+                <span style={{
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  background: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
+                  color: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? '#f87171' : '#34d399',
+                  border: radarData?.summary?.fleet_risk_level === 'ELEVATED' ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)',
+                }}>
+                  {radarData?.summary?.fleet_risk_level || 'SCANNING'}
+                </span>
+              </div>
+
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px', lineHeight: 1.5 }}>
+                Autonomous deterministic scanner surfacing hidden stalls, recurring equipment breakdowns near RCA thresholds, stale sensor states, and operator contradictions.
+              </p>
+
+              {/* 4 Risk KPI Cards Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
+                {/* 1. Thermal Warnings */}
+                <div style={{
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: 'rgba(245, 158, 11, 0.08)',
+                  border: '1px solid rgba(245, 158, 11, 0.25)',
+                }}>
+                  <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 600, marginBottom: '4px' }}>
+                    Thermal Margin Stalls
+                  </div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>
+                    {radarData?.summary?.thermal_margin_warnings_count ?? 0} <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>wells</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRadarModalOpen(false)
+                      handleSendMessage('Show all producing wells at risk of stalling with thermal margin <= 2.5 C')
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      background: 'rgba(245, 158, 11, 0.2)',
+                      border: 'none',
+                      color: '#fbbf24',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Query Stalling Wells &rarr;
+                  </button>
+                </div>
+
+                {/* 2. Pre-RCA Watchlist */}
+                <div style={{
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                }}>
+                  <div style={{ fontSize: '11px', color: '#f87171', fontWeight: 600, marginBottom: '4px' }}>
+                    Pre-RCA Watchlist
+                  </div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>
+                    {radarData?.summary?.pre_rca_watchlist_count ?? 0} <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>near RCA</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRadarModalOpen(false)
+                      handleSendMessage('Which equipment items are on the pre-RCA watchlist across the fleet?')
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      background: 'rgba(239, 68, 68, 0.2)',
+                      border: 'none',
+                      color: '#f87171',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Audit Pre-RCA &rarr;
+                  </button>
+                </div>
+
+                {/* 3. Stale Status Wells */}
+                <div style={{
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: 'rgba(99, 102, 241, 0.08)',
+                  border: '1px solid rgba(99, 102, 241, 0.25)',
+                }}>
+                  <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 600, marginBottom: '4px' }}>
+                    Stale Status Wells
+                  </div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>
+                    {radarData?.summary?.stale_status_wells_count ?? 0} <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>wells</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRadarModalOpen(false)
+                      handleSendMessage('List all wells with stale recorded status and why they stopped.')
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      background: 'rgba(99, 102, 241, 0.2)',
+                      border: 'none',
+                      color: '#818cf8',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Audit Stale Wells &rarr;
+                  </button>
+                </div>
+
+                {/* 4. Unresolved Operator Conflicts */}
+                <div style={{
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: 'rgba(168, 85, 247, 0.08)',
+                  border: '1px solid rgba(168, 85, 247, 0.25)',
+                }}>
+                  <div style={{ fontSize: '11px', color: '#c084fc', fontWeight: 600, marginBottom: '4px' }}>
+                    Unresolved Conflicts
+                  </div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>
+                    {radarData?.summary?.unresolved_conflicts_count ?? 0} <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>disputes</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRadarModalOpen(false)
+                      handleSendMessage('Explain the operator disagreement and conflict on inspection INS-0101-0197.')
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      background: 'rgba(168, 85, 247, 0.2)',
+                      border: 'none',
+                      color: '#c084fc',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Inspect Conflicts &rarr;
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <button
+                  type="button"
+                  onClick={() => setRadarModalOpen(false)}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    background: 'transparent',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRadarModalOpen(false)
+                    handleSendMessage('Scan proactive fleet risk radar for stalling wells, pre-RCA equipment, and unresolved operator conflicts.')
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    background: 'linear-gradient(135deg, #0284c7, #38bdf8)',
+                    border: 'none',
+                    color: '#032030',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <Zap size={13} />
+                  <span>Execute Full Radar Turn in Chat</span>
                 </button>
               </div>
             </div>

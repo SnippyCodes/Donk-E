@@ -74,7 +74,11 @@
 | `backend/tests/test_golden.py` | M1-M3 | Pytest suite validating Golden Q1–Q10 against data & compliance layers | Completed (100% green) |
 | `backend/tests/test_memory.py` | M4 | Pytest suite validating Golden Q11–Q18 memory, ledger, and conflicts | Completed (100% green) |
 | `backend/tests/test_scope.py` | M4 | Pytest suite validating strict scope discipline & user isolation | Completed (100% green) |
-| `tests/test_m4_memory_and_claims.py` | M4 | Verification suite for Q11-Q18, user isolation, rule scope, and citation audits | Completed (100% green) |
 | `tests/golden_cases.yaml` | M0 | Golden query specs, entity targets, windows, and exact expected values | Completed |
+| `backend/copilot/domain/radar.py` | M7 | Proactive Autonomous Anomaly & Risk Radar (`scan_proactive_fleet_risks`) | Completed |
+| `backend/copilot/domain/simulator.py` | M7 | Non-destructive Counterfactual What-If Fleet Simulator (`simulate_fleet_what_if`) | Completed |
+| `backend/copilot/domain/hybrid_search.py` | M7 | Hybrid RRF Search combining SQLite FTS5 BM25 with in-memory TF-IDF Cosine | Completed |
+| `backend/copilot/domain/diff.py` | M7 | Bi-Temporal State Diff comparing Layer 1 ingested sensors vs Layer 2 ledger overlay | Completed |
+| `backend/tests/test_m7_advanced_features.py` | M7 | Pytest suite validating radar, simulation immutability, hybrid search, and diffs | Completed (100% green) |
 
 
