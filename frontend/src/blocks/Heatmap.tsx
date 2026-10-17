@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid, ShieldCheck } from 'lucide-react'
 
 export interface HeatmapProps {
@@ -11,6 +11,7 @@ export interface HeatmapProps {
 }
 
 export const HeatmapBlock: React.FC<{ data: HeatmapProps }> = ({ data }) => {
+  const [hoveredCell, setHoveredCell] = useState<{ y: string; x: string; val: number } | null>(null)
   const flatVals = data.matrix.flat()
   const maxVal = Math.max(...flatVals, 1)
 
@@ -71,23 +72,38 @@ export const HeatmapBlock: React.FC<{ data: HeatmapProps }> = ({ data }) => {
           </span>
         </div>
 
-        {/* Legend */}
+        {/* Legend & Hover Readout */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '12px',
           fontSize: '11px',
           color: '#a1a1aa',
           fontFamily: "'JetBrains Mono', monospace"
         }}>
-          <span>0 (Zero)</span>
-          <div style={{
-            width: '50px',
-            height: '6px',
-            borderRadius: '3px',
-            background: 'linear-gradient(90deg, #18181b, rgba(245, 158, 11, 0.85))'
-          }} />
-          <span style={{ color: '#f59e0b', fontWeight: 600 }}>{maxVal} (Peak)</span>
+          {hoveredCell ? (
+            <span style={{
+              background: '#18181b',
+              border: '1px solid #f59e0b',
+              borderRadius: '4px',
+              padding: '2px 8px',
+              color: '#f59e0b',
+              fontWeight: 600
+            }}>
+              {hoveredCell.y} · {hoveredCell.x}: <strong style={{ color: '#ffffff' }}>{hoveredCell.val} spills</strong>
+            </span>
+          ) : (
+            <>
+              <span>0 (Zero)</span>
+              <div style={{
+                width: '50px',
+                height: '6px',
+                borderRadius: '3px',
+                background: 'linear-gradient(90deg, #18181b, rgba(245, 158, 11, 0.85))'
+              }} />
+              <span style={{ color: '#f59e0b', fontWeight: 600 }}>{maxVal} (Peak)</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -159,29 +175,39 @@ export const HeatmapBlock: React.FC<{ data: HeatmapProps }> = ({ data }) => {
                   }}>
                     {yl}
                   </td>
-                  {row.map((val, cIdx) => (
-                    <td
-                      key={cIdx}
-                      style={{
-                        padding: '4px',
-                        textAlign: 'center',
-                        background: '#09090b'
-                      }}
-                    >
-                      <div style={{
-                        background: getCellBg(val),
-                        color: getCellTextColor(val),
-                        borderRadius: '4px',
-                        padding: '4px 2px',
-                        fontWeight: val > 0 ? 700 : 400,
-                        border: val > 0 ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #1f1f23',
-                        fontSize: '11px',
-                        transition: 'transform 0.1s ease',
-                      }} className="tabular-nums">
-                        {val}
-                      </div>
-                    </td>
-                  ))}
+                  {row.map((val, cIdx) => {
+                    const isHovered = hoveredCell?.y === yl && hoveredCell?.x === data.x_labels[cIdx]
+                    return (
+                      <td
+                        key={cIdx}
+                        style={{
+                          padding: '4px',
+                          textAlign: 'center',
+                          background: '#09090b'
+                        }}
+                        onMouseEnter={() => setHoveredCell({ y: yl, x: data.x_labels[cIdx], val })}
+                        onMouseLeave={() => setHoveredCell(null)}
+                      >
+                        <div style={{
+                          background: getCellBg(val),
+                          color: getCellTextColor(val),
+                          borderRadius: '4px',
+                          padding: '4px 2px',
+                          fontWeight: val > 0 ? 700 : 400,
+                          border: isHovered
+                            ? '1px solid #ffffff'
+                            : (val > 0 ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #1f1f23'),
+                          fontSize: '11px',
+                          cursor: 'pointer',
+                          transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+                          transition: 'all 0.12s ease',
+                          boxShadow: isHovered ? '0 2px 8px rgba(0,0,0,0.8)' : 'none'
+                        }} className="tabular-nums">
+                          {val}
+                        </div>
+                      </td>
+                    )
+                  })}
                   {data.totals && (
                     <td style={{
                       padding: '8px 12px',

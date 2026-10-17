@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BarChart3, ShieldCheck } from 'lucide-react'
 
 export interface BarChartProps {
@@ -10,6 +10,7 @@ export interface BarChartProps {
 }
 
 export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const maxVal = Math.max(...data.values, 1)
 
   return (
@@ -69,18 +70,35 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
         </div>
       </div>
 
-      {/* Aligned Bar Rows */}
+      {/* Aligned Interactive Bar Rows */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
         {data.categories.map((cat, idx) => {
           const val = data.values[idx] || 0
           const pct = Math.min(100, Math.max(6, (val / maxVal) * 100))
+          const isHovered = hoveredIdx === idx
+
           return (
-            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              key={cat}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                cursor: 'pointer',
+                padding: '2px 4px',
+                borderRadius: '4px',
+                background: isHovered ? 'rgba(255, 255, 255, 0.02)' : 'transparent',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+            >
               <div style={{
-                width: '120px',
+                width: '130px',
                 fontSize: '11.5px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: '#d4d4d8',
+                color: isHovered ? '#f59e0b' : '#d4d4d8',
+                fontWeight: isHovered ? 600 : 400,
                 textAlign: 'right',
                 flexShrink: 0,
                 overflow: 'hidden',
@@ -92,27 +110,28 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
               <div style={{
                 flex: 1,
                 background: '#09090b',
-                border: '1px solid #27272a',
+                border: isHovered ? '1px solid #f59e0b' : '1px solid #27272a',
                 borderRadius: '5px',
-                height: '24px',
+                height: '26px',
                 overflow: 'hidden',
-                position: 'relative'
+                position: 'relative',
+                transition: 'border-color 0.15s ease'
               }}>
                 <div style={{
                   width: `${pct}%`,
                   height: '100%',
-                  background: idx === 0 ? '#f59e0b' : '#3f3f46',
+                  background: isHovered ? '#f59e0b' : (idx === 0 ? '#d97706' : '#3f3f46'),
                   borderRadius: '3px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'flex-end',
                   paddingRight: '8px',
-                  transition: 'width 0.3s ease'
+                  transition: 'all 0.25s ease'
                 }}>
                   <span style={{
                     fontSize: '11px',
                     fontWeight: 700,
-                    color: idx === 0 ? '#09090b' : '#f4f4f5',
+                    color: isHovered || idx === 0 ? '#09090b' : '#f4f4f5',
                     fontFamily: "'JetBrains Mono', monospace"
                   }} className="tabular-nums">
                     {val} {data.unit}

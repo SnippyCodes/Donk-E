@@ -26,6 +26,7 @@ dist/
 
 # OS & Docs
 *.pdf
+!Asset_Intelligence_Copilot_Report.pdf
 .DS_Store
 Thumbs.db
 

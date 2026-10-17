@@ -67,6 +67,15 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
   // Non-producing marker dates
   const markerDates = new Set(data.markers?.map(m => m.date || m.x).filter(Boolean) || [])
 
+  // Current hover metrics
+  const hoveredDate = hoveredIndex !== null ? xLabels[hoveredIndex] : null
+  const wellheadSeries = data.series[0]
+  const airSeries = data.series[1]
+  const hoveredWellhead = hoveredIndex !== null && wellheadSeries?.data ? extractY(wellheadSeries.data[hoveredIndex]) : null
+  const hoveredAir = hoveredIndex !== null && airSeries?.data ? extractY(airSeries.data[hoveredIndex]) : null
+  const hoveredDelta = hoveredWellhead !== null && hoveredAir !== null ? (hoveredWellhead - hoveredAir) : null
+  const hoveredIsStopped = hoveredDate ? markerDates.has(hoveredDate) : false
+
   return (
     <div style={{
       background: '#121215',
@@ -77,7 +86,8 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
       margin: '8px 0',
       display: 'flex',
       flexDirection: 'column',
-      gap: '12px'
+      gap: '12px',
+      position: 'relative'
     }}>
       {/* Header */}
       <div style={{
@@ -142,6 +152,58 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
         </div>
       </div>
 
+      {/* Interactive Tooltip Card */}
+      {hoveredIndex !== null && hoveredWellhead !== null && (
+        <div style={{
+          background: '#18181b',
+          border: '1px solid #3f3f46',
+          borderRadius: '6px',
+          padding: '6px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontSize: '11px',
+          fontFamily: "'JetBrains Mono', monospace",
+          boxShadow: '0 4px 16px rgba(0,0,0,0.6)'
+        }}>
+          <div>
+            <span style={{ color: '#71717a' }}>Date: </span>
+            <strong style={{ color: '#f4f4f5' }}>{hoveredDate}</strong>
+          </div>
+          <div>
+            <span style={{ color: '#71717a' }}>Wellhead: </span>
+            <strong style={{ color: '#f4f4f5' }}>{hoveredWellhead.toFixed(1)}°C</strong>
+          </div>
+          {hoveredAir !== null && (
+            <div>
+              <span style={{ color: '#71717a' }}>Air: </span>
+              <strong style={{ color: '#a1a1aa' }}>{hoveredAir.toFixed(1)}°C</strong>
+            </div>
+          )}
+          {hoveredDelta !== null && (
+            <div>
+              <span style={{ color: '#71717a' }}>Delta: </span>
+              <strong style={{ color: hoveredDelta >= 15.0 ? '#10b981' : '#f43f5e' }}>
+                {hoveredDelta >= 0 ? `+${hoveredDelta.toFixed(1)}°C` : `${hoveredDelta.toFixed(1)}°C`}
+              </strong>
+            </div>
+          )}
+          <span style={{
+            padding: '1px 6px',
+            borderRadius: '4px',
+            fontSize: '10px',
+            fontWeight: 600,
+            background: hoveredIsStopped ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+            color: hoveredIsStopped ? '#f43f5e' : '#10b981',
+            border: hoveredIsStopped ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+          }}>
+            {hoveredIsStopped ? 'NOT PRODUCING' : 'PRODUCING OIL'}
+          </span>
+        </div>
+      )}
+
       {/* SVG Canvas */}
       <div style={{
         width: '100%',
@@ -149,7 +211,8 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
         background: '#09090b',
         borderRadius: '6px',
         border: '1px solid #1f1f23',
-        padding: '8px 0'
+        padding: '8px 0',
+        position: 'relative'
       }}>
         <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', maxHeight: '250px', display: 'block' }}>
           {/* Subtle Grid Lines */}
@@ -202,6 +265,19 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
             )
           })}
 
+          {/* Active Hover Guideline */}
+          {hoveredIndex !== null && (
+            <line
+              x1={getX(hoveredIndex)}
+              y1={padTop}
+              x2={getX(hoveredIndex)}
+              y2={padTop + chartH}
+              stroke="#f59e0b"
+              strokeWidth={1}
+              strokeDasharray="2 2"
+            />
+          )}
+
           {/* Series Lines */}
           {data.series.map((s, sIdx) => {
             const sData = Array.isArray(s.data) ? s.data : []
@@ -227,25 +303,42 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                   const yVal = extractY(d)
                   const dateStr = (s.dates && s.dates[idx]) || xLabels[idx] || ''
                   const isNotProducing = isWellhead && markerDates.has(dateStr)
+                  const isHovered = hoveredIndex === idx
 
                   return (
                     <circle
                       key={idx}
                       cx={getX(idx)}
                       cy={getY(yVal)}
-                      r={hoveredIndex === idx ? 5 : (isNotProducing ? 4.5 : 3)}
-                      fill={isNotProducing ? '#09090b' : strokeColor}
-                      stroke={isNotProducing ? '#f43f5e' : '#121215'}
-                      strokeWidth={isNotProducing ? 2 : 1.5}
-                      style={{ cursor: 'pointer', transition: 'r 0.15s ease' }}
+                      r={isHovered ? 6 : (isNotProducing ? 4.5 : 3)}
+                      fill={isHovered ? '#f59e0b' : (isNotProducing ? '#09090b' : strokeColor)}
+                      stroke={isHovered ? '#ffffff' : (isNotProducing ? '#f43f5e' : '#121215')}
+                      strokeWidth={isHovered ? 2 : (isNotProducing ? 2 : 1.5)}
+                      style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
                       onMouseEnter={() => setHoveredIndex(idx)}
                       onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                      <title>{`${s.name}: ${yVal.toFixed(1)}°C (${dateStr})${isNotProducing ? ' [NOT PRODUCING]' : ''}`}</title>
-                    </circle>
+                    />
                   )
                 })}
               </g>
+            )
+          })}
+
+          {/* Interactive Invisible Hover Bars for easy mouse targeting */}
+          {xLabels.map((_, idx) => {
+            const x = getX(idx)
+            const colW = chartW / Math.max(xLabels.length - 1, 1)
+            return (
+              <rect
+                key={`hit-${idx}`}
+                x={x - colW / 2}
+                y={padTop}
+                width={colW}
+                height={chartH}
+                fill="transparent"
+                style={{ cursor: 'pointer' }}
+                onMouseEnter={() => setHoveredIndex(idx)}
+              />
             )
           })}
 
@@ -254,14 +347,15 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
             if (idx % 2 !== 0 && xLabels.length > 8) return null
             const x = getX(idx)
             const isMarked = markerDates.has(date)
+            const isHovered = hoveredIndex === idx
             return (
               <text
                 key={`x-${idx}`}
                 x={x}
                 y={height - padBottom + 16}
-                fill={isMarked ? '#f43f5e' : '#71717a'}
+                fill={isHovered ? '#f59e0b' : (isMarked ? '#f43f5e' : '#71717a')}
                 fontSize="9.5"
-                fontWeight={isMarked ? 600 : 400}
+                fontWeight={isHovered || isMarked ? 700 : 400}
                 textAnchor="middle"
                 fontFamily="'JetBrains Mono', monospace"
               >

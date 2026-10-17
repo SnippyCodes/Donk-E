@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Donk-E Asset Intelligence Copilot — Final Technical Report</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.5; color: #1f2937; background: #f9fafb; margin: 0; padding: 24px; }
+  .container { max-width: 960px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  h1 { font-size: 20px; font-weight: 700; color: #111827; border-bottom: 2px solid #111827; padding-bottom: 6px; margin-top: 0; }
+  h2 { font-size: 14px; font-weight: 700; color: #111827; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  p, li { font-size: 12.5px; color: #374151; }
+  pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11.5px; background: #f3f4f6; padding: 2px 5px; border-radius: 4px; }
+  pre { padding: 12px; overflow-x: auto; border: 1px solid #e5e7eb; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin: 12px 0; }
+  th { background: #111827; color: #ffffff; text-align: left; padding: 6px 10px; font-size: 11px; text-transform: uppercase; }
+  td { border-bottom: 1px solid #e5e7eb; padding: 6px 10px; vertical-align: top; }
+  tr:nth-child(even) { background: #f9fafb; }
+  .badge-pass { color: #059669; font-weight: 700; }
+  .box { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin: 10px 0; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>DONK-E: ASSET INTELLIGENCE COPILOT — TECHNICAL ARCHITECTURE & QA REPORT</h1>
+  <p><strong>Author:</strong> Aaryan Manas Parik &nbsp;|&nbsp; <strong>Repo:</strong> <a href="https://github.com/SnippyCodes/Donk-E">github.com/SnippyCodes/Donk-E</a> (MIT License) &nbsp;|&nbsp; <strong>Tech Stack:</strong> Python 3.11, FastAPI, SQLite + FTS5, React/TS, Gemma 4</p>
+  
+  <h2>1. End-to-End Architecture & Truth Hierarchy</h2>
+  <pre>MULTI-ROOT INGEST (2.54s, 0 LLM calls) ──▶ RAW SQLITE (39,567 inspections, 5,665 repairs, 90 reg events, 140 notes)
+  ├── rules.yaml (SOP & OM-T200/T350/T500 manual thresholds with citations)
+  ├── report_facts (1,509 free-text repair MD reports, 100% regex coverage)
+  └── docs_fts (SQLite FTS5 BM25 search engine index)
+APPEND-ONLY LEDGER ──▶ MATERIALIZED DERIVED VIEWS (eff_inspection, well_now, spills rebuilt in <20ms)
+AGENT LOOP & GUARDRAILS ──▶ SCHEMA-DRIVEN GENERATIVE UI (8 visual block types)</pre>
+
+  <p><strong>The Truth Hierarchy:</strong> Deterministic Python/SQLite code owns 100% of arithmetic, counts, and dates (Zero LLM Math). In <code>eff_inspection</code>, <code>is_producing</code> is calculated as <code>wellhead_temp_c - ambient_temp_c >= threshold</code> (15.0°C for T200, 20.0°C for T350). When recorded status contradicts empirical telemetry, it is marked as out-of-date. Downtime is strictly computed as 7 days per non-producing weekly inspection.</p>
+
+  <h2>2. Two-Level Memory & Scoped Feedback</h2>
+  <p>The append-only <code>ledger</code> permanently preserves historical audits while enabling runtime operational corrections (<code>raw_correction</code>, <code>analysis_correction</code>, <code>rule_override</code>, <code>claim</code>). Rule overrides resolve via <code>well > well_type > fleet > manual</code>. In Q14, Michael Turner's T350 2-repair RCA override applies strictly to T350 wells, completely contained from T200 wells. Private conversations enforce code-level isolation via <code>WHERE user_id = ?</code>.</p>
+
+  <h2>3. Complete Golden Evaluation Matrix (Q1–Q18)</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Scenario</th><th>Deterministic Grounded Output</th><th>Citations</th><th>Visual</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>Q1</b></td><td>WELL-0001 Status</td><td>Not producing (ΔT=3.2°C < 15°C). Drone inspection by Ryan Brooks. Shut-in note CTX-0001-003 by Jake Morales. Recorded active status is stale.</td><td>[INS-0001-0203] [CTX-0001-003]</td><td>status_card</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q2</b></td><td>NE-08 Stopped Wells</td><td>4 T200 wells stopped: WELL-0164 (4.1°C, no recorded reason), WELL-0170 (2.9°C, MNT-0170-031), WELL-0172 (5.7°C, MNT-0172-028), WELL-0175 (0.4°C, no recorded reason).</td><td>[INS-0164-0205] [MNT-0170-031]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q3</b></td><td>WELL-0001 Temp Trend</td><td>13 weekly readings (23 Jul–15 Oct 2026). Non-producing on 8 Oct (ΔT=13.6°C) and 15 Oct (ΔT=3.2°C).</td><td>[INS-0001-0191]..[INS-0001-0203]</td><td>line_chart</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q4</b></td><td>WELL-0001 4-Yr Spills</td><td>6 confirmed spills, 15.1 bbl. Rainwater detection INS-0001-0070 excluded via CTX-0001-001.</td><td>[INS-0001-0185] [CTX-0001-001]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q5</b></td><td>WELL-0001 2025 Downtime</td><td>21 days downtime across 3 inspections: 24 Jul (motor tripped MNT-0001-021), 16 & 23 Oct (stuffing box leak MNT-0001-023).</td><td>[INS-0001-0140] [MNT-0001-021]</td><td>none</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q6</b></td><td>NE-07 Top Downtime</td><td>Top 3 wells (16 Jun–16 Oct): WELL-0121 (49d, T200), WELL-0138 (42d, T350), WELL-0107 (42d, T350).</td><td>[WELL-0121] [WELL-0138]</td><td>bar_chart</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q7</b></td><td>NE-08 90-Day Spills Map</td><td>4 spills mapped: WELL-0151 (4.5 bbl), WELL-0165 (1.2 bbl), WELL-0175 (3.9 bbl), WELL-0186 (0.6 bbl).</td><td>[INS-0151-0201] [INS-0175-0193]</td><td>map_view</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q8</b></td><td>2026 Spills Heatmap</td><td>Monthly area matrix: SW-24 (43), NE-07 (37), SW-23 (35), NE-08 (26), SE-1 (0). Total = 141 spills.</td><td>[INS-0001-0185]..[INS-0200-0190]</td><td>heatmap</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q9</b></td><td>WELL-0001 Compliance</td><td>4 breaches from 11 Jun 6.8 bbl spill: SR-01 ($5,000 fine), SR-02 (7h containment), SR-03 (cleanup overdue), RC-04 (NOV unanswered). RC-02 met. Flowline RCA pending.</td><td>[REG-0001-001] [MNT-0001-029]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q10</b></td><td>SW-24 Uncontained Spills</td><td>2 spills exceeding 4h limit: WELL-0082 (7.1h, MNT-0082-028) and WELL-0100 (8.1h, MNT-0100-034).</td><td>[MNT-0082-028] [MNT-0100-034]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q11</b></td><td>Michael Q6 Recall</td><td>Recalls Q6 top 3 wells and sums 2026 repair costs: WELL-0121 ($25,794), WELL-0138 ($46,942), WELL-0107 ($5,176). Total = $77,912.</td><td>[MNT-0121-020]..[MNT-0138-035]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q12</b></td><td>WELL-0164 Temp Correction</td><td>Michael corrects 15 Oct temp 24.0°C->41.0°C (now producing). Flags conflict with Tyler Hughes note ('Pump jack not moving'). Q2 leaves 3 wells.</td><td>[INS-0164-0205] [LEDGER-001]</td><td>conflict</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q13</b></td><td>WELL-0151 Volume Correction</td><td>Michael corrects spill 4.5->5.4 bbl. Crossing 5.0 bbl triggers SR-01 breach, invalidates 'moderate' label, flags SR-02 6.4h breach, schedules SR-03.</td><td>[INS-0151-0201] [DOC:spill-sop]</td><td>none</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q14</b></td><td>T350 Rule Override</td><td>After Michael's T350 2-repair override: adds WELL-0120 (T350); excludes WELL-0102 (T200). Rule strictly scope-contained.</td><td>[MNT-0120-019] [LEDGER-003]</td><td>table</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q15</b></td><td>Shared Ledger Visibility</td><td>Jessica sees WELL-0164 producing (41.0°C per Michael + conflict note). Laura sees WELL-0151 reportable spill (5.4 bbl overdue per SR-01).</td><td>[INS-0164-0205] [INS-0151-0201]</td><td>status_card</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q16</b></td><td>Shared vs Private Memory</td><td>Jake's shared note for WELL-0007 shut-in is visible to Michael. Jessica asking for 'three wells discussed yesterday' gets 'no earlier conversation'.</td><td>[CTX-0007-004] [WHERE user_id]</td><td>none</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q17</b></td><td>Disputed Data Claims</td><td>Tyler claims WELL-0175 running fine; empirical ΔT=0.4°C contradicts claim; marked unconfirmed. Jake claims WELL-0001 online; contradicted by ΔT=3.2°C.</td><td>[INS-0175-0193] [INS-0001-0203]</td><td>conflict</td><td class="badge-pass">PASS</td></tr>
+      <tr><td><b>Q18</b></td><td>Disputed AI Analysis</td><td>20 Aug spill at WELL-0101 (1.0 bbl): AI answers 'yes, crude' based on MNT-0101-029 and Chris Dalton CTX-0101-003, while citing Ryan Brooks CTX-0101-002 water disagreement.</td><td>[CTX-0101-002] [CTX-0101-003]</td><td>conflict</td><td class="badge-pass">PASS</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Post-Mortem: What Broke During QA & How We Fixed It</h2>
+  <div class="box">
+    <p><strong>1. Gemma 4 &lt;|tool_call&gt; Token Leakage:</strong> Intercepted raw tokens in <code>llm.py</code> with an AST regex parser, forcing structured tool execution and Turn 2 synthesis.<br/>
+    <strong>2. Keyword Argument Drift:</strong> Handled parameter aliases (<code>window</code> vs <code>from_date/to_date</code>) via universal normalization in <code>registry.py</code> and <code>resolver.py</code>.<br/>
+    <strong>3. Duplicate Markdown Pipe Tables:</strong> Engineered an intelligent table stripper in <code>guardrails.py</code> to purge raw pipe tables when structured visual blocks are rendered.<br/>
+    <strong>4. Cross-Scope Rule Contamination:</strong> Enforced strict scope containment in <code>params.py</code> (<code>well > well_type > fleet</code>) bound to reactive view rebuilds.</p>
+  </div>
+</div>
+</body>
+</html>
