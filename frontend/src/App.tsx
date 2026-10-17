@@ -15,6 +15,7 @@ import {
   ArrowRight,
   BookOpen,
 } from 'lucide-react'
+import { BragTour } from './BragTour'
 
 const DEFAULT_USERS: UserOption[] = [
   { user_id: 'U-201', name: 'Michael Turner', role: 'production_supervisor', team_id: 'TEAM-NE' },
@@ -111,6 +112,33 @@ export const App: React.FC = () => {
     },
   ])
   const [isLoading, setIsLoading] = useState(false)
+  const [viewMode, setViewMode] = useState<'console' | 'brag'>(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.toLowerCase()
+      const h = window.location.hash.toLowerCase()
+      if (p.includes('brag') || h.includes('brag')) return 'brag'
+    }
+    return 'console'
+  })
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const p = window.location.pathname.toLowerCase()
+      const h = window.location.hash.toLowerCase()
+      if (p.includes('brag') || h.includes('brag')) {
+        setViewMode('brag')
+      } else {
+        setViewMode('console')
+      }
+    }
+    window.addEventListener('popstate', handleLocationChange)
+    window.addEventListener('hashchange', handleLocationChange)
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange)
+      window.removeEventListener('hashchange', handleLocationChange)
+    }
+  }, [])
+
   const [systemStats, setSystemStats] = useState<{
     data_end?: string
     assets?: number
@@ -385,6 +413,73 @@ export const App: React.FC = () => {
               <span>0 LLM Math</span>
             </span>
           </div>
+
+          <div style={{ width: '1px', height: '16px', background: '#27272a' }} />
+
+          {/* Mode Switcher: Console vs Auto-Tour */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#121215',
+            border: '1px solid #27272a',
+            borderRadius: '6px',
+            padding: '2px',
+            gap: '2px',
+          }}>
+            <button
+              onClick={() => {
+                setViewMode('console')
+                if (window.location.pathname === '/brag') {
+                  window.history.pushState(null, '', '/')
+                }
+              }}
+              style={{
+                padding: '4px 9px',
+                fontSize: '11px',
+                fontWeight: 600,
+                borderRadius: '4px',
+                border: 'none',
+                background: viewMode === 'console' ? '#27272a' : 'transparent',
+                color: viewMode === 'console' ? '#f4f4f5' : '#71717a',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              Console
+            </button>
+            <button
+              onClick={() => {
+                setViewMode('brag')
+                window.history.pushState(null, '', '/brag')
+              }}
+              style={{
+                padding: '4px 9px',
+                fontSize: '11px',
+                fontWeight: 600,
+                borderRadius: '4px',
+                border: 'none',
+                background: viewMode === 'brag' ? '#f59e0b' : 'transparent',
+                color: viewMode === 'brag' ? '#09090b' : '#a1a1aa',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <span>Auto-Tour (/brag)</span>
+              <span style={{
+                fontSize: '8.5px',
+                fontWeight: 700,
+                padding: '0 3px',
+                borderRadius: '2px',
+                background: viewMode === 'brag' ? '#09090b' : '#27272a',
+                color: viewMode === 'brag' ? '#f59e0b' : '#a1a1aa',
+              }}>
+                VOICE
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Right Action Controls Group (Standardized h-8 = 32px height) */}
@@ -516,16 +611,40 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* 2. FULL-WIDTH OPERATIONAL WORKBENCH (No cramped sidebar) */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
-        <Chat
-          messages={messages}
-          onSendMessage={handleSendMessage}
-          onVisionCheck={handleVisionCheck}
-          isLoading={isLoading}
-          currentUser={currentUser}
-        />
-      </main>
+      {/* 2. FULL-WIDTH OPERATIONAL WORKBENCH OR AUTO-NARRATED TOUR (/brag) */}
+      {viewMode === 'brag' ? (
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          <BragTour
+            onJumpToChat={(prompt, customUserId) => {
+              if (customUserId) {
+                const found = users.find(u => u.user_id === customUserId)
+                if (found) setCurrentUser(found)
+              }
+              setViewMode('console')
+              if (window.location.pathname === '/brag') {
+                window.history.pushState(null, '', '/')
+              }
+              handleSendMessage(prompt, customUserId)
+            }}
+            onSwitchToConsole={() => {
+              setViewMode('console')
+              if (window.location.pathname === '/brag') {
+                window.history.pushState(null, '', '/')
+              }
+            }}
+          />
+        </div>
+      ) : (
+        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
+          <Chat
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            onVisionCheck={handleVisionCheck}
+            isLoading={isLoading}
+            currentUser={currentUser}
+          />
+        </main>
+      )}
 
       {/* Golden Scenarios (Q1–Q18) Modal Library */}
       {scenariosModalOpen && (
