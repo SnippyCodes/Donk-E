@@ -761,10 +761,54 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
+  // Web Audio pipeline for digital voiceover mixing directly into MediaRecorder
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const audioDestRef = useRef<MediaStreamAudioDestinationNode | null>(null)
+  const audioElementRef = useRef<HTMLAudioElement | null>(null)
+  const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null)
+  const [isAudioSpeaking, setIsAudioSpeaking] = useState(false)
+
   const isTourActiveRef = useRef(false)
   const synthRef = useRef<SpeechSynthesis | null>(null)
   const secondTimerRef = useRef<any>(null)
   const sentenceTimerRef = useRef<any>(null)
+
+  // Helper to lazily initialize Web Audio pipeline
+  const getAudioPipeline = () => {
+    try {
+      if (!audioCtxRef.current) {
+        const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext
+        if (!AudioCtxClass) return null
+        const ctx = new AudioCtxClass()
+        const dest = ctx.createMediaStreamDestination()
+
+        const audioEl = new Audio()
+        audioEl.crossOrigin = 'anonymous'
+
+        const source = ctx.createMediaElementSource(audioEl)
+        source.connect(ctx.destination) // Output to speakers so operator hears it live
+        source.connect(dest)            // Route directly to recording destination!
+
+        audioCtxRef.current = ctx
+        audioDestRef.current = dest
+        audioElementRef.current = audioEl
+        audioSourceRef.current = source
+      }
+
+      if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {})
+      }
+
+      return {
+        ctx: audioCtxRef.current,
+        dest: audioDestRef.current,
+        audioEl: audioElementRef.current,
+      }
+    } catch (err) {
+      console.warn('Web Audio initialization fallback:', err)
+      return null
+    }
+  }
 
   // Load voices on mount
   useEffect(() => {
@@ -796,6 +840,10 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
 
     return () => {
       if (synthRef.current) synthRef.current.cancel()
+      if (audioElementRef.current) {
+        audioElementRef.current.pause()
+        audioElementRef.current.currentTime = 0
+      }
       if (secondTimerRef.current) clearInterval(secondTimerRef.current)
       if (sentenceTimerRef.current) clearTimeout(sentenceTimerRef.current)
     }
@@ -827,7 +875,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     return `${m}:${s < 10 ? '0' : ''}${s}`
   }
 
-  // Speak a sentence in the active chapter
+  // Speak a sentence in the active chapter using Web Audio pipeline (or synthesis fallback)
   const speakSentence = (chapterIdx: number, sentenceIdx: number) => {
     if (!isTourActiveRef.current) return
 
@@ -892,7 +940,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
       return
     }
 
-    if (isMuted || !synthRef.current) {
+    if (isMuted) {
       const durationMs = Math.max(2800, (sentences[sentenceIdx].length / 14) * 1000 / speechRate)
       sentenceTimerRef.current = setTimeout(() => {
         if (isTourActiveRef.current) {
@@ -902,34 +950,92 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
       return
     }
 
-    synthRef.current.cancel()
-    const utterance = new SpeechSynthesisUtterance(sentences[sentenceIdx])
-    utterance.rate = speechRate
-    if (voices[selectedVoiceIndex]) {
-      utterance.voice = voices[selectedVoiceIndex]
-    }
+    // Attempt to play pre-synthesized WAV audio routed via Web Audio to speakers + recording stream
+    const pipeline = getAudioPipeline()
+    const audioEl = pipeline?.audioEl
 
-    utterance.onend = () => {
-      if (isTourActiveRef.current) {
+    const playFallbackSpeech = () => {
+      setIsAudioSpeaking(false)
+      if (synthRef.current) {
+        synthRef.current.cancel()
+        const utterance = new SpeechSynthesisUtterance(sentences[sentenceIdx])
+        utterance.rate = speechRate
+        if (voices[selectedVoiceIndex]) {
+          utterance.voice = voices[selectedVoiceIndex]
+        }
+        utterance.onend = () => {
+          if (isTourActiveRef.current) {
+            sentenceTimerRef.current = setTimeout(() => {
+              speakSentence(chapterIdx, sentenceIdx + 1)
+            }, 150)
+          }
+        }
+        utterance.onerror = () => {
+          if (isTourActiveRef.current) {
+            sentenceTimerRef.current = setTimeout(() => {
+              speakSentence(chapterIdx, sentenceIdx + 1)
+            }, 200)
+          }
+        }
+        synthRef.current.speak(utterance)
+      } else {
+        const durationMs = Math.max(2800, (sentences[sentenceIdx].length / 14) * 1000 / speechRate)
         sentenceTimerRef.current = setTimeout(() => {
-          speakSentence(chapterIdx, sentenceIdx + 1)
-        }, 150)
+          if (isTourActiveRef.current) {
+            speakSentence(chapterIdx, sentenceIdx + 1)
+          }
+        }, durationMs)
       }
     }
 
-    utterance.onerror = () => {
-      if (isTourActiveRef.current) {
-        sentenceTimerRef.current = setTimeout(() => {
-          speakSentence(chapterIdx, sentenceIdx + 1)
-        }, 200)
-      }
-    }
+    if (audioEl) {
+      try {
+        const audioSrc = `/audio/ch_${chapter.id}_${sentenceIdx}.wav`
+        audioEl.src = audioSrc
+        audioEl.playbackRate = speechRate
+        audioEl.muted = isMuted
 
-    synthRef.current.speak(utterance)
+        audioEl.onplay = () => {
+          setIsAudioSpeaking(true)
+        }
+
+        audioEl.onended = () => {
+          setIsAudioSpeaking(false)
+          if (isTourActiveRef.current) {
+            sentenceTimerRef.current = setTimeout(() => {
+              speakSentence(chapterIdx, sentenceIdx + 1)
+            }, 200)
+          }
+        }
+
+        audioEl.onerror = () => {
+          console.warn(`Audio clip ${audioSrc} failed to load, falling back to speech synthesis`)
+          playFallbackSpeech()
+        }
+
+        const playPromise = audioEl.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.warn('Audio play prevented or interrupted:', err)
+            playFallbackSpeech()
+          })
+        }
+      } catch (err) {
+        console.warn('Audio setup error:', err)
+        playFallbackSpeech()
+      }
+    } else {
+      playFallbackSpeech()
+    }
   }
 
   const handleStartDemo = (startFromChapterIdx = 0) => {
+    getAudioPipeline()
     if (synthRef.current) synthRef.current.cancel()
+    if (audioElementRef.current) {
+      audioElementRef.current.pause()
+      audioElementRef.current.currentTime = 0
+    }
     if (secondTimerRef.current) clearInterval(secondTimerRef.current)
     if (sentenceTimerRef.current) clearTimeout(sentenceTimerRef.current)
 
@@ -957,11 +1063,21 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     if (isPaused) {
       setIsPaused(false)
       isTourActiveRef.current = true
-      speakSentence(activeChapterIndex, currentSentenceIndex)
+      if (audioElementRef.current && audioElementRef.current.paused) {
+        audioElementRef.current.play().catch(() => {})
+      }
+      if (synthRef.current && synthRef.current.paused) {
+        synthRef.current.resume()
+      }
     } else {
       setIsPaused(true)
       isTourActiveRef.current = false
-      if (synthRef.current) synthRef.current.cancel()
+      if (audioElementRef.current && !audioElementRef.current.paused) {
+        audioElementRef.current.pause()
+      }
+      if (synthRef.current && synthRef.current.speaking) {
+        synthRef.current.cancel()
+      }
       if (sentenceTimerRef.current) clearTimeout(sentenceTimerRef.current)
     }
   }
@@ -988,9 +1104,14 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     isTourActiveRef.current = false
     setIsPlaying(false)
     setIsPaused(false)
+    setIsAudioSpeaking(false)
     setElapsedSeconds(0)
     setActiveChapterIndex(0)
     setCurrentSentenceIndex(0)
+    if (audioElementRef.current) {
+      audioElementRef.current.pause()
+      audioElementRef.current.currentTime = 0
+    }
     if (synthRef.current) synthRef.current.cancel()
     if (secondTimerRef.current) clearInterval(secondTimerRef.current)
     if (sentenceTimerRef.current) clearTimeout(sentenceTimerRef.current)
@@ -1004,6 +1125,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     isTourActiveRef.current = false
     setIsPlaying(false)
     setIsPaused(false)
+    setIsAudioSpeaking(false)
+    if (audioElementRef.current) {
+      audioElementRef.current.pause()
+      audioElementRef.current.currentTime = 0
+    }
     if (synthRef.current) synthRef.current.cancel()
     if (secondTimerRef.current) clearInterval(secondTimerRef.current)
     if (sentenceTimerRef.current) clearTimeout(sentenceTimerRef.current)
@@ -1013,25 +1139,62 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     }
   }
 
-  // ── IN-BROWSER MEDIA RECORDER (TAB VIDEO + AUDIO) ──
+  // ── IN-BROWSER MEDIA RECORDER (TAB/SCREEN VIDEO + DIGITALLY MIXED AUDIO) ──
   const startRecording = async () => {
     try {
-      // Prompt user to select browser tab with tab audio enabled
-      const stream = await (navigator.mediaDevices as any).getDisplayMedia({
+      // 1. Ensure audio pipeline is active
+      const pipeline = getAudioPipeline()
+      if (pipeline?.ctx && pipeline.ctx.state === 'suspended') {
+        await pipeline.ctx.resume()
+      }
+
+      // 2. Prompt user for display media (Screen or Tab)
+      const displayStream = await (navigator.mediaDevices as any).getDisplayMedia({
         video: { frameRate: 30, displaySurface: 'browser' },
         audio: true,
       })
 
-      streamRef.current = stream
+      streamRef.current = displayStream
+
+      // 3. Connect display tab audio if present
+      if (pipeline?.dest && pipeline.ctx && displayStream.getAudioTracks().length > 0) {
+        try {
+          const displayAudioSource = pipeline.ctx.createMediaStreamSource(displayStream)
+          displayAudioSource.connect(pipeline.dest)
+        } catch (e) {
+          console.warn('Could not connect display audio track:', e)
+        }
+      }
+
+      // 4. Optionally connect microphone if allowed
+      if (pipeline?.dest && pipeline.ctx) {
+        try {
+          const micStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+          const micSource = pipeline.ctx.createMediaStreamSource(micStream)
+          micSource.connect(pipeline.dest)
+        } catch (e) {
+          console.log('Microphone not attached; recording pure digital studio narration.')
+        }
+      }
+
+      // 5. Combine screen video with our Web Audio destination (where narration is playing)
+      const audioTracks = pipeline?.dest?.stream.getAudioTracks() || displayStream.getAudioTracks()
+      const combinedStream = new MediaStream([
+        ...displayStream.getVideoTracks(),
+        ...audioTracks,
+      ])
+
       const chunks: BlobPart[] = []
 
       const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
         ? 'video/webm;codecs=vp9,opus'
+        : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+        ? 'video/webm;codecs=vp8,opus'
         : MediaRecorder.isTypeSupported('video/webm')
         ? 'video/webm'
         : 'video/mp4'
 
-      const recorder = new MediaRecorder(stream, { mimeType })
+      const recorder = new MediaRecorder(combinedStream, { mimeType, audioBitsPerSecond: 128000 })
       mediaRecorderRef.current = recorder
 
       recorder.ondataavailable = e => {
@@ -1057,6 +1220,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
         setIsRecording(false)
       }
 
+      // Automatically stop if user clicks "Stop sharing" in browser bar
+      displayStream.getVideoTracks()[0].onended = () => {
+        stopRecording()
+      }
+
       recorder.start(1000)
       setIsRecording(true)
 
@@ -1067,7 +1235,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
     } catch (err: any) {
       console.warn('Screen capture cancelled or not allowed:', err)
       alert(
-        'Recording Setup: Please select "This Tab" and ensure "Also share tab audio" is checked so the video contains the voice-over!'
+        'Recording Setup: Select "Entire Screen" or "This Tab". Voiceover is digitally mixed into the WebM recording!'
       )
     }
   }
@@ -1340,30 +1508,36 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
             </button>
           </div>
 
-          {/* Right: Audio Voice & Speed Controls */}
+          {/* Right: Audio Voice Status & Speed Controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {voices.length > 0 && !isMuted && (
-              <select
-                value={selectedVoiceIndex}
-                onChange={e => setSelectedVoiceIndex(Number(e.target.value))}
+            {/* Audio Pipeline Status Badge */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                background: '#121215',
+                border: '1px solid #27272a',
+                fontSize: '11px',
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+              title="Studio voiceover is digitally routed into the WebM recording"
+            >
+              <span
                 style={{
-                  maxWidth: '135px',
-                  fontSize: '11px',
-                  background: '#121215',
-                  border: '1px solid #27272a',
-                  color: '#a1a1aa',
-                  borderRadius: '6px',
-                  padding: '4px 6px',
-                  outline: 'none',
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: isAudioSpeaking ? '#10b981' : '#71717a',
+                  display: 'inline-block',
                 }}
-              >
-                {voices.map((v, i) => (
-                  <option key={i} value={i}>
-                    {v.name.replace(/Microsoft|Google|Apple/g, '').trim()} ({v.lang.slice(0, 2)})
-                  </option>
-                ))}
-              </select>
-            )}
+              />
+              <span style={{ color: isAudioSpeaking ? '#10b981' : '#a1a1aa', fontWeight: 600 }}>
+                {isAudioSpeaking ? 'Voice: Live (WAV)' : 'Voice: Studio WAV'}
+              </span>
+            </div>
 
             <button
               onClick={() => {
@@ -1519,28 +1693,28 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 <span
                   style={{
                     width: '3px',
-                    height: isPlaying && !isPaused ? '14px' : '6px',
+                    height: isAudioSpeaking ? '16px' : isPlaying && !isPaused ? '10px' : '4px',
                     borderRadius: '2px',
-                    background: '#f59e0b',
-                    transition: 'all 0.2s ease',
+                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    transition: 'all 0.15s ease',
                   }}
                 />
                 <span
                   style={{
                     width: '3px',
-                    height: isPlaying && !isPaused ? '18px' : '8px',
+                    height: isAudioSpeaking ? '20px' : isPlaying && !isPaused ? '14px' : '6px',
                     borderRadius: '2px',
-                    background: '#f59e0b',
-                    transition: 'all 0.2s ease',
+                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    transition: 'all 0.15s ease',
                   }}
                 />
                 <span
                   style={{
                     width: '3px',
-                    height: isPlaying && !isPaused ? '12px' : '4px',
+                    height: isAudioSpeaking ? '14px' : isPlaying && !isPaused ? '8px' : '4px',
                     borderRadius: '2px',
-                    background: '#f59e0b',
-                    transition: 'all 0.2s ease',
+                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    transition: 'all 0.15s ease',
                   }}
                 />
               </div>
@@ -1558,6 +1732,21 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 }}
               >
                 {activeChapter.timeRange}
+              </span>
+
+              <span
+                style={{
+                  fontSize: '9px',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontWeight: 600,
+                  padding: '2px 5px',
+                  borderRadius: '3px',
+                  background: isAudioSpeaking ? 'rgba(16, 185, 129, 0.15)' : '#18181b',
+                  border: '1px solid #27272a',
+                  color: isAudioSpeaking ? '#10b981' : '#71717a',
+                }}
+              >
+                {isAudioSpeaking ? '● ON AIR (DIGITAL MIX)' : 'STANDBY'}
               </span>
 
               <span

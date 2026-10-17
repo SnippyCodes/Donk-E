@@ -360,8 +360,40 @@ export const BragTour: React.FC<BragTourProps> = ({
           video: { frameRate: 30 },
           audio: true
         })
+        let mixedStream = stream
+        try {
+          const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext
+          if (AudioCtxClass) {
+            const ctx = new AudioCtxClass()
+            const dest = ctx.createMediaStreamDestination()
+            if (stream.getAudioTracks().length > 0) {
+              try {
+                ctx.createMediaStreamSource(stream).connect(dest)
+              } catch (_) {}
+            }
+            try {
+              const mic = await navigator.mediaDevices.getUserMedia({ audio: true })
+              if (mic) {
+                ctx.createMediaStreamSource(mic).connect(dest)
+              }
+            } catch (_) {}
+            const audioTracks = dest.stream.getAudioTracks()
+            if (audioTracks.length > 0) {
+              mixedStream = new MediaStream([...stream.getVideoTracks(), ...audioTracks])
+            }
+          }
+        } catch (e) {
+          console.warn('Audio mix error:', e)
+        }
+
         recordedChunksRef.current = []
-        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' })
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+          ? 'video/webm;codecs=vp9,opus'
+          : MediaRecorder.isTypeSupported('video/webm')
+          ? 'video/webm'
+          : 'video/mp4'
+
+        const recorder = new MediaRecorder(mixedStream, { mimeType })
         recorder.ondataavailable = e => {
           if (e.data && e.data.size > 0) {
             recordedChunksRef.current.push(e.data)
