@@ -60,11 +60,16 @@ class LLMClient:
             if "google/gemma-4-26b-a4b-it:free" not in candidate_models:
                 candidate_models.append("google/gemma-4-26b-a4b-it:free")
 
+            clean_messages = [
+                m for m in messages
+                if isinstance(m, dict) and m.get("role") in ("system", "user", "assistant", "tool")
+            ]
+
             for target_model in candidate_models:
                 try:
                     payload: Dict[str, Any] = {
                         "model": target_model,
-                        "messages": messages,
+                        "messages": clean_messages,
                         "temperature": temperature,
                     }
                     if tools:
@@ -174,14 +179,14 @@ class LLMClient:
         """Deterministic offline tool-calling and synthesis fallback."""
         last_user_msg = ""
         for m in reversed(messages):
-            if m["role"] == "user":
-                last_user_msg = m["content"]
+            if isinstance(m, dict) and m.get("role") == "user":
+                last_user_msg = str(m.get("content", ""))
                 break
 
         # Check if previous message was tool result
         tool_results_msg = None
         for m in reversed(messages):
-            if m["role"] == "tool" or m.get("name") == "tool_results":
+            if isinstance(m, dict) and (m.get("role") == "tool" or m.get("name") == "tool_results"):
                 tool_results_msg = m
                 break
 

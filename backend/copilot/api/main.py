@@ -35,7 +35,7 @@ class ChatRequest(BaseModel):
     message: str
     user_id: str = "U-102"  # Default: Jake Morales
     session_id: Optional[str] = None
-    history: Optional[List[Dict[str, str]]] = None
+    history: Optional[List[Dict[str, Any]]] = None
 
 
 class FeedbackRequest(BaseModel):
@@ -44,7 +44,7 @@ class FeedbackRequest(BaseModel):
     scope_id: str
     field_name: str
     corrected_value: Any
-    reason: str
+    reason: Optional[str] = None
 
 
 @app.get("/api/health")
@@ -116,14 +116,20 @@ def get_proactive_insights(thermal_margin: float = 2.5) -> Dict[str, Any]:
 @app.post("/api/chat")
 def chat_turn(req: ChatRequest) -> Dict[str, Any]:
     """Process a conversational query and return grounded prose and generative visual blocks."""
-    if not req.message.strip():
+    if not req.message or not req.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty.")
+
+    clean_history = []
+    if req.history:
+        for item in req.history:
+            if isinstance(item, dict) and "role" in item and "content" in item:
+                clean_history.append({"role": str(item["role"]), "content": str(item["content"])})
 
     res = agent.run_turn(
         message=req.message,
         user_id=req.user_id,
         session_id=req.session_id,
-        history=req.history,
+        history=clean_history,
     )
     return res
 

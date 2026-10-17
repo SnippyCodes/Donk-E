@@ -16,35 +16,72 @@ from backend.copilot.domain.compliance import evaluate_well_compliance
 
 def tool_record_correction(
     user_id: str,
-    inspection_id: str,
-    correction_type: str,
-    payload: Dict[str, Any],
+    inspection_id: Optional[str] = None,
+    correction_type: Optional[str] = None,
+    payload: Optional[Dict[str, Any]] = None,
     reason: Optional[str] = None,
+    scope_type: Optional[str] = None,
+    scope_id: Optional[str] = None,
+    field_name: Optional[str] = None,
+    corrected_value: Optional[Any] = None,
     conn: Optional[sqlite3.Connection] = None,
 ) -> Dict[str, Any]:
     """
     Record a data correction (raw or AI analysis) and return cascade impact + conflicts.
-
-    Args:
-        user_id: Server-injected user ID
-        inspection_id: The inspection being corrected
-        correction_type: "raw_correction" or "analysis_correction"
-        payload: Dict with corrected_wellhead_temp, corrected_volume_bbl, etc.
-        reason: Human-readable reason
-        conn: Optional connection
+    Supports direct invocation (inspection_id, payload) and tool/API invocation (scope_type, scope_id, field_name, corrected_value).
     """
     close_conn = False
     if conn is None:
         conn = get_connection()
         close_conn = True
 
+    # Resolve scope_id / inspection_id
+    effective_scope_type = scope_type or "inspection"
+    target_id = inspection_id or scope_id or "INS-0001-0001"
+
+    if not inspection_id and scope_id:
+        if scope_id.startswith("INS-") or effective_scope_type == "inspection":
+            target_id = scope_id
+            inspection_id = scope_id
+        elif scope_id.startswith("WELL-") or effective_scope_type == "well":
+            cursor = conn.cursor()
+            cursor.execute("SELECT latest_inspection_id FROM well_now WHERE asset_id = ?", (scope_id,))
+            row = cursor.fetchone()
+            if row and row[0]:
+                inspection_id = row[0]
+            else:
+                cursor.execute("SELECT inspection_id FROM inspections WHERE asset_id = ? ORDER BY inspected_at DESC LIMIT 1", (scope_id,))
+                r2 = cursor.fetchone()
+                inspection_id = r2[0] if r2 else scope_id
+        else:
+            inspection_id = scope_id
+
+    effective_correction_type = correction_type or (
+        "raw_correction" if (field_name and "temp" in str(field_name).lower()) else "analysis_correction"
+    )
+
+    if payload is None:
+        payload = {}
+        if field_name:
+            payload[field_name] = corrected_value
+            if "temp" in str(field_name).lower():
+                try:
+                    payload["corrected_wellhead_temp"] = float(corrected_value)
+                except Exception:
+                    payload["corrected_wellhead_temp"] = corrected_value
+            elif "spill" in str(field_name).lower() or "volume" in str(field_name).lower():
+                try:
+                    payload["corrected_volume_bbl"] = float(corrected_value)
+                except Exception:
+                    payload["corrected_volume_bbl"] = corrected_value
+
     # Record in ledger
     result = record_feedback(
         conn=conn,
         user_id=user_id,
-        entry_type=correction_type,
-        scope_type="inspection",
-        scope_id=inspection_id,
+        entry_type=effective_correction_type,
+        scope_type=effective_scope_type,
+        scope_id=target_id,
         payload=payload,
         reason=reason,
         rebuild_derived=True,
@@ -104,32 +141,29 @@ def tool_record_rule_override(
     user_id: str,
     scope_type: str,
     scope_id: str,
-    param: str,
-    new_value: Any,
+    param: Optional[str] = None,
+    new_value: Optional[Any] = None,
+    param_name: Optional[str] = None,
+    override_value: Optional[Any] = None,
     original_value: Any = None,
     reason: Optional[str] = None,
     conn: Optional[sqlite3.Connection] = None,
 ) -> Dict[str, Any]:
     """
     Record a rule parameter override (e.g. changing RCA threshold for T350).
-
-    Args:
-        user_id: Server-injected user ID
-        scope_type: "well_type", "well", or "fleet"
-        scope_id: e.g. "T350", "WELL-0001", "fleet"
-        param: Parameter name from rules.yaml
-        new_value: New parameter value
-        original_value: Original value for reference
-        reason: Human-readable reason
+    Supports both direct (param, new_value) and registry schema (param_name, override_value).
     """
     close_conn = False
     if conn is None:
         conn = get_connection()
         close_conn = True
 
+    effective_param = param or param_name or ""
+    effective_value = new_value if new_value is not None else override_value
+
     payload = {
-        "param": param,
-        "new_value": new_value,
+        "param": effective_param,
+        "new_value": effective_value,
         "original_value": original_value,
     }
 
@@ -153,7 +187,8 @@ def tool_record_rule_override(
 def tool_record_well_fact(
     user_id: str,
     well_id: str,
-    text: str,
+    text: Optional[str] = None,
+    fact_text: Optional[str] = None,
     note_type: str = "operational",
     valid_from: Optional[str] = None,
     valid_to: Optional[str] = None,
@@ -165,8 +200,10 @@ def tool_record_well_fact(
         conn = get_connection()
         close_conn = True
 
+    effective_text = text or fact_text or ""
+
     payload = {
-        "text": text,
+        "text": effective_text,
         "note_type": note_type,
         "well_id": well_id,
         "valid_from": valid_from,
@@ -191,8 +228,11 @@ def tool_record_well_fact(
 
 def tool_record_claim(
     user_id: str,
-    well_id: str,
-    asserted_state: str,
+    well_id: Optional[str] = None,
+    asserted_state: Optional[str] = None,
+    asset_id: Optional[str] = None,
+    claim_type: Optional[str] = None,
+    claim_text: Optional[str] = None,
     reason: Optional[str] = None,
     conn: Optional[sqlite3.Connection] = None,
 ) -> Dict[str, Any]:
@@ -204,13 +244,17 @@ def tool_record_claim(
         conn = get_connection()
         close_conn = True
 
+    target_well = well_id or asset_id or ""
+    effective_state = asserted_state or claim_text or claim_type or ""
+    effective_reason = reason or claim_text or f"User claims well is {effective_state}"
+
     # First check conflicts
-    conflict_result = claims_check(conn, well_id, asserted_state, user_id)
+    conflict_result = claims_check(conn, target_well, effective_state, user_id)
 
     # Record the claim in ledger
     payload = {
-        "asserted_state": asserted_state,
-        "text": reason or f"User claims well is {asserted_state}",
+        "asserted_state": effective_state,
+        "text": effective_reason,
     }
 
     result = record_feedback(
@@ -218,9 +262,9 @@ def tool_record_claim(
         user_id=user_id,
         entry_type="claim",
         scope_type="well",
-        scope_id=well_id,
+        scope_id=target_well,
         payload=payload,
-        reason=reason,
+        reason=effective_reason,
         rebuild_derived=False,  # Claims don't change data
     )
 
@@ -234,8 +278,10 @@ def tool_record_claim(
 
 def tool_save_recall(
     user_id: str,
-    query_text: str,
-    response_summary: str,
+    query_text: Optional[str] = None,
+    response_summary: Optional[str] = None,
+    key: Optional[str] = None,
+    value_json: Optional[Any] = None,
     referenced_entities: Optional[List[str]] = None,
     conn: Optional[sqlite3.Connection] = None,
 ) -> str:
@@ -245,7 +291,13 @@ def tool_save_recall(
         conn = get_connection()
         close_conn = True
 
-    entry_id = save_interaction(conn, user_id, query_text, response_summary, referenced_entities)
+    effective_query = query_text or key or "interaction"
+    effective_summary = response_summary or (json.dumps(value_json) if isinstance(value_json, dict) else str(value_json or ""))
+    entities = referenced_entities or []
+    if isinstance(value_json, dict) and "well_id" in value_json:
+        entities.append(value_json["well_id"])
+
+    entry_id = save_interaction(conn, user_id, effective_query, effective_summary, entities)
 
     if close_conn:
         conn.close()
