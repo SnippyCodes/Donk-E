@@ -46,6 +46,9 @@
 | `backend/copilot/domain/compliance.py` | M3 | Deterministic protocol checks: SR-01..03, RC-02, RC-04, RCA, shut-in rules | Completed |
 | `backend/copilot/tools/analytics.py` | M2-M3 | Tool wrapper functions for domain logic queries | Completed |
 | `backend/copilot/tools/render.py` | M2-M3 | Visual payload generators (StatusCard, Table, LineChart, BarChart, Map, Heatmap) | Completed |
+| `src/memory/ledger.py` | M4 | Level-1 Shared Fleet Memory, append-only runtime corrections, rule overrides, and reactive diffs | Completed |
+| `src/domain/claims.py` | M4 | Conflict detection engine cross-examining sensor data, inspector remarks, and notes | Completed |
+| `src/memory/recall.py` | M4 | Level-2 SQL-enforced per-user private conversation and entity memory | Completed |
 | `backend/copilot/memory/ledger.py` | M4 | Append-only audit ledger for corrections, feedback, and parameter overrides | Completed |
 | `backend/copilot/memory/claims.py` | M4 | Conflict detection and truth dispute resolution across users & sensor data | Completed |
 | `backend/copilot/memory/recall.py` | M4 | Per-user isolated conversational memory | Completed |
@@ -53,4 +56,5 @@
 | `backend/tests/test_golden.py` | M1-M3 | Pytest suite validating Golden Q1–Q10 against data & compliance layers | Completed (100% green) |
 | `backend/tests/test_memory.py` | M4 | Pytest suite validating Golden Q11–Q18 memory, ledger, and conflicts | Completed (100% green) |
 | `backend/tests/test_scope.py` | M4 | Pytest suite validating strict scope discipline & user isolation | Completed (100% green) |
+| `tests/test_m4_memory_and_claims.py` | M4 | Verification suite for Q11-Q18, user isolation, rule scope, and citation audits | Completed (100% green) |
 | `tests/golden_cases.yaml` | M0 | Golden query specs, entity targets, windows, and exact expected values | Completed |

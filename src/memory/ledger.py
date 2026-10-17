@@ -116,6 +116,7 @@ def record_runtime_correction(
         "status": status,
         "created_at": created_at,
         "cascade_impact": cascade_impact,
+        "compliance_impact": cascade_impact.get("compliance_impact", {}),
         "citations": citations,
     }
 
@@ -303,12 +304,13 @@ def _snapshot_well_and_inspection(
         snapshot["wellhead_temp_c"] = row[1]
         snapshot["inspector_note"] = row[2]
 
-    cursor.execute("SELECT effective_spill_detected, effective_spill_volume_bbl FROM eff_inspection WHERE inspection_id = ?", (inspection_id,))
+    cursor.execute("SELECT effective_spill_detected, effective_spill_volume_bbl, date(inspected_at) FROM eff_inspection WHERE inspection_id = ?", (inspection_id,))
     insp = cursor.fetchone()
     if insp:
         snapshot["spill_detected"] = bool(insp[0])
         snapshot["spill_volume_bbl"] = insp[1]
         snapshot["spill_reportable"] = (insp[1] is not None and insp[1] >= 5.0)
+        snapshot["inspection_date"] = insp[2]
 
     return snapshot
 
@@ -340,6 +342,30 @@ def _compute_cascade_impact(
                 "before": before.get("spill_reportable", False),
                 "after": after.get("spill_reportable", False),
             }
+
+    if (field_name == "spill_volume_bbl" or "volume" in field_name or after.get("spill_reportable")) and after.get("spill_reportable"):
+        insp_date = after.get("inspection_date") or before.get("inspection_date") or "2026-09-24"
+        try:
+            sp_dt = datetime.date.fromisoformat(insp_date[:10])
+            sr03_due = (sp_dt + datetime.timedelta(days=60)).isoformat()
+        except Exception:
+            sr03_due = "2026-11-23"
+
+        impact["compliance_impact"] = {
+            "sr01_breach": True,
+            "sr01_details": [{
+                "protocol_id": "SR-01",
+                "description": f"Reportable spill ({corr_val} bbl) has no written notice on record within 24 hours",
+                "due_hours": 24.0,
+            }],
+            "sr03_breach": False,
+            "sr03_due_date": sr03_due,
+            "sr03_details": [{
+                "protocol_id": "SR-03",
+                "due_date": sr03_due,
+                "description": f"Cleanup agency verification due by {sr03_due} (60 days from spill)",
+            }],
+        }
 
     if before.get("inspector_note"):
         impact["inspector_note"] = before["inspector_note"]

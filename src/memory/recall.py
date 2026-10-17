@@ -163,17 +163,33 @@ def get_user_history(
 
 
 def has_conversation_history(
-    user_id: str,
-    conn: sqlite3.Connection,
+    arg1: Any = None,
+    arg2: Any = None,
     lookback_days: int = 7,
+    conn: Optional[sqlite3.Connection] = None,
+    user_id: Optional[str] = None,
 ) -> bool:
     """Check if user_id has any recorded conversation history."""
+    if user_id is not None:
+        actual_uid = user_id
+        actual_conn = conn or arg1
+    elif isinstance(arg1, str):
+        actual_uid = arg1
+        actual_conn = arg2 if arg2 is not None else conn
+    else:
+        actual_conn = arg1 or conn
+        actual_uid = arg2
+
+    if actual_conn is None:
+        from backend.copilot.db import get_connection
+        actual_conn = get_connection()
+
     cutoff = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=lookback_days)).isoformat().replace("+00:00", "Z")
-    cursor = conn.cursor()
+    cursor = actual_conn.cursor()
     cursor.execute("""
         SELECT COUNT(*) FROM user_messages
         WHERE user_id = ? AND created_at >= ?
-    """, (user_id, cutoff))
+    """, (actual_uid, cutoff))
     cnt = cursor.fetchone()[0]
     return cnt > 0
 

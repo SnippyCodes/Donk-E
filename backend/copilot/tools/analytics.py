@@ -446,9 +446,13 @@ def tool_get_spills_heatmap(
 def tool_get_well_compliance_audit(
     well_id: str,
     window_expr: str = "last 12 months",
-    conn: Optional[sqlite3.Connection] = None
+    conn: Optional[sqlite3.Connection] = None,
+    window: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Q9: Return compliance breaches, open violations, pending actions, and met rules."""
+    if window is not None:
+        window_expr = window
+
     close_conn = False
     if conn is None:
         conn = get_connection()
