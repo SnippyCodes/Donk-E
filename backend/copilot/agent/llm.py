@@ -28,11 +28,11 @@ class LLMClient:
         self.provider = raw_provider
 
         if self.provider == "openrouter":
-            self.model = model or os.getenv("OPENROUTER_MODEL", "google/gemma-4-26b-a4b-it:free")
+            self.model = model or os.getenv("OPENROUTER_MODEL", "google/gemma-4-26b-a4b-it")
             self.api_base = api_base or os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
             self.api_key = api_key or os.getenv("OPENROUTER_API_KEY", "")
         else:
-            self.model = model or os.getenv("LLM_MODEL", "google/gemma-4-26b-a4b-it:free")
+            self.model = model or os.getenv("LLM_MODEL", "google/gemma-4-26b-a4b-it")
             self.api_base = api_base or os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
             self.api_key = api_key or os.getenv("LLM_API_KEY", "")
 
@@ -47,56 +47,63 @@ class LLMClient:
         """Generate a chat completion with optional tool calls and reasoning capture."""
         # Check if provider is configured and reachable
         if self.provider in ("openrouter", "gemma", "ollama", "openai", "vllm") and self.api_key:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/FlytBaseAILabs/flytbase-ahc-swe-asset-intelligence-dataset",
-                    "X-Title": "Donk-E Asset Intelligence Copilot",
-                }
-                payload: Dict[str, Any] = {
-                    "model": self.model,
-                    "messages": messages,
-                    "temperature": temperature,
-                }
-                if tools:
-                    payload["tools"] = [{"type": "function", "function": t} for t in tools]
-                    payload["tool_choice"] = "auto"
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/FlytBaseAILabs/flytbase-ahc-swe-asset-intelligence-dataset",
+                "X-Title": "Donk-E Asset Intelligence Copilot",
+            }
 
-                with httpx.Client(timeout=self.timeout) as client:
-                    resp = client.post(
-                        f"{self.api_base.rstrip('/')}/chat/completions",
-                        json=payload,
-                        headers=headers,
-                    )
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        choice = data["choices"][0]["message"]
-                        tool_calls = []
-                        if "tool_calls" in choice and choice["tool_calls"]:
-                            for tc in choice["tool_calls"]:
-                                fn = tc.get("function", {})
-                                fn_name = fn.get("name")
-                                try:
-                                    fn_args = json.loads(fn.get("arguments", "{}"))
-                                except Exception:
-                                    fn_args = {}
-                                tool_calls.append({"name": fn_name, "args": fn_args})
-                        
-                        # Extract reasoning if returned by OpenRouter / Gemma
-                        reasoning = choice.get("reasoning") or choice.get("reasoning_details") or ""
+            candidate_models = [self.model]
+            if "google/gemma-4-26b-a4b-it" not in candidate_models:
+                candidate_models.append("google/gemma-4-26b-a4b-it")
+            if "google/gemma-4-26b-a4b-it:free" not in candidate_models:
+                candidate_models.append("google/gemma-4-26b-a4b-it:free")
 
-                        return {
-                            "content": choice.get("content") or "",
-                            "tool_calls": tool_calls,
-                            "reasoning_details": reasoning,
-                            "model": self.model,
-                            "provider": self.provider,
-                            "usage": data.get("usage", {}),
-                        }
-            except Exception:
-                # Seamless fallback to local deterministic router if OpenRouter is unreachable or rate-limited
-                pass
+            for target_model in candidate_models:
+                try:
+                    payload: Dict[str, Any] = {
+                        "model": target_model,
+                        "messages": messages,
+                        "temperature": temperature,
+                    }
+                    if tools:
+                        payload["tools"] = [{"type": "function", "function": t} for t in tools]
+                        payload["tool_choice"] = "auto"
+
+                    with httpx.Client(timeout=self.timeout) as client:
+                        resp = client.post(
+                            f"{self.api_base.rstrip('/')}/chat/completions",
+                            json=payload,
+                            headers=headers,
+                        )
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            choice = data["choices"][0]["message"]
+                            tool_calls = []
+                            if "tool_calls" in choice and choice["tool_calls"]:
+                                for tc in choice["tool_calls"]:
+                                    fn = tc.get("function", {})
+                                    fn_name = fn.get("name")
+                                    try:
+                                        fn_args = json.loads(fn.get("arguments", "{}"))
+                                    except Exception:
+                                        fn_args = {}
+                                    tool_calls.append({"name": fn_name, "args": fn_args})
+
+                            # Extract reasoning if returned by OpenRouter / Gemma
+                            reasoning = choice.get("reasoning") or choice.get("reasoning_details") or ""
+
+                            return {
+                                "content": choice.get("content") or "",
+                                "tool_calls": tool_calls,
+                                "reasoning_details": reasoning,
+                                "model": target_model,
+                                "provider": self.provider,
+                                "usage": data.get("usage", {}),
+                            }
+                except Exception:
+                    continue
 
         # Robust offline fallback
         return self._local_fallback(messages, tools)

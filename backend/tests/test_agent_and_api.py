@@ -125,7 +125,7 @@ def test_openrouter_gemma_client():
     assert "gemma-4" in client.model
 
     # Test local fallback execution
-    res = client.chat_completion([{"role": "user", "content": "Is WELL-0001 producing oil right now?"}])
+    res = client._local_fallback([{"role": "user", "content": "Is WELL-0001 producing oil right now?"}])
     assert "tool_calls" in res
     assert len(res["tool_calls"]) > 0
     assert res["tool_calls"][0]["name"] == "get_well_status"
