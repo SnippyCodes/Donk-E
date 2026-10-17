@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database files
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+data/
+flytbase-ahc-swe-asset-intelligence-dataset/
+
+# Environment
+.env
+.venv/
+env/
+venv/
+
+# Node / Frontend
+node_modules/
+dist/
+
+# OS & Docs
+*.pdf
+.DS_Store
+Thumbs.db

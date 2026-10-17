@@ -1,0 +1,338 @@
+cases:
+  Q1:
+    id: Q1
+    question: "Is WELL-0001 producing oil right now? When was it last inspected, and by whom? Show me its status card."
+    well_id: "WELL-0001"
+    visual: "status_card"
+    expected:
+      is_producing: false
+      latest_inspection_id: "INS-0001-0203"
+      inspected_at: "2026-10-15T09:45:00Z"
+      inspected_date: "2026-10-15"
+      inspector_user_id: "U-104"
+      inspector_name: "Ryan Brooks"
+      method: "drone"
+      ambient_temp_c: 22.4
+      wellhead_temp_c: 25.6
+      delta_temp_c: 3.2
+      threshold_delta_c: 15.0
+      threshold_temp_delta: 15.0
+      well_type: "T200"
+      recorded_status: "active"
+      status_is_stale: true
+      reason_note_id: "CTX-0001-003"
+      reason_author: "Jake Morales"
+      reason_text_snippet: "planned rod string replacement"
+      evidence_ids: ["INS-0001-0203", "CTX-0001-003", "DOC:OM-T200#9.3"]
+
+  Q2:
+    id: Q2
+    question: "Which wells in Northeast Block 8 are not producing oil right now, and why? Show them in a table."
+    area_id: "NE-08"
+    area_name: "Northeast Block 8"
+    visual: "table"
+    expected:
+      count: 4
+      wells:
+        WELL-0164:
+          delta_temp_c: 4.1
+          recorded_status: "active"
+          status_is_stale: true
+          reason_type: "no_recorded_reason"
+          inspector_note: "Pump jack not moving."
+          evidence_ids: ["INS-0164-0205"]
+        WELL-0170:
+          delta_temp_c: 2.9
+          recorded_status: "down"
+          status_is_stale: false
+          reason_type: "repair"
+          repair_id: "MNT-0170-031"
+          issue: "pump jack walking beam bearing wear"
+          started_at: "2026-09-19"
+          evidence_ids: ["INS-0170-0205", "MNT-0170-031"]
+        WELL-0172:
+          delta_temp_c: 5.7
+          recorded_status: "active"
+          status_is_stale: true
+          reason_type: "repair"
+          repair_id: "MNT-0172-028"
+          issue: "flowline pinhole leak"
+          started_at: "2026-10-03"
+          evidence_ids: ["INS-0172-0205", "MNT-0172-028"]
+        WELL-0175:
+          delta_temp_c: 0.4
+          recorded_status: "active"
+          status_is_stale: true
+          reason_type: "no_recorded_reason"
+          inspector_note: null
+          evidence_ids: ["INS-0175-0205"]
+
+  Q3:
+    id: Q3
+    question: "Show a line chart of WELL-0001's wellhead temperature against air temperature for the last 13 weeks, and mark when it was not producing oil."
+    well_id: "WELL-0001"
+    window: "last 13 weeks"
+    visual: "line_chart"
+    expected:
+      readings_count: 13
+      start_date: "2026-07-23"
+      end_date: "2026-10-15"
+      non_producing_dates:
+        - "2026-10-08"
+        - "2026-10-15"
+      evidence_ids: ["INS-0001-0191", "INS-0001-0203", "DOC:OM-T200#9.3"]
+
+  Q4:
+    id: Q4
+    question: "How many oil spills has WELL-0001 had in the last 4 years, and how much oil in total? List them in a table."
+    well_id: "WELL-0001"
+    window: "last 4 years"
+    visual: "table"
+    expected:
+      total_detections: 7
+      corrected_detections: 1
+      corrected_inspection_id: "INS-0001-0070"
+      corrected_note_id: "CTX-0001-001"
+      real_spills_count: 6
+      total_volume_bbl: 15.1
+      spills:
+        - date: "2023-03-16"
+          volume_bbl: 0.5
+          inspection_id: "INS-0001-0021"
+        - date: "2023-04-27"
+          volume_bbl: 2.6
+          inspection_id: "INS-0001-0027"
+        - date: "2023-09-28"
+          volume_bbl: 3.3
+          inspection_id: "INS-0001-0048"
+        - date: "2023-10-19"
+          volume_bbl: 0.3
+          inspection_id: "INS-0001-0051"
+        - date: "2026-06-11"
+          volume_bbl: 6.8
+          inspection_id: "INS-0001-0185"
+        - date: "2026-10-01"
+          volume_bbl: 1.6
+          inspection_id: "INS-0001-0201"
+
+  Q5:
+    id: Q5
+    question: "How many days was WELL-0001 down in 2025?"
+    well_id: "WELL-0001"
+    window: "2025"
+    visual: null
+    expected:
+      downtime_days: 21
+      down_inspections_count: 3
+      inspections:
+        - date: "2025-07-24"
+          wellhead_temp_c: 51.6
+          ambient_temp_c: 43.1
+          delta_temp_c: 8.5
+          cause_repair_id: "MNT-0001-021"
+          cause_issue: "Prime mover tripped on thermal overload"
+        - date: "2025-10-16"
+          wellhead_temp_c: 26.6
+          ambient_temp_c: 23.2
+          delta_temp_c: 3.4
+          cause_repair_id: "MNT-0001-023"
+          cause_issue: "Stuffing box packing failure"
+        - date: "2025-10-23"
+          wellhead_temp_c: 16.0
+          ambient_temp_c: 16.6
+          delta_temp_c: -0.6
+          cause_repair_id: "MNT-0001-023"
+          cause_issue: "Stuffing box packing failure"
+
+  Q6:
+    id: Q6
+    question: "Which 3 wells in Northeast Block 7 had the most downtime in the last 4 months? Show a bar chart."
+    area_id: "NE-07"
+    area_name: "Northeast Block 7"
+    window: "last 4 months"
+    visual: "bar_chart"
+    expected:
+      window_start: "2026-06-16"
+      window_end: "2026-10-16"
+      top_3:
+        - well_id: "WELL-0121"
+          downtime_days: 49
+          well_type: "T200"
+        - well_id: "WELL-0138"
+          downtime_days: 42
+          well_type: "T350"
+        - well_id: "WELL-0107"
+          downtime_days: 42
+          well_type: "T350"
+      runner_up:
+        well_id: "WELL-0119"
+        downtime_days: 28
+        well_type: "T200"
+
+  Q7:
+    id: Q7
+    question: "Show on a map every well in Northeast Block 8 with a real spill in the last 90 days."
+    area_id: "NE-08"
+    area_name: "Northeast Block 8"
+    window: "last 90 days"
+    visual: "map"
+    expected:
+      count: 4
+      pins:
+        - well_id: "WELL-0151"
+          date: "2026-09-24"
+          volume_bbl: 4.5
+          lat: 32.12246
+          lon: -102.18445
+          inspection_id: "INS-0151-0201"
+        - well_id: "WELL-0165"
+          date: "2026-07-30"
+          volume_bbl: 1.2
+          lat: 32.15665
+          lon: -102.14522
+          inspection_id: "INS-0165-0193"
+        - well_id: "WELL-0175"
+          date: "2026-07-30"
+          volume_bbl: 3.9
+          lat: 32.18020
+          lon: -102.14790
+          inspection_id: "INS-0175-0193"
+        - well_id: "WELL-0186"
+          date: "2026-07-23"
+          volume_bbl: 0.6
+          lat: 32.17552
+          lon: -102.17775
+          inspection_id: "INS-0186-0192"
+
+  Q8:
+    id: Q8
+    question: "Show a heatmap of 2026 spills by geographic area and month."
+    window: "2026"
+    visual: "heatmap"
+    expected:
+      areas:
+        "Southwest Block 23":
+          monthly_counts: [4, 3, 3, 6, 3, 4, 4, 3, 3, 2]
+          total: 35
+        "Southwest Block 24":
+          monthly_counts: [7, 4, 5, 6, 5, 5, 3, 1, 5, 2]
+          total: 43
+        "Northeast Block 7":
+          monthly_counts: [5, 3, 2, 4, 6, 6, 2, 4, 4, 1]
+          total: 37
+        "Northeast Block 8":
+          monthly_counts: [4, 4, 4, 3, 2, 4, 4, 0, 1, 0]
+          total: 26
+
+  Q9:
+    id: Q9
+    question: "Which rules has WELL-0001 broken in the last 12 months, and what is still open?"
+    well_id: "WELL-0001"
+    window: "last 12 months"
+    visual: "table"
+    expected:
+      breaches_count: 4
+      breaches:
+        - protocol_id: "SR-01"
+          description: "Written spill report filed after 41 hours against 24-hour limit"
+          discovery_inspection_id: "INS-0001-0185"
+          event_id: "REG-0001-001"
+          nov_event_id: "REG-0001-002"
+          fine_usd: 5000
+          fine_status: "open"
+        - protocol_id: "SR-02"
+          description: "Containment took ~7 hours against 4-hour limit"
+          report_id: "MNT-0001-029"
+          hours_to_contain: 7.0
+        - protocol_id: "SR-03"
+          description: "Cleanup agency verification due by 2026-08-10 (60 days) and still open"
+          event_id: "REG-0001-003"
+          status: "open"
+        - protocol_id: "RC-04"
+          description: "NOV response due by 2026-07-30 (30 days from 2026-06-30 notice), no response recorded"
+          nov_event_id: "REG-0001-002"
+      total_open_fines_usd: 5000
+      pending_actions:
+        - item: "flowline_rca"
+          description: "Root-cause analysis due on flowline (3 corrective repairs in 12 months: MNT-0001-028, MNT-0001-029, MNT-0001-032)"
+          status: "Action required"
+        - item: "planned_shutin_unrecorded"
+          description: "Planned shut-in from 7 Oct not yet recorded in maintenance system (T200 manual §4)"
+          note_id: "CTX-0001-003"
+      rules_met:
+        - protocol_id: "RC-02"
+          description: "Annual flowline integrity test passed on 2026-03-07"
+          maintenance_id: "MNT-0001-026"
+
+  Q10:
+    id: Q10
+    question: "In Southwest Block 24, which spills in the last 90 days were not contained within the SOP time limit?"
+    area_id: "SW-24"
+    area_name: "Southwest Block 24"
+    window: "last 90 days"
+    visual: "table"
+    expected:
+      limit_hours: 4.0
+      count: 2
+      items:
+        - well_id: "WELL-0082"
+          contained_hours: 7.1
+          report_id: "MNT-0082-028"
+          inspection_id: "INS-0082-0198"
+          date: "2026-09-10"
+        - well_id: "WELL-0100"
+          contained_hours: 8.1
+          report_id: "MNT-0100-034"
+          inspection_id: "INS-0100-0196"
+          date: "2026-09-10"
+
+  Q11:
+    id: Q11
+    user_id: "U-201"
+    user_name: "Michael Turner"
+    question: "For the three wells we discussed yesterday, what have repairs cost this year?"
+    expected:
+      recalled_wells: ["WELL-0121", "WELL-0138", "WELL-0107"]
+      costs:
+        WELL-0121: 25794
+        WELL-0138: 46942
+        WELL-0107: 5176
+
+  Q12:
+    id: Q12
+    user_id: "U-201"
+    action: "data_correction"
+    inspection_id: "INS-0164-0205"
+    corrected_wellhead_temp: 41.0
+    original_wellhead_temp: 24.0
+    expected:
+      updated_is_producing: true
+      conflict_detected: true
+      conflicting_inspector_note: "Pump jack not moving."
+      q2_reeval_count: 3
+      removed_well: "WELL-0164"
+
+  Q13:
+    id: Q13
+    user_id: "U-201"
+    action: "ai_estimate_correction"
+    inspection_id: "INS-0151-0201"
+    corrected_volume_bbl: 5.4
+    original_volume_bbl: 4.5
+    expected:
+      becomes_reportable: true
+      sr01_breach: true
+      sr03_due_date: "2026-11-23"
+
+  Q14:
+    id: Q14
+    user_id: "U-201"
+    action: "type_rule_override"
+    well_type: "T350"
+    param: "rca_pump_jack_repairs"
+    new_value: 2
+    original_value: 3
+    expected:
+      added_well: "WELL-0120"
+      not_added_t200_well: "WELL-0102"
+      wells_needing_rca: ["WELL-0108", "WELL-0120", "WELL-0121", "WELL-0138"]

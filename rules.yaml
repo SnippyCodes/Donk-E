@@ -1,0 +1,207 @@
+rules:
+- param: production_temp_delta
+  value: 15.0
+  unit: degC
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Production temperature rule
+  description: T200 is producing only when wellhead temperature is >= threshold above
+    ambient
+- param: temp_alarm_max
+  value: 85.0
+  unit: degC
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Temperature alarm
+  description: Maximum safe wellhead temperature before mandatory shut-in and inspection
+    within 24h
+- param: spill_shutin_area_pct
+  value: 5.0
+  unit: percent
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Spill-related shut-in
+  description: Immediate shut-in required if spill covers more than this pad area
+    percentage
+- param: rca_corrective_count
+  value: 3
+  unit: count
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Maintenance escalation
+  description: Number of corrective repairs on same equipment kind requiring Root-Cause
+    Analysis
+- param: rca_window_months
+  value: 12
+  unit: months
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Maintenance escalation
+  description: Lookback window for RCA corrective repair count
+- param: downtime_report_consecutive_days
+  value: 14
+  unit: days
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Maintenance escalation
+  description: Consecutive downtime days requiring notification to area production
+    supervisor
+- param: planned_shutin_record_required
+  value: true
+  unit: bool
+  applies_to: T200
+  source_file: fleet/well-types/T200.md
+  source_section: Start-up and shut-in
+  description: Mandatory maintenance record required before starting planned shut-in
+    work
+- param: production_temp_delta
+  value: 20.0
+  unit: degC
+  applies_to: T350
+  source_file: fleet/well-types/T350.md
+  source_section: Production temperature rule
+  description: T350 is producing only when wellhead temperature is >= threshold above
+    ambient
+- param: temp_alarm_max
+  value: 95.0
+  unit: degC
+  applies_to: T350
+  source_file: fleet/well-types/T350.md
+  source_section: Temperature alarm
+  description: Maximum safe wellhead temperature before mandatory shut-in and inspection
+    within 24h
+- param: downtime_report_consecutive_days
+  value: 14
+  unit: days
+  applies_to: T350
+  source_file: fleet/well-types/T350.md
+  source_section: Maintenance escalation
+  description: Consecutive downtime days requiring notification to area production
+    supervisor
+- param: spill_minor_max_volume
+  value: 1.0
+  unit: bbl
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 3. Spill classes
+  description: 'Spills below 1 bbl are minor: clean up without external report'
+- param: spill_reportable_volume_min
+  value: 5.0
+  unit: bbl
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 3. Spill classes
+  description: Spills 5 bbl and above are reportable to State Commission (SR-01)
+- param: spill_major_volume_min
+  value: 25.0
+  unit: bbl
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 3. Spill classes
+  description: 'Spills 25 bbl and above are major: 2-hour report deadline & incident
+    command'
+- param: sr01_written_report_deadline_hours
+  value: 24.0
+  unit: hours
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-01
+  description: Written notice due to State Commission within 24 hours of discovery
+- param: sr01_major_report_deadline_hours
+  value: 2.0
+  unit: hours
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-01
+  description: Major spill written report due within 2 hours of discovery
+- param: sr02_containment_deadline_hours
+  value: 4.0
+  unit: hours
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-02
+  description: Source must be stopped and spill contained within 4 hours of discovery
+- param: sr03_remediation_target_tph
+  value: 1.0
+  unit: percent
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-03
+  description: Contaminated soil must be cleaned to 1.0% TPH or less
+- param: sr03_soil_samples_min
+  value: 4
+  unit: count
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-03
+  description: At least 4 soil samples required to map reportable spill remediation
+- param: sr03_verification_deadline_days
+  value: 60
+  unit: days
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 4. Protocols - SR-03
+  description: Remediation verified by agency site inspection within 60 days of discovery
+- param: moderate_hse_notice_deadline_hours
+  value: 72.0
+  unit: hours
+  applies_to: fleet
+  source_file: fleet/sops/spill-response-sop.md
+  source_section: 3. Spill classes
+  description: Moderate spills require notification to HSE within 72 hours
+- param: rc01_inspection_interval_days
+  value: 14
+  unit: days
+  applies_to: fleet
+  source_file: fleet/sops/regulatory-compliance-sop.md
+  source_section: 2. Protocols - RC-01
+  description: Every well must be inspected at least once every 14 days
+- param: rc02_flowline_test_interval
+  value: calendar_year
+  unit: interval
+  applies_to: fleet
+  source_file: fleet/sops/regulatory-compliance-sop.md
+  source_section: 2. Protocols - RC-02
+  description: Every flowline must pass an integrity test once per calendar year
+- param: rc04_nov_response_deadline_days
+  value: 30
+  unit: days
+  applies_to: fleet
+  source_file: fleet/sops/regulatory-compliance-sop.md
+  source_section: 2. Protocols - RC-04
+  description: Agency notices of violation must be answered within 30 days
+- param: ws03_h2s_action_level_ppm
+  value: 10.0
+  unit: ppm
+  applies_to: fleet
+  source_file: fleet/sops/field-work-sop.md
+  source_section: 3. Protocols - WS-03
+  description: Personal H2S monitor stop-work action level is 10 ppm
+- param: ws04_hot_work_max_lel_pct
+  value: 10.0
+  unit: percent
+  applies_to: fleet
+  source_file: fleet/sops/field-work-sop.md
+  source_section: 3. Protocols - WS-04
+  description: No hot work if flammable gas reads 10% LEL or higher
+- param: ws05_pressure_test_ratio
+  value: 1.25
+  unit: multiplier
+  applies_to: fleet
+  source_file: fleet/sops/field-work-sop.md
+  source_section: 3. Protocols - WS-05
+  description: Flowline pressure test ratio relative to maximum operating pressure
+- param: ws05_pressure_test_hold_hours
+  value: 4.0
+  unit: hours
+  applies_to: fleet
+  source_file: fleet/sops/field-work-sop.md
+  source_section: 3. Protocols - WS-05
+  description: Flowline pressure test hold duration without pressure drop
+- param: ws07_report_deadline_days
+  value: 3
+  unit: days
+  applies_to: fleet
+  source_file: fleet/sops/field-work-sop.md
+  source_section: 3. Protocols - WS-07
+  description: Maintenance report must be written within 3 days of finishing work
