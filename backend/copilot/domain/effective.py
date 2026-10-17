@@ -92,6 +92,50 @@ def materialize_derived_tables(conn: sqlite3.Connection) -> None:
 
             corrections[insp_id] = curr
 
+        # 2c. Overlay from runtime_corrections table (Deliverable A)
+        cursor.execute("""
+            SELECT correction_id, author_user_id, target_type, target_id, asset_id,
+                   field_name, original_value, corrected_value, reason, status
+            FROM runtime_corrections
+            WHERE status = 'confirmed'
+            ORDER BY created_at ASC
+        """)
+        for c_row in cursor.fetchall():
+            c_id, c_user, c_target_type, c_target_id, c_asset_id, c_field, c_orig, c_corr, c_reason, c_status = (
+                c_row[0], c_row[1], c_row[2], c_row[3], c_row[4], c_row[5], c_row[6], c_row[7], c_row[8], c_row[9]
+            )
+            insp_id = c_target_id
+            curr = corrections.get(insp_id, {
+                "note_id": c_id,
+                "text": c_reason or f"Correction {c_id}",
+                "author": c_user,
+                "is_spill_corrected": 0,
+                "override_temp": None,
+                "override_vol": None,
+                "original_value": c_orig,
+                "corrected_value": c_corr,
+                "correction_id": c_id,
+            })
+            curr["note_id"] = c_id
+            curr["author"] = c_user
+            curr["correction_id"] = c_id
+            curr["original_value"] = c_orig
+            curr["corrected_value"] = c_corr
+            curr["text"] = f"Corrected by {c_user} from {c_orig} to {c_corr}: {c_reason or ''}".strip()
+
+            if c_field == "wellhead_temp_c":
+                curr["override_temp"] = float(c_corr) if c_corr is not None else None
+            elif c_field == "spill_volume_bbl":
+                curr["override_vol"] = float(c_corr) if c_corr is not None else None
+            elif c_field == "spill_detected":
+                if c_corr == 0.0 or c_corr == 0:
+                    curr["is_spill_corrected"] = 1
+                    curr["override_vol"] = 0.0
+                else:
+                    curr["is_spill_corrected"] = 0
+
+            corrections[insp_id] = curr
+
         # 3. Build eff_inspection
         cursor.execute("""
             SELECT i.inspection_id, i.asset_id, a.well_type, a.area_id, i.inspected_at,
@@ -216,6 +260,30 @@ def materialize_derived_tables(conn: sqlite3.Connection) -> None:
                     "author_name": l_row[5],
                 }
                 active_notes.setdefault(l_row[1], []).append(note_dict)
+
+        # Include confirmed shared_asset_notes (Deliverable A)
+        cursor.execute("""
+            SELECT s.note_id, s.asset_id, s.note_text, s.author_user_id, s.valid_from, s.valid_to,
+                   u.name as author_name
+            FROM shared_asset_notes s
+            LEFT JOIN users u ON s.author_user_id = u.user_id
+            WHERE s.status = 'confirmed'
+            ORDER BY s.created_at DESC
+        """)
+        for s_row in cursor.fetchall():
+            s_id, s_asset, s_text, s_user, s_vf, s_vt, s_aname = (
+                s_row[0], s_row[1], s_row[2], s_row[3], s_row[4], s_row[5], s_row[6]
+            )
+            if (s_vf is None or s_vf <= AS_OF) and (s_vt is None or s_vt >= AS_OF):
+                active_notes.setdefault(s_asset, []).append({
+                    "note_id": s_id,
+                    "asset_id": s_asset,
+                    "text": s_text,
+                    "author_user_id": s_user,
+                    "valid_from": s_vf,
+                    "valid_to": s_vt,
+                    "author_name": s_aname or s_user,
+                })
 
         well_now_rows = []
         for w in latest_wells:

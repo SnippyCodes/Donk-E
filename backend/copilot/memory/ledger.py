@@ -18,6 +18,13 @@ from typing import Any, Dict, List, Optional
 
 from backend.copilot.db import get_connection
 from backend.copilot.domain.effective import materialize_derived_tables
+from src.memory.ledger import (
+    record_runtime_correction,
+    record_rule_override,
+    record_shared_asset_note,
+    get_runtime_corrections,
+    clear_runtime_memory,
+)
 
 
 # Global monotonic version counter (in-memory; reset on process restart)

@@ -69,6 +69,17 @@ class ParameterResolver:
                     if param_name in payload:
                         return {"value": payload[param_name], "scope": "well", "scope_id": well_id}
 
+            # Check well_type scope in well_type_rule_overrides table (Deliverable A)
+            if well_type:
+                cursor.execute("""
+                    SELECT new_value FROM well_type_rule_overrides
+                    WHERE well_type = ? AND (rule_field = ? OR rule_field = ?)
+                    ORDER BY created_at DESC LIMIT 1
+                """, (well_type, param_name, param_name.replace("rca_", "").replace("_repairs", "")))
+                o_row = cursor.fetchone()
+                if o_row:
+                    return {"value": o_row[0], "scope": "well_type", "scope_id": well_type}
+
             # Check well_type scope in ledger
             if well_type:
                 cursor.execute("""
