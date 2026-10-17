@@ -27,8 +27,20 @@ export interface StatusCardProps {
 }
 
 export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
-  const isProducing = data.is_producing
-  const isStale = data.system_status.status_is_stale
+  if (!data) return null
+  const isProducing = !!data.is_producing
+  const isStale = !!data.system_status?.status_is_stale
+  const metrics = data.metrics || {
+    wellhead_temp_c: 0,
+    ambient_temp_c: 0,
+    delta_temp_c: 0,
+    threshold_temp_delta: 15,
+  }
+  const latestInsp = data.latest_inspection || {
+    inspection_id: 'N/A',
+    date: 'N/A',
+    inspector: 'Field Inspector',
+  }
 
   return (
     <div className="visual-block-card status-card" id={`status-${data.asset_id}`}>
@@ -79,7 +91,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         }}>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Wellhead Temp</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
-            {data.metrics.wellhead_temp_c.toFixed(1)}°C
+            {typeof metrics.wellhead_temp_c === 'number' ? `${metrics.wellhead_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
         </div>
 
@@ -91,7 +103,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         }}>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Ambient Air Temp</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#94a3b8' }}>
-            {data.metrics.ambient_temp_c.toFixed(1)}°C
+            {typeof metrics.ambient_temp_c === 'number' ? `${metrics.ambient_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
         </div>
 
@@ -107,7 +119,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
             fontWeight: 700,
             color: isProducing ? '#10b981' : '#ef4444'
           }}>
-            +{data.metrics.delta_temp_c.toFixed(1)}°C
+            {typeof metrics.delta_temp_c === 'number' ? `+${metrics.delta_temp_c.toFixed(1)}°C` : 'N/A'}
           </div>
         </div>
 
@@ -119,7 +131,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         }}>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>Rule Threshold</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#38bdf8' }}>
-            ≥ {data.metrics.threshold_temp_delta.toFixed(1)}°C
+            ≥ {typeof metrics.threshold_temp_delta === 'number' ? `${metrics.threshold_temp_delta.toFixed(1)}°C` : '15.0°C'}
           </div>
         </div>
       </div>
@@ -140,7 +152,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         }}>
           <AlertTriangle size={16} />
           <div>
-            <strong>Status Discrepancy:</strong> System records show well as <em>{data.system_status.recorded_status}</em>, but telemetry delta is below {data.metrics.threshold_temp_delta}°C threshold.
+            <strong>Status Discrepancy:</strong> System records show well as <em>{data.system_status?.recorded_status || 'active'}</em>, but telemetry delta is below {metrics.threshold_temp_delta}°C threshold.
           </div>
         </div>
       )}
@@ -164,7 +176,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Calendar size={13} color="#94a3b8" />
-          <span style={{ color: 'var(--text-muted)' }}>{data.latest_inspection.date} by {data.latest_inspection.inspector}</span>
+          <span style={{ color: 'var(--text-muted)' }}>{latestInsp.date} by {latestInsp.inspector}</span>
         </div>
       </div>
 

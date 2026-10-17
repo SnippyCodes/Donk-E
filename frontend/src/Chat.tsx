@@ -145,8 +145,40 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, onVisionChe
     }
   }
 
+class SafeBlockBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: string }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false, error: '' }
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error: error?.message || 'Error rendering block' }
+  }
+  componentDidCatch(error: any, info: any) {
+    console.error('VisualBlock render error caught:', error, info)
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          padding: '8px 12px',
+          borderRadius: '8px',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          color: '#f87171',
+          fontSize: '12px',
+          margin: '8px 0',
+        }}>
+          Visual element rendering safely deferred. Verified data is displayed in the textual response above.
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
   // Parse text with bracketed citations into interactive badges
   const renderFormattedText = (text: string) => {
+    if (!text || typeof text !== 'string') return null
     const parts = text.split(/(\[[A-Za-z0-9-]+\]|\[DOC:[^\]]+\]|\[RPT:[^\]]+\]|\[LEDGER-[^\]]+\])/g)
     return parts.map((part, idx) => {
       if (part.startsWith('[') && part.endsWith(']')) {
@@ -160,29 +192,43 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage, onVisionChe
     })
   }
 
-  // Visual Block Dispatcher
+  // Visual Block Dispatcher with Safe Boundary
   const renderVisualBlock = (block: any, idx: number) => {
     if (!block || !block.block_type) return null
+    let el: React.ReactNode = null
     switch (block.block_type) {
       case 'status_card':
-        return <StatusCard key={`block-${idx}`} data={block} />
+        el = <StatusCard data={block} />
+        break
       case 'table':
-        return <TableBlock key={`block-${idx}`} data={block} />
+        el = <TableBlock data={block} />
+        break
       case 'line_chart':
-        return <LineChartBlock key={`block-${idx}`} data={block} />
+        el = <LineChartBlock data={block} />
+        break
       case 'bar_chart':
-        return <BarChartBlock key={`block-${idx}`} data={block} />
+        el = <BarChartBlock data={block} />
+        break
       case 'map_view':
-        return <MapViewBlock key={`block-${idx}`} data={block} />
+        el = <MapViewBlock data={block} />
+        break
       case 'heatmap':
-        return <HeatmapBlock key={`block-${idx}`} data={block} />
+        el = <HeatmapBlock data={block} />
+        break
       case 'conflict':
-        return <ConflictBlock key={`block-${idx}`} data={block} />
+        el = <ConflictBlock data={block} />
+        break
       case 'evidence':
-        return <EvidenceBlock key={`block-${idx}`} data={block} />
+        el = <EvidenceBlock data={block} />
+        break
       default:
         return null
     }
+    return (
+      <SafeBlockBoundary key={`block-${idx}`}>
+        {el}
+      </SafeBlockBoundary>
+    )
   }
 
   return (

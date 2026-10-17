@@ -3,19 +3,31 @@ import { Table as TableIcon, ShieldCheck } from 'lucide-react'
 
 export interface TableBlockProps {
   title: string
-  columns: Array<{ key: string; label: string }>
+  columns: Array<{ key: string; label: string } | string>
   rows: Array<Record<string, any>>
   summary_stats?: Record<string, any>
   evidence_ids?: string[]
 }
 
 export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
+  const normalizedColumns = (data.columns || []).map((col, idx) => {
+    if (typeof col === 'string') {
+      return { key: col, label: col }
+    }
+    return {
+      key: col?.key || col?.label || `col_${idx}`,
+      label: col?.label || col?.key || `Column ${idx + 1}`,
+    }
+  })
+
+  const rows = data.rows || []
+
   return (
     <div className="visual-block-card table-block">
       <div className="visual-block-header">
         <div className="visual-block-title">
           <TableIcon size={18} color="#38bdf8" />
-          <span>{data.title}</span>
+          <span>{data.title || 'Data Table'}</span>
         </div>
         {data.summary_stats && Object.keys(data.summary_stats).length > 0 && (
           <div style={{ display: 'flex', gap: '12px', fontSize: '12px' }}>
@@ -44,51 +56,61 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
               textTransform: 'uppercase',
               letterSpacing: '0.5px'
             }}>
-              {data.columns.map(col => (
-                <th key={col.key} style={{ padding: '10px 14px', fontWeight: 600 }}>
+              {normalizedColumns.map((col, cIdx) => (
+                <th key={`${col.key}-${cIdx}`} style={{ padding: '10px 14px', fontWeight: 600 }}>
                   {col.label}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.rows.map((row, idx) => (
-              <tr
-                key={idx}
-                style={{
-                  borderBottom: '1px solid rgba(255,255,255,0.04)',
-                  transition: 'background 0.15s ease',
-                  background: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)'
-                }}
-              >
-                {data.columns.map(col => {
-                  const val = row[col.key]
-                  const isDelta = col.key.includes('delta') || col.key.includes('temp')
-                  const isEvidence = col.key === 'evidence' || col.key === 'evidence_ids'
-                  return (
-                    <td key={col.key} style={{ padding: '12px 14px', color: 'var(--text-primary)' }}>
-                      {isEvidence && Array.isArray(val) ? (
-                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                          {val.map((eid: string) => (
-                            <span key={eid} className="citation-badge">[{eid}]</span>
-                          ))}
-                        </div>
-                      ) : isDelta && typeof val === 'number' ? (
-                        <span style={{
-                          fontFamily: 'var(--font-mono)',
-                          color: val < 15.0 ? '#f87171' : '#34d399',
-                          fontWeight: 600
-                        }}>
-                          +{val.toFixed(1)}°C
-                        </span>
-                      ) : (
-                        <span>{val !== null && val !== undefined ? String(val) : '—'}</span>
-                      )}
-                    </td>
-                  )
-                })}
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={Math.max(normalizedColumns.length, 1)} style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  No records found.
+                </td>
               </tr>
-            ))}
+            ) : (
+              rows.map((row, idx) => (
+                <tr
+                  key={idx}
+                  style={{
+                    borderBottom: '1px solid rgba(255,255,255,0.04)',
+                    transition: 'background 0.15s ease',
+                    background: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)'
+                  }}
+                >
+                  {normalizedColumns.map((col, cIdx) => {
+                    const val = row[col.key] ?? row[col.label] ?? ''
+                    const keyLower = (col.key || '').toLowerCase()
+                    const isDelta = keyLower.includes('delta') || keyLower.includes('temp')
+                    const isEvidence = keyLower.includes('evidence')
+
+                    return (
+                      <td key={`${col.key}-${cIdx}`} style={{ padding: '12px 14px', color: 'var(--text-primary)' }}>
+                        {isEvidence && Array.isArray(val) ? (
+                          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                            {val.map((eid: string) => (
+                              <span key={eid} className="citation-badge">[{eid}]</span>
+                            ))}
+                          </div>
+                        ) : isDelta && typeof val === 'number' ? (
+                          <span style={{
+                            fontFamily: 'var(--font-mono)',
+                            color: val < 15.0 ? '#f87171' : '#34d399',
+                            fontWeight: 600
+                          }}>
+                            {val >= 0 ? `+${val.toFixed(1)}°C` : `${val.toFixed(1)}°C`}
+                          </span>
+                        ) : (
+                          <span>{val !== null && val !== undefined && val !== '' ? String(val) : '—'}</span>
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

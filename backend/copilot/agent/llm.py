@@ -36,15 +36,17 @@ class LLMClient:
             self.api_base = api_base or os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
             self.api_key = api_key or os.getenv("LLM_API_KEY", "")
 
-        self.timeout = float(os.getenv("LLM_TIMEOUT", "30.0"))
+        self.timeout = float(os.getenv("LLM_TIMEOUT", "12.0"))
 
     def chat_completion(
         self,
         messages: List[Dict[str, Any]],
         tools: Optional[List[Dict[str, Any]]] = None,
         temperature: float = 0.0,
+        timeout: Optional[float] = None,
     ) -> Dict[str, Any]:
         """Generate a chat completion with optional tool calls and reasoning capture."""
+        eff_timeout = timeout or self.timeout
         # Check if provider is configured and reachable
         if self.provider in ("openrouter", "gemma", "ollama", "openai", "vllm") and self.api_key:
             headers = {
@@ -76,7 +78,7 @@ class LLMClient:
                         payload["tools"] = [{"type": "function", "function": t} for t in tools]
                         payload["tool_choice"] = "auto"
 
-                    with httpx.Client(timeout=self.timeout) as client:
+                    with httpx.Client(timeout=eff_timeout) as client:
                         resp = client.post(
                             f"{self.api_base.rstrip('/')}/chat/completions",
                             json=payload,

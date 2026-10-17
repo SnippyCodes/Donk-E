@@ -705,8 +705,15 @@ def tool_get_well_equipment_and_maintenance(
     visual = {
         "block_type": "table",
         "title": f"Installed Equipment & Maintenance History for {norm_id} ({asset_row['name']})",
-        "columns": ["Equipment Kind", "Model / Specs", "Latest Job", "Started At", "Evidence"],
+        "columns": [
+            {"key": "Equipment Kind", "label": "Equipment Kind"},
+            {"key": "Model / Specs", "label": "Model / Specs"},
+            {"key": "Latest Job", "label": "Latest Job"},
+            {"key": "Started At", "label": "Started At"},
+            {"key": "Evidence", "label": "Evidence"},
+        ],
         "rows": table_rows,
+        "evidence_ids": evidence_ids,
     }
 
     if close_conn:

@@ -125,7 +125,7 @@ class AgentLoop:
                                     "content": json.dumps(clean_tr),
                                 })
 
-                            turn2_resp = self.llm.chat_completion(turn2_messages, temperature=0.0)
+                            turn2_resp = self.llm.chat_completion(turn2_messages, temperature=0.0, timeout=6.0)
                             if turn2_resp.get("content"):
                                 raw_prose = turn2_resp["content"]
                                 if turn2_resp.get("reasoning_details"):
