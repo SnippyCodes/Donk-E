@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from backend.copilot.tools.analytics import (
     tool_get_well_status,
+    tool_get_well_equipment_and_maintenance,
     tool_get_area_stopped_wells,
     tool_get_well_temperature_trend,
     tool_get_well_spills_summary,
@@ -39,6 +40,25 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
                     "type": "string",
                     "description": "Asset ID (e.g. WELL-0001) or friendly name",
                 }
+            },
+            "required": ["well_id"],
+        },
+    },
+    {
+        "name": "get_well_equipment_and_maintenance",
+        "description": "Get installed equipment specifications (wellhead, pump jack, rod string, pump, flowline) and historical maintenance logs for a specific well.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "well_id": {
+                    "type": "string",
+                    "description": "Asset ID (e.g. WELL-0001) or friendly name",
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Max maintenance records to return (default 10)",
+                    "default": 10,
+                },
             },
             "required": ["well_id"],
         },
@@ -337,6 +357,7 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
 
 DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
     "get_well_status": tool_get_well_status,
+    "get_well_equipment_and_maintenance": tool_get_well_equipment_and_maintenance,
     "get_area_stopped_wells": tool_get_area_stopped_wells,
     "get_well_temperature_trend": tool_get_well_temperature_trend,
     "get_well_spills_summary": tool_get_well_spills_summary,

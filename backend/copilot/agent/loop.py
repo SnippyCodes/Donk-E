@@ -53,6 +53,7 @@ class AgentLoop:
             target_asset_id: Optional[str] = None
 
             # Execute tool calls
+            raw_tool_results = []
             if tool_calls:
                 for tc in tool_calls:
                     fn_name = tc["name"]
@@ -71,6 +72,7 @@ class AgentLoop:
                         conn=conn,
                     )
                     elapsed_tool_ms = round((time.perf_counter() - t_tool) * 1000, 2)
+                    raw_tool_results.append(tool_res)
 
                     # Collect visual block
                     if "visual" in tool_res and isinstance(tool_res["visual"], dict):
@@ -93,9 +95,47 @@ class AgentLoop:
                         "evidence_count": len(ev_ids) if isinstance(ev_ids, list) else 0,
                     })
 
-                    # Synthesize prose if LLM left content blank
+                # Turn 2: Feed tool results back to LLM for conversational synthesis
+                if not raw_prose and raw_tool_results:
+                    if getattr(self.llm, "provider", "") in ("openrouter", "gemma", "ollama", "openai", "vllm") and getattr(self.llm, "api_key", None):
+                        try:
+                            turn2_messages = list(messages)
+                            turn2_messages.append({
+                                "role": "assistant",
+                                "content": None,
+                                "tool_calls": [
+                                    {
+                                        "id": tc.get("id", f"call_{i}"),
+                                        "type": "function",
+                                        "function": {
+                                            "name": tc["name"],
+                                            "arguments": json.dumps(tc.get("args", {})),
+                                        },
+                                    }
+                                    for i, tc in enumerate(tool_calls)
+                                ],
+                            })
+                            for i, (tc, tr) in enumerate(zip(tool_calls, raw_tool_results)):
+                                # Filter out heavy visual payload to keep prompt fast and token-efficient
+                                clean_tr = {k: v for k, v in tr.items() if k != "visual"}
+                                turn2_messages.append({
+                                    "role": "tool",
+                                    "tool_call_id": tc.get("id", f"call_{i}"),
+                                    "name": tc["name"],
+                                    "content": json.dumps(clean_tr),
+                                })
+
+                            turn2_resp = self.llm.chat_completion(turn2_messages, temperature=0.0)
+                            if turn2_resp.get("content"):
+                                raw_prose = turn2_resp["content"]
+                                if turn2_resp.get("reasoning_details"):
+                                    llm_resp["reasoning_details"] = turn2_resp["reasoning_details"]
+                        except Exception:
+                            raw_prose = ""
+
+                    # Fallback synthesis if Turn 2 did not produce text
                     if not raw_prose:
-                        raw_prose = self.llm._synthesize_prose(tool_res)
+                        raw_prose = self.llm._synthesize_prose(raw_tool_results[0])
 
             # Deduplicate evidence
             collected_evidence = list(dict.fromkeys(collected_evidence))

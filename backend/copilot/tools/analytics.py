@@ -72,6 +72,7 @@ def tool_get_well_status(well_id: str, conn: Optional[sqlite3.Connection] = None
         "data": w,
         "visual": visual,
         "evidence_ids": evidence_ids,
+        **w,
     }
 
 
@@ -646,4 +647,79 @@ def tool_get_bitemporal_audit_diff(
     """M7 Deliverable D: Bi-Temporal State Diff (Raw Sensors vs Ledger Overlay)."""
     from backend.copilot.domain.diff import get_bitemporal_audit_diff
     return get_bitemporal_audit_diff(conn=conn, limit=limit)
+
+
+def tool_get_well_equipment_and_maintenance(
+    well_id: str,
+    limit: int = 10,
+    conn: Optional[sqlite3.Connection] = None,
+) -> Dict[str, Any]:
+    """Retrieve installed equipment specs and maintenance work history for a well."""
+    close_conn = False
+    if conn is None:
+        conn = get_connection()
+        close_conn = True
+
+    resolver = EntityResolver(conn)
+    norm_id = resolver.resolve_well_id(well_id) or well_id
+
+    cursor = conn.cursor()
+    cursor.execute("SELECT asset_id, name, well_type, area_id FROM assets WHERE asset_id = ?", (norm_id,))
+    asset_row = cursor.fetchone()
+    if not asset_row:
+        if close_conn:
+            conn.close()
+        return {"error": f"Well {norm_id} not found."}
+
+    cursor.execute("""
+        SELECT equipment_id, kind, model
+        FROM equipment
+        WHERE asset_id = ?
+        ORDER BY kind ASC
+    """, (norm_id,))
+    equipment = [dict(r) for r in cursor.fetchall()]
+
+    cursor.execute("""
+        SELECT maintenance_id, equipment_kind, started_at, completed_at,
+               issue, action_taken, maintenance_type, downtime_hours, report_file
+        FROM maintenance
+        WHERE asset_id = ?
+        ORDER BY started_at DESC
+        LIMIT ?
+    """, (norm_id, limit))
+    maintenance = [dict(r) for r in cursor.fetchall()]
+
+    evidence_ids = [eq["equipment_id"] for eq in equipment] + [m["maintenance_id"] for m in maintenance]
+
+    table_rows = []
+    for eq in equipment:
+        latest_job = next((m for m in maintenance if m["equipment_kind"] == eq["kind"]), None)
+        table_rows.append({
+            "Equipment Kind": eq["kind"],
+            "Model / Specs": eq["model"],
+            "Latest Job": latest_job["issue"] if latest_job else "No recent work",
+            "Started At": latest_job["started_at"][:16].replace("T", " ") if latest_job else "N/A",
+            "Evidence": f"[{latest_job['maintenance_id']}]" if latest_job else "Asset Record",
+        })
+
+    visual = {
+        "block_type": "table",
+        "title": f"Installed Equipment & Maintenance History for {norm_id} ({asset_row['name']})",
+        "columns": ["Equipment Kind", "Model / Specs", "Latest Job", "Started At", "Evidence"],
+        "rows": table_rows,
+    }
+
+    if close_conn:
+        conn.close()
+
+    return {
+        "asset_id": norm_id,
+        "name": asset_row["name"],
+        "well_type": asset_row["well_type"],
+        "equipment": equipment,
+        "maintenance_history": maintenance,
+        "evidence_ids": evidence_ids,
+        "visual": visual,
+    }
+
 

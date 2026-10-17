@@ -89,7 +89,11 @@ class LLMClient:
                                         fn_args = json.loads(fn.get("arguments", "{}"))
                                     except Exception:
                                         fn_args = {}
-                                    tool_calls.append({"name": fn_name, "args": fn_args})
+                                    tool_calls.append({
+                                        "id": tc.get("id", f"call_{len(tool_calls)}"),
+                                        "name": fn_name,
+                                        "args": fn_args,
+                                    })
 
                             # Extract reasoning if returned by OpenRouter / Gemma
                             reasoning = choice.get("reasoning") or choice.get("reasoning_details") or ""
@@ -198,7 +202,7 @@ class LLMClient:
         if tool_call:
             return {
                 "content": "",
-                "tool_calls": [tool_call],
+                "tool_calls": [{"id": "call_fallback_0", **tool_call}],
                 "model": "local-fallback",
             }
 
@@ -362,6 +366,25 @@ class LLMClient:
                 "args": {"area_query": area_code or "NE-08"},
             }
 
+        # Well equipment and maintenance query
+        if well_id and (
+            "equipment" in q
+            or "equipments" in q
+            or "part" in q
+            or "work" in q
+            or "started" in q
+            or "maintenance" in q
+            or "repair" in q
+            or "job" in q
+            or "pump jack" in q
+            or "rod string" in q
+            or "flowline" in q
+        ):
+            return {
+                "name": "get_well_equipment_and_maintenance",
+                "args": {"well_id": well_id},
+            }
+
         # Q1 Well status
         if well_id:
             return {
@@ -387,16 +410,39 @@ class LLMClient:
         if "error" in tool_data:
             return f"Notice: {tool_data['error']}"
 
-        # StatusCard tool
-        if "asset_id" in tool_data and "is_producing" in tool_data:
+        # Equipment & Maintenance history tool
+        if "equipment" in tool_data and "asset_id" in tool_data:
             aid = tool_data["asset_id"]
-            prod = "is producing oil" if tool_data["is_producing"] else "is NOT producing oil"
-            d_temp = tool_data.get("delta_temp_c", 0.0)
-            thresh = tool_data.get("threshold_temp_delta", 15.0)
-            insp_id = tool_data.get("latest_inspection_id", "")
-            insp_date = tool_data.get("inspected_date", "")
-            inspector = tool_data.get("inspector_name", "Inspector")
-            reason = tool_data.get("reason_summary", "no recorded reason")
+            name = tool_data.get("name", "")
+            eq_list = tool_data.get("equipment", [])
+            maint_list = tool_data.get("maintenance_history", [])
+
+            eq_summary = ", ".join([f"{eq['kind']}: {eq['model']}" for eq in eq_list]) if eq_list else "no equipment records found"
+
+            if maint_list:
+                latest = maint_list[0]
+                m_id = latest.get("maintenance_id", "")
+                m_kind = latest.get("equipment_kind", "equipment")
+                m_start = latest.get("started_at", "unknown date").replace("T", " ")[:16]
+                m_issue = latest.get("issue", "")
+                m_action = latest.get("action_taken", "")
+                maint_summary = f"Latest maintenance job on {m_kind} [{m_id}] started on {m_start} UTC for issue '{m_issue}' (Action: {m_action})."
+            else:
+                maint_summary = "No prior maintenance work orders recorded."
+
+            return f"**{aid} ({name}) Equipment Specifications:** {eq_summary}. {maint_summary} {citations_str}"
+
+        # StatusCard tool
+        data = tool_data.get("data", tool_data) if isinstance(tool_data.get("data"), dict) else tool_data
+        if "asset_id" in data and "is_producing" in data:
+            aid = data["asset_id"]
+            prod = "is producing oil" if data.get("is_producing") else "is NOT producing oil"
+            d_temp = data.get("delta_temp_c", 0.0)
+            thresh = data.get("threshold_temp_delta", 15.0)
+            insp_id = data.get("latest_inspection_id", "")
+            insp_date = data.get("latest_inspected_date", data.get("inspected_date", ""))
+            inspector = data.get("inspector_name") or data.get("inspector_user_id", "Inspector")
+            reason = data.get("reason_summary", "no recorded reason")
 
             prose = (
                 f"**{aid}** {prod} as of {insp_date} (inspected by {inspector}). "
