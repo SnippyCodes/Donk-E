@@ -16,6 +16,7 @@ import {
   BookOpen,
 } from 'lucide-react'
 import { BragTour } from './BragTour'
+import { DemoDirector } from './components/DemoDirector'
 
 const DEFAULT_USERS: UserOption[] = [
   { user_id: 'U-201', name: 'Michael Turner', role: 'production_supervisor', team_id: 'TEAM-NE' },
@@ -611,10 +612,32 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* 2. FULL-WIDTH OPERATIONAL WORKBENCH OR AUTO-NARRATED TOUR (/brag) */}
+      {/* 2. UNIFIED 5-MINUTE AUTO-NARRATED DEMO DIRECTOR & PRESENTATION ENGINE */}
+      <DemoDirector
+        viewMode={viewMode}
+        onSetViewMode={(mode) => {
+          setViewMode(mode)
+          if (window.location.pathname !== (mode === 'brag' ? '/brag' : '/')) {
+            window.history.pushState(null, '', mode === 'brag' ? '/brag' : '/')
+          }
+        }}
+        onSetCurrentUser={setCurrentUser}
+        users={users}
+        onInjectMessages={(newMsgs) => setMessages(prev => [...prev, ...newMsgs])}
+        onClearMessages={() => setMessages([])}
+        onScrollToChapter={(elemId) => {
+          const el = document.getElementById(elemId)
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }}
+      />
+
+      {/* 3. FULL-WIDTH OPERATIONAL WORKBENCH OR AUTO-NARRATED TOUR (/brag) */}
       {viewMode === 'brag' ? (
-        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%', paddingBottom: '90px' }}>
           <BragTour
+            hideLocalBars={true}
             onJumpToChat={(prompt, customUserId) => {
               if (customUserId) {
                 const found = users.find(u => u.user_id === customUserId)
@@ -635,7 +658,7 @@ export const App: React.FC = () => {
           />
         </div>
       ) : (
-        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
+        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%', position: 'relative', paddingBottom: '90px' }}>
           <Chat
             messages={messages}
             onSendMessage={handleSendMessage}
