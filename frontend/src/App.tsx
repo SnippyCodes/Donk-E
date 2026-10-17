@@ -96,8 +96,12 @@ export const App: React.FC = () => {
   const [isIngesting, setIsIngesting] = useState(false)
   const [ingestResult, setIngestResult] = useState<any | null>(null)
 
+  const API_BASE = (typeof window !== 'undefined' && window.location.port === '5173')
+    ? 'http://127.0.0.1:8000'
+    : ''
+
   const fetchHealth = () => {
-    fetch('/api/health')
+    fetch(`${API_BASE}/api/health`)
       .then(r => r.json())
       .then(d => {
         if (d && d.counts) {
@@ -116,7 +120,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     fetchHealth()
 
-    fetch('/api/users')
+    fetch(`${API_BASE}/api/users`)
       .then(r => r.json())
       .then(d => {
         if (Array.isArray(d) && d.length > 0) {
@@ -138,7 +142,7 @@ export const App: React.FC = () => {
     setIsLoading(true)
 
     try {
-      const resp = await fetch('/api/chat', {
+      const resp = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -189,7 +193,7 @@ export const App: React.FC = () => {
     setIsLoading(true)
 
     try {
-      const resp = await fetch('/api/vision/check', {
+      const resp = await fetch(`${API_BASE}/api/vision/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -241,7 +245,7 @@ export const App: React.FC = () => {
       .filter(Boolean)
 
     try {
-      const resp = await fetch('/api/admin/ingest', {
+      const resp = await fetch(`${API_BASE}/api/admin/ingest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data_roots: roots }),
