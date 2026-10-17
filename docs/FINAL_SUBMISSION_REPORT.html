@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>FlytBase Asset Intelligence Copilot — Final Report</title>
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 18mm 14mm 18mm 14mm;
+        @bottom-right {
+            content: counter(page);
+        }
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.45;
+        color: #111;
+        background: #fff;
+    }
+    h1 {
+        font-size: 18pt;
+        font-weight: 700;
+        border-bottom: 2px solid #000;
+        padding-bottom: 4px;
+        margin-top: 14pt;
+        margin-bottom: 8pt;
+        page-break-before: auto;
+    }
+    h2 {
+        font-size: 14pt;
+        font-weight: 700;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 3px;
+        margin-top: 12pt;
+        margin-bottom: 6pt;
+    }
+    h3 {
+        font-size: 11.5pt;
+        font-weight: 700;
+        margin-top: 10pt;
+        margin-bottom: 4pt;
+    }
+    p {
+        margin: 4pt 0;
+    }
+    pre {
+        background: #f4f4f4;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 8.5pt;
+        font-family: Consolas, monospace;
+        overflow-x: auto;
+        margin: 6pt 0;
+    }
+    code {
+        background: #f0f0f0;
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-family: Consolas, monospace;
+        font-size: 9pt;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 6pt 0 10pt 0;
+        font-size: 8.5pt;
+        page-break-inside: avoid;
+    }
+    th, td {
+        border: 1px solid #d0d7de;
+        padding: 4px 6px;
+        text-align: left;
+    }
+    th {
+        background: #f6f8fa;
+        font-weight: 600;
+    }
+    tr:nth-child(even) td {
+        background: #fcfcfc;
+    }
+    hr {
+        border: 0;
+        border-top: 1px solid #eaecef;
+        margin: 12pt 0;
+        page-break-after: always;
+    }
+    li {
+        margin-left: 18px;
+        margin-bottom: 2pt;
+    }
+    </style>
+</head>
+<body>
+<h1>Asset Intelligence Copilot — Final Evaluation & Architecture Report</h1>
+<p></p>
+<p><strong>Event:</strong> FlytBase Asset Copilot Hack Day (Hacktoberfest 2026)  </p>
+<p><strong>As of Date:</strong> 15 Jan 2027 · <strong>Fleet Scope:</strong> 600 Wells (7 Areas, 4 Production Teams)  </p>
+<p><strong>Live Submission Portal:</strong> <code>hackathonplatform-production.up.railway.app</code>  </p>
+<p></p>
+<hr/>
+<p></p>
+<h1>Page 1: System Design, Architecture & Tools</h1>
+<p></p>
+<pre>
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                       FLY T B A S E   C O P I L O T   A R C H I T E C T U R E               │
+├─────────────────────────┬──────────────────────────┬─────────────────────────┬──────────────┤
+│ 1. Immutable Raw Data   │ 2. Derived Domain Layer  │ 3. Append-Only Ledger   │ 4. Agent &amp; UI│
+│ • 600 Wells (assets)    │ • eff_inspection (delta) │ • ledger (event log)    │ • Gemma 4    │
+│ • 125,198 Inspections   │ • well_now (real status) │ • Scoped overrides      │ • Tools      │
+│ • 17,415 Maintenance    │ • spills (reportable)    │ • Private user memory   │ • Visuals    │
+│ • FTS5 Chunks (SOPs)    │ • Zero LLM arithmetic    │ • Conflict detection    │ • React UI   │
+└─────────────────────────┴──────────────────────────┴─────────────────────────┴──────────────┘
+</pre>
+<p></p>
+<h3>1. Core Mission & Architectural Principle</h3>
+<p>The system is built on one inviolable rule: <strong>Deterministic Python and SQLite own the facts, an LLM agent owns the conversation, and an append-only ledger owns memory and feedback</strong>.</p>
+<p></p>
+<li>**Zero LLM Math:** The LLM never counts, sums, computes uptime percentages, or calculates date windows. Every number, dollar total, and date is computed with mathematical determinism.</li>
+<li>**Zero Hardcoded Magic Numbers:** All operational thresholds (e.g. T200 15 °C delta, T350 20 °C delta, T500 25 °C delta, 5 % pad spill shut-in, 5.0 bbl reportable spill threshold) are dynamically extracted from `fleet/well-types/*.md` and `fleet/sops/*.md` into `rules.yaml` with verifiable file and section citations.</li>
+<li>**Strict Citation Provenance Gate:** Every bracketed citation (`[INS-...]`, `[MNT-...]`, `[CTX-...]`, `[LEDGER-...]`, `[DOC:...]`) emitted in prose must exist in that turn's tool evidence set. Hallucinated IDs are stripped before display.</li>
+<li>**High-Speed Idempotent Ingest:** Ingests all 600 wells, 125,198 weekly inspections, 17,415 maintenance records, 4,437 repair reports, and FTS5 documents in **8.92 seconds** without making external API calls.</li>
+<p></p>
+<h3>2. Multi-User Isolation & Scoped Feedback Ledger</h3>
+<li>**Private Isolation:** Private memory (`recall_wells`, user preferences) strictly enforces `WHERE user_id = ?`. Queries by Jessica Reed (`U-202`) never leak sessions from Michael Turner (`U-201`), and Nathan Pierce's (`U-601`) preference for thousand-dollar formatting (`$k`) never alters another user's display.</li>
+<li>**Shared Knowledge:** Operational updates (`"WELL-0333 pump was replaced"`) are committed to the append-only `ledger` with `scope_type='well'`, instantly updating the active recall list for all users while preserving full audit provenance.</li>
+<li>**Bi-Temporal State Diff:** Separates raw historical sensor data (Layer 1) from runtime human corrections and rule overrides (Layer 2), allowing operators to view both the raw sensor and the effective corrected state simultaneously.</li>
+<p></p>
+<h3>3. Generative UI Visual Contracts</h3>
+<p>The system outputs 8 distinct visual blocks rendered dynamically in a strict GitHub Primer Dark / Vercel Geist monochrome theme:</p>
+<p>1. <code>status_card</code>: Well operational status, telemetry, temperature delta, and active repair notes.</p>
+<p>2. <code>table</code>: Paginated tabular records with sortable columns and hyperlinked evidence tags.</p>
+<p>3. <code>line_chart</code>: Time-series trends (temperature histories, pressure test curves).</p>
+<p>4. <code>bar_chart</code>: Comparative breakdowns (waiting delay categories, repair counts).</p>
+<p>5. <code>map_view</code>: Geographic pin layouts with status coloring and coordinate tooltips.</p>
+<p>6. <code>heatmap</code>: Two-dimensional matrices (area × month downtime, spill frequencies).</p>
+<p>7. <code>conflict</code>: Side-by-side reconciliation of disagreeing claims or data corrections.</p>
+<p>8. <code>evidence</code>: Direct document snippets with section anchors and highlighted clauses.</p>
+<p></p>
+<hr/>
+<p></p>
+<h1>Page 2: Final Evaluation Outputs (Q1 to Q6)</h1>
+<p></p>
+<h3>Q1. Reservoir Pressure (Michael Turner, U-201)</h3>
+<li>**Question:** *"All our wells feed one reservoir. Map the reservoir pressure across the field from the pressure data."*</li>
+<li>**Reasoning & Domain Distinction:** The system identifies that downhole reservoir pore pressure (BHP) is not measured in wellhead inspection telemetry. The only pressure data in the system consists of surface flowline hydrostatic integrity tests (performed at 1.25× maximum operating pressure per SOP WS-05 `[DOC:field-work-sop.md#WS-05]`, ranging from 120 to 350 psi during line repairs) and wellhead pressure ratings (3,000 psi for WH-3000 per `[DOC:OM-T200#9.1]`).</li>
+<li>**Visual Emitted:** `map_view` rendering flowline test pressure pins across all wells.</li>
+<li>**Evidence:** `[DOC:OM-T200#9.1]`, `[DOC:field-work-sop.md#WS-05]`, `[MNT-0001-028]`, `[MNT-0002-031]`, etc.</li>
+<p></p>
+<h3>Q2. Best Producer in 2026 (Robert Hayes, U-301)</h3>
+<li>**Question:** *"Which well produced the most oil in 2026?"*</li>
+<li>**Reasoning & Domain Reality:** Individual wellhead oil volume (bbl/day) is not metered in the database (Problem Statement §2: *"Is the well producing oil? Nobody writes this down. You can tell from temperature..."*). 256 wells achieved 100% operational uptime (52/52 or 53/53 producing weeks with zero downtime). Among equipment classes, T500 electric submersible pump (ESP) wells in Southeast Blocks 31 and 32 move significantly more fluid than rod-lift wells (`[DOC:OM-T500#1]`).</li>
+<li>**Visual Emitted:** `table` showing top producing wells by uptime weeks and average delta temperature:</li>
+<table>
+<tr><th>Well</th><th>Type</th><th>Area</th><th>Producing Weeks (2026)</th><th>Uptime %</th><th>Avg Delta Temp</th><th>Max Delta</th><th>Evidence</th></tr>
+<tr><td>**WELL-0520**</td><td>T500</td><td>SE-31</td><td>53 / 53 weeks</td><td>100.0%</td><td>34.2 °C</td><td>42.1 °C</td><td>`[DOC:OM-T500#3]`</td></tr>
+<tr><td>**WELL-0545**</td><td>T500</td><td>SE-32</td><td>53 / 53 weeks</td><td>100.0%</td><td>32.8 °C</td><td>40.5 °C</td><td>`[DOC:OM-T500#3]`</td></tr>
+<tr><td>**WELL-0147**</td><td>T200</td><td>NE-07</td><td>53 / 53 weeks</td><td>100.0%</td><td>31.4 °C</td><td>38.6 °C</td><td>`[DOC:OM-T200#9.3]`</td></tr>
+</table>
+<p></p>
+<h3>Q3. Gas Reports & Timeliness (Laura Simmons, U-401)</h3>
+<li>**Question:** *"Since 1 Nov 2026, every time an operator note reports gas at a well, did we get someone out to that well in time under our operating procedures? List every report and whether the response met the deadline."*</li>
+<li>**Rule Applied:** OPS-1 (`[DOC:operations-sop-rev2.md#OPS-1]`). Response is a maintenance job (`started_at`) or manual inspection (`inspected_at` with `method='manual'`). Deadline: 24h before 1 Jan 2027; 12h from 1 Jan 2027.</li>
+<li>**Results:** 26 reports filed; **16 Met**, **10 Missed** (including WELL-0332 on 3 Dec where no response was ever dispatched).</li>
+<li>**Visual Emitted:** `table` with exact columns requested:</li>
+<table>
+<tr><th>Well</th><th>Area</th><th>Reported at</th><th>Response</th><th>Hours to response</th><th>Deadline</th><th>Met / Missed</th></tr>
+<tr><td>WELL-0163</td><td>NE-08</td><td>2026-11-03 20:55</td><td>`[MNT-0163-019]` 2026-11-14 08:00</td><td>251.1h</td><td>24 hours</td><td>**Missed**</td></tr>
+<tr><td>WELL-0149</td><td>NE-07</td><td>2026-11-06 18:20</td><td>`[MNT-0149-029]` 2026-11-07 08:00</td><td>13.7h</td><td>24 hours</td><td>**Met**</td></tr>
+<tr><td>WELL-0165</td><td>NE-08</td><td>2026-11-13 20:35</td><td>`[MNT-0165-031]` 2026-11-14 08:00</td><td>11.4h</td><td>24 hours</td><td>**Met**</td></tr>
+<tr><td>WELL-0341</td><td>NW-12</td><td>2026-11-19 07:40</td><td>`[INS-0341-0109]` 2026-12-17 13:30</td><td>677.8h</td><td>24 hours</td><td>**Missed**</td></tr>
+<tr><td>WELL-0332</td><td>NW-12</td><td>2026-12-03 12:10</td><td>None</td><td>N/A</td><td>24 hours</td><td>**Missed**</td></tr>
+<tr><td>WELL-0324</td><td>NW-12</td><td>2027-01-01 22:40</td><td>`[MNT-0324-036]` 2027-01-02 08:00</td><td>9.3h</td><td>12 hours</td><td>**Met**</td></tr>
+<tr><td>WELL-0599</td><td>SE-32</td><td>2027-01-06 17:20</td><td>`[INS-0599-0196]` 2027-01-07 09:45</td><td>16.4h</td><td>12 hours</td><td>**Missed**</td></tr>
+</table>
+<p></p>
+<h3>Q4. Temporary Flowline Bypasses (Chris Dalton, U-402)</h3>
+<li>**Question:** *"Across all areas, which temporary flowline bypasses are in place right now, and is each one allowed? Also list any bypass, past or present, that stayed in after its approval ran out or was never approved at all."*</li>
+<li>**Rule Applied:** OPS-2 (`[DOC:operations-sop-rev2.md#OPS-2]`). Allowed only if named in an unexpired MOC memo.</li>
+<li>**Visual Emitted:** `table` with exact columns requested:</li>
+<table>
+<tr><th>Well</th><th>Area</th><th>Bypass in</th><th>Bypass out</th><th>Approval</th><th>Approval valid until</th><th>Status</th></tr>
+<tr><td>**WELL-0248**</td><td>SE-31</td><td>2026-11-05</td><td>still in</td><td>`[DOC:moc-2026-044.md]`</td><td>2027-02-28</td><td>**Allowed**</td></tr>
+<tr><td>**WELL-0249**</td><td>SE-31</td><td>2026-11-25</td><td>still in</td><td>`[DOC:moc-2026-036.md]`</td><td>2026-12-15</td><td>**Expired**</td></tr>
+<tr><td>**WELL-0405**</td><td>NW-12</td><td>2026-12-20</td><td>still in</td><td>None</td><td>None</td><td>**Not approved**</td></tr>
+<tr><td>**WELL-0087**</td><td>SW-24</td><td>2026-12-02</td><td>2027-01-06</td><td>`[DOC:moc-2026-036.md]`</td><td>2026-12-15</td><td>**Expired**</td></tr>
+<tr><td>**WELL-0158**</td><td>NE-08</td><td>2026-11-20</td><td>2026-12-28</td><td>`[DOC:moc-2026-036.md]`</td><td>2026-12-15</td><td>**Expired**</td></tr>
+<tr><td>**WELL-0561**</td><td>SE-32</td><td>2026-12-08</td><td>2026-12-19</td><td>None</td><td>None</td><td>**Not approved**</td></tr>
+</table>
+<p></p>
+<h3>Q5. The Regulator's Letter (Michael Turner, U-201)</h3>
+<li>**Question:** *"The State Oil & Gas Commission wrote to us in November 2026 about spills. Which of our spills does the letter cover, and on which ones are we not compliant? Show me a table."*</li>
+<li>**Rule Applied:** `[DOC:regulator-letter-2026-11-20.md]` covers reportable spills (>= 5.0 bbl per `[DOC:spill-response-sop.md#SR-01]`) in NE-07 and NE-08 since 1 Jun 2026. HSE note specifies clean-up reports must state *"Soil samples sent to the lab."*</li>
+<li>**Visual Emitted:** `table` with exact columns requested:</li>
+<table>
+<tr><th>Well</th><th>Area</th><th>Inspection</th><th>Volume (bbl)</th><th>Clean-up job</th><th>Compliant?</th></tr>
+<tr><td>**WELL-0168**</td><td>NE-08</td><td>`[INS-0168-0190]` (2026-06-11)</td><td>5.6 bbl</td><td>`[MNT-0168-024]`</td><td>**Yes** (Soil samples sent to lab)</td></tr>
+<tr><td>**WELL-0123**</td><td>NE-07</td><td>`[INS-0123-0093]` (2026-09-24)</td><td>6.0 bbl</td><td>`[MNT-0123-014]`</td><td>**No** (Field readings only; no lab samples sent)</td></tr>
+<tr><td>**WELL-0277**</td><td>NE-07</td><td>`[INS-0277-0205]` (2026-10-01)</td><td>6.2 bbl</td><td>`[MNT-0277-031]`</td><td>**Yes** (Soil samples sent to lab)</td></tr>
+<tr><td>**WELL-0119**</td><td>NE-07</td><td>`[INS-0119-0209]` (2026-11-05)</td><td>6.0 bbl</td><td>`[MNT-0119-029]`</td><td>**Yes** (Soil samples sent to lab)</td></tr>
+<tr><td>**WELL-0182**</td><td>NE-08</td><td>`[INS-0182-0208]` (2026-12-03)</td><td>5.2 bbl</td><td>`[MNT-0182-028]`</td><td>**No** (No laboratory soil results recorded)</td></tr>
+<tr><td>**WELL-0262**</td><td>NE-08</td><td>`[INS-0262-0218]` (2027-01-07)</td><td>6.1 bbl</td><td>`[MNT-0262-029]`</td><td>**No** (No laboratory soil results recorded)</td></tr>
+</table>
+<p></p>
+<h3>Q6. Which Status is Right? (Nathan Pierce, U-601)</h3>
+<li>**Question:** *"Across the whole field, not just my area, for which wells do the latest inspection and the operator notes disagree about whether the well is producing oil? For each one, what is its real status right now, and why?"*</li>
+<li>**Rule Applied:** OPS-3 (`[DOC:operations-sop-rev2.md#OPS-3]`). Most recent evidence governs. Newer shut-in note = Not producing (shut in). Newer restart note = Producing (unconfirmed).</li>
+<li>**Visual Emitted:** `table` with exact columns requested:</li>
+<table>
+<tr><th>Well</th><th>Area</th><th>Latest inspection</th><th>Latest operator note</th><th>Status now</th></tr>
+<tr><td>**WELL-0071**</td><td>SW-24</td><td>`[INS-0071-0220]` 2027-01-14: Producing (delta 18.2 °C)</td><td>`[CTX-0071-004]` 2027-01-14 16:30: "Shut in WELL-0071 for belt repair"</td><td>**Not producing oil (shut in)** — Note post-dates inspection</td></tr>
+<tr><td>**WELL-0284**</td><td>SW-24</td><td>`[INS-0284-0220]` 2027-01-14: Producing (delta 19.5 °C)</td><td>`[CTX-0284-004]` 2027-01-14 17:15: "Shut in WELL-0284 for valve work"</td><td>**Not producing oil (shut in)** — Note post-dates inspection</td></tr>
+<tr><td>**WELL-0422**</td><td>NW-12</td><td>`[INS-0422-0220]` 2027-01-14: Producing (delta 21.0 °C)</td><td>`[CTX-0422-004]` 2027-01-14 18:00: "Shut in for separator high pressure"</td><td>**Not producing oil (shut in)** — Note post-dates inspection</td></tr>
+<tr><td>**WELL-0481**</td><td>SE-32</td><td>`[INS-0481-0220]` 2027-01-14: Producing (delta 22.4 °C)</td><td>`[CTX-0481-004]` 2027-01-14 18:30: "Shut in for separator high pressure"</td><td>**Not producing oil (shut in)** — Note post-dates inspection</td></tr>
+</table>
+<p></p>
+<hr/>
+<p></p>
+<h1>Page 3: Final Evaluation Outputs (Q7 to Q11)</h1>
+<p></p>
+<h3>Q7. What the Operators Are Hearing (Robert Hayes, U-301)</h3>
+<li>**Turn 1 (Ranking Table):** Operators recorded rod squeal/knocking notes on wells that have received no corrective repair since. Ranked by 12-month corrective repair frequency and thermal stress:</li>
+<table>
+<tr><th>Rank</th><th>Well</th><th>Area</th><th>Operator-note evidence</th><th>Other warning signs in data</th><th>Last repair on the well</th></tr>
+<tr><td>**1**</td><td>**WELL-0297**</td><td>NE-07</td><td>`[CTX-0297-004]` (2027-01-11): *"Rod squeal at stuffing box, greased rod"*</td><td>6 corrective repairs in 12m (chronic); temp delta 26.5 °C</td><td>`[MNT-0297-036]` (2027-01-08, Prime mover failure)</td></tr>
+<tr><td>**2**</td><td>**WELL-0062**</td><td>SW-24</td><td>`[CTX-0062-006]` (2026-12-30): *"Rod squeal at stuffing box, greased rod"*</td><td>4 corrective repairs in 12m; temp delta 21.3 °C</td><td>`[MNT-0062-031]` (2026-12-25, Flowline leak)</td></tr>
+<tr><td>**3**</td><td>**WELL-0005**</td><td>SW-23</td><td>`[CTX-0005-006]` (2027-01-08): *"Rod squeal at stuffing box, greased rod"*</td><td>T350 deep well; 4 corrective repairs in 12m</td><td>`[MNT-0005-035]` (2026-12-14, Scheduled lube)</td></tr>
+<tr><td>**4**</td><td>**WELL-0089**</td><td>SW-24</td><td>`[CTX-0089-001]` (2027-01-12): *"Rod squeal at stuffing box, greased rod"*</td><td>4 corrective repairs in 12m; temp delta 32.7 °C</td><td>`[MNT-0089-033]` (2027-01-01, Flowline leak)</td></tr>
+<tr><td>**5**</td><td>**WELL-0260**</td><td>SW-24</td><td>`[CTX-0260-005]` (2027-01-06): *"Rod squeal at stuffing box, greased rod"*</td><td>4 corrective repairs in 12m; temp delta 36.1 °C</td><td>`[MNT-0260-037]` (2026-12-04, Flowline leak)</td></tr>
+</table>
+<li>**Turn 2 (Top 3 Crew Recommendation):** Send crews first to **WELL-0297** (fleet-leading 6 corrective jobs, recent prime mover breakdown Jan 8, imminent rod parting), **WELL-0062** (4 repairs, recent spill), and **WELL-0005** (high-load T350 deep well).</li>
+<p></p>
+<h3>Q8. Who Told You That? (4 Sessions, 5 Turns)</h3>
+<li>**Turn 1 (Nathan Pierce):** Nathan states WELL-0333 pump was swapped. Recorded in append-only ledger `[LEDGER-...]`, scoping `scope_type='well'`, immediately removing it from the active recall list.</li>
+<li>**Turn 2 (Nathan Pierce):** Nathan sets private preferences (sort by Area/Well, costs in $k). Saved to private user profile `[LEDGER-...]` with strict isolation.</li>
+<li>**Turn 3 (Robert Hayes):** Robert queries active recalled pumps in ground. Recalls 11 pumps (correctly excluding Nathan's WELL-0333 update, citing Supplier Notice `[DOC:supplier-recall-notice-2026-12-01.md]` and maintenance reports).</li>
+<li>**Turn 4 (Olivia Grant):** Olivia states Nathan told her WELL-0577 was swapped. Recorded in ledger `[LEDGER-...]`, taking WELL-0577 off the recall list.</li>
+<li>**Turn 5 (Nathan Pierce):** Nathan asks for recalled pumps in his area (NW-12) and costs. System returns 6 remaining pumps in NW-12 (`WELL-0305, WELL-0340, WELL-0398, WELL-0426, WELL-0427, WELL-0428`), formatted in thousands ($k) per his private Turn 2 preference:</li>
+<table>
+<tr><th>Well</th><th>Area</th><th>Pump Model & Lot</th><th>Installed On Job</th><th>Installation Cost</th><th>Provenance</th></tr>
+<tr><td>WELL-0305</td><td>NW-12</td><td>Highline RP-175 (LOT-2409-A)</td><td>`[MNT-0305-032]` (2026-10-21)</td><td>**$24.5k**</td><td>MNT-0305-032, Recall Notice</td></tr>
+<tr><td>WELL-0340</td><td>NW-12</td><td>Highline RP-175 (LOT-2409-A)</td><td>`[MNT-0340-031]` (2026-04-15)</td><td>**$34.3k**</td><td>MNT-0340-031, Recall Notice</td></tr>
+<tr><td>WELL-0398</td><td>NW-12</td><td>Highline RP-175 (LOT-2409-C)</td><td>`[MNT-0398-018]` (2026-03-31)</td><td>**$19.7k**</td><td>MNT-0398-018, Recall Notice</td></tr>
+<tr><td>WELL-0426</td><td>NW-12</td><td>Highline RP-175 (LOT-2409-C)</td><td>`[MNT-0426-030]` (2026-06-24)</td><td>**$24.0k**</td><td>MNT-0426-030, Recall Notice</td></tr>
+<tr><td>WELL-0427</td><td>NW-12</td><td>Highline RP-175 (LOT-2409-C)</td><td>`[MNT-0427-020]` (2026-02-18)</td><td>**$30.1k**</td><td>MNT-0427-020, Recall Notice</td></tr>
+<tr><td>WELL-0428</td><td>NW-12</td><td>Highline RP-175 (LOT-2410-B)</td><td>`[MNT-0428-022]` (2026-03-17)</td><td>**$27.1k**</td><td>MNT-0428-022, Recall Notice</td></tr>
+</table>
+<p></p>
+<h3>Q9. One Conversation, Several Topics (Robert Hayes, U-301)</h3>
+<p>1. <strong>Recalled pumps count:</strong> <strong>10 pumps</strong> remaining in the ground across 4 areas: 6 in NW-12, 2 in NE-08, 1 in SW-23, and 1 in SE-32 (<code>[DOC:supplier-recall-notice-2026-12-01.md]</code>, ledger updates).</p>
+<p>2. <strong>Northwest Production Lead & Wells:</strong> Led by <strong>Nathan Pierce</strong> (User ID: <code>U-601</code>, production supervisor); runs <strong>150 wells</strong> (<code>WELL-0301</code> to <code>WELL-0450</code> in NW-12 per <code>[DOC:users.json#U-601]</code>).</p>
+<p>3. <strong>Cold Weather SOP & Missed Check:</strong> Under OPS-5 (<code>[DOC:operations-sop-rev2.md#OPS-5]</code>), producing wells with ambient temp <= −5.0 °C require a heat trace check within 7 days. <strong>WELL-0310</strong> missed this check in December (ambient −6.0 °C on 17 Dec <code>[INS-0310-0213]</code>, no check within 7 days).</p>
+<p>4. <strong>Gas smell at WELL-0332 on 3 Dec:</strong> Operator note <code>[CTX-0332-004]</code> reported a gas odor at 12:10 UTC. <strong>No H2S reading was ever taken or recorded</strong> because no field response was ever dispatched, in direct violation of OPS-1 (<code>[DOC:operations-sop-rev2.md#OPS-1]</code>).</p>
+<p>5. <strong>Recalled pumps producing status:</strong> Exactly <strong>one well is not producing oil right now</strong>: <strong>WELL-0160</strong> in NE-08 (latest inspection <code>[INS-0160-0220]</code> on 14 Jan 2027 shows wellhead 11.2 °C, delta 3.8 °C < 15.0 °C threshold <code>[DOC:OM-T200#9.3]</code>; last repaired <code>[MNT-0160-032]</code> on 15 Jan 2027). The other 9 wells are actively producing oil.</p>
+<p>6. <strong>Triage Priority:</strong> Deal with <strong>WELL-0332</strong> first as an acute safety hazard (unverified gas odor with no H2S reading for over a month). Second priority is <strong>WELL-0160</strong> (already shut in and past the 31 Dec recall replacement deadline, allowing pump replacement with zero incremental lost production).</p>
+<p></p>
+<h3>Q10. What Are We Waiting On? (Michael Turner, U-201)</h3>
+<li>**Question:** *"When a well stays shut in longer than the repair itself, what are we usually waiting on: parts, crews, contractors or weather? Break it down by area for jobs started in 2026, with the typical number of extra days, and tell me if any area stands out."*</li>
+<li>**Empirical Findings:** Across the field, **waiting on crews** is the most frequent delay (50.0% to 85.7% of delay events, typically adding 7.0 extra days). However, **Southeast Block 32 (SE-32)** stands out dramatically: parts delays average **28.0 extra days** (4 full weeks)—over double any other area in the field.</li>
+<li>**Visual Emitted:** `table` and stacked `bar_chart` by area:</li>
+<table>
+<tr><th>Area</th><th>Primary Reason</th><th>Share (%)</th><th>Typical Extra Days</th><th>Notable Delay Pattern</th></tr>
+<tr><td>**SE-32**</td><td>Crews (60.0%) / Parts (20.0%)</td><td>20.0% parts</td><td>**28.0 days (parts)**</td><td>**Severe vendor supply chain bottleneck**</td></tr>
+<tr><td>**NW-12**</td><td>Crews (74.2%) / Weather (25.8%)</td><td>74.2% crews</td><td>7.0 days</td><td>Crew dispatch backlog & winter freezes</td></tr>
+<tr><td>**NE-07**</td><td>Crews (78.9%) / Weather (21.1%)</td><td>78.9% crews</td><td>7.0 days</td><td>Standard 1-week crew scheduling delay</td></tr>
+<tr><td>**SE-31**</td><td>Crews (50.0%) / Weather (35.7%)</td><td>35.7% weather</td><td>7.0 days</td><td>High weather delays during cold snaps</td></tr>
+</table>
+<p></p>
+<h3>Q11. Hotter Wells (Olivia Grant, U-501)</h3>
+<li>**Question:** *"Which region of the field consistently runs hotter?"*</li>
+<li>**Empirical Findings:** The **Southeast region** consistently runs significantly hotter than all other areas across 125,198 historical inspections. **Southeast Block 31 (SE-31)** runs the hottest overall with an average wellhead temperature of **52.8 °C** and an average delta of **31.4 °C** above ambient air temperature, followed by **Southeast Block 32 (SE-32)** at **50.8 °C** (delta **29.2 °C**). In contrast, Northwest Block 12 (50.1 °C), Northeast (48.3–48.8 °C), and Southwest (47.7–48.6 °C) run noticeably cooler. The Southeast's thermal elevation is driven by deeper production horizons and high-rate T500 electric submersible pumps.</li>
+<li>**Visual Emitted:** `table` ranking all 7 field blocks by historical average wellhead temperature and ambient delta.</li>
+<p></p>
+</body>
+</html>
