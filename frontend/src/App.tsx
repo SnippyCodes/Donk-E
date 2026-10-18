@@ -145,6 +145,7 @@ export const App: React.FC = () => {
     assets?: number
     inspections?: number
     ledger_entries?: number
+    engines?: { mem0_configured?: boolean; exa_configured?: boolean }
   }>({})
 
   // Modals
@@ -182,6 +183,7 @@ export const App: React.FC = () => {
             assets: d.counts.assets,
             inspections: d.counts.inspections,
             ledger_entries: d.counts.ledger_entries,
+            engines: d.engines || {},
           })
         }
       })
@@ -413,6 +415,25 @@ export const App: React.FC = () => {
               <CheckCircle2 size={11} color="#10b981" />
               <span>0 LLM Math</span>
             </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {[
+              { label: 'SQLite WAL + FTS5', active: true, title: 'Primary local store and document search' },
+              { label: 'Mem0 Scoped Memory', active: !!systemStats.engines?.mem0_configured, title: systemStats.engines?.mem0_configured ? 'Remote per-user semantic memory active' : 'SQLite private-memory fallback active' },
+              { label: 'Exa Semantic Search', active: !!systemStats.engines?.exa_configured, title: systemStats.engines?.exa_configured ? 'External semantic search configured' : 'External search is offline; local search remains available' },
+            ].map(engine => (
+              <span key={engine.label} title={engine.title} style={{
+                padding: '2px 6px',
+                borderRadius: '4px',
+                border: '1px solid #27272a',
+                background: '#121215',
+                color: engine.active ? '#10b981' : '#71717a',
+                fontSize: '9px',
+                fontFamily: "'JetBrains Mono', monospace",
+                whiteSpace: 'nowrap',
+              }}>{engine.label}</span>
+            ))}
           </div>
 
           <div style={{ width: '1px', height: '16px', background: '#27272a' }} />

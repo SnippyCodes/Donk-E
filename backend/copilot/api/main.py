@@ -1,4 +1,5 @@
 import json
+import os
 import sqlite3
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -67,6 +68,11 @@ def get_health() -> Dict[str, Any]:
                 "assets": asset_count,
                 "inspections": inspection_count,
                 "ledger_entries": ledger_count,
+            },
+            "engines": {
+                "sqlite": "SQLite WAL + FTS5",
+                "mem0_configured": agent.memory_adapter.remote_enabled,
+                "exa_configured": bool(os.getenv("EXA_API_KEY") and not os.getenv("EXA_API_KEY", "").lower().startswith("your_")),
             },
         }
     finally:

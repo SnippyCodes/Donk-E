@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Set, Tuple
 
 
 CITATION_PATTERN = re.compile(
-    r"\[(INS-[A-Za-z0-9-]+|MNT-[A-Za-z0-9-]+|REG-[A-Za-z0-9-]+|CTX-[A-Za-z0-9-]+|LEDGER-[A-Za-z0-9-]+|DOC:[^\]]+|RPT:[^\]]+)\]"
+    r"\[(INS-[A-Za-z0-9-]+|MNT-[A-Za-z0-9-]+|REG-[A-Za-z0-9-]+|CTX-[A-Za-z0-9-]+|LEDGER-[A-Za-z0-9-]+|DOC:[^\]]+|RPT:[^\]]+|EXA:[^\]]+)\]"
 )
 
 

@@ -38,13 +38,13 @@
 │  - compliance.py (SR-01..03, RC-02, RC-04, RCA triggers)                    │
 │  - params.py (Hierarchical scoping: fleet -> well_type -> well)             │
 │  - claims.py (Empirical contradiction detection & dispute resolution)       │
-│  - recall.py (SQL-isolated per-user private memory: WHERE user_id = ?)       │
+│  - recall.py + Mem0Adapter (SQLite primary; Mem0 scoped by user_id)          │
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │ Ingest & Materialize (< 2.5s)
 ┌──────────────────────────────────────▼──────────────────────────────────────┐
 │                   SQLITE 3 ENGINE (WAL MODE + FTS5)                         │
 │  - Raw Immutable Tables: assets, inspections, maintenance, context_notes    │
-│  - FTS5 Virtual Table: doc_chunks_fts (indexed SOPs & manuals)              │
+│  - FTS5 + Hybrid RRF local docs; optional Exa external source grounding      │
 │  - Materialized Derived Tables: eff_inspection, well_now, spills            │
 │  - Level-1 Shared Fleet Memory: append-only ledger audit log                 │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -79,9 +79,12 @@
 git clone https://github.com/SnippyCodes/Donk-E.git
 cd Donk-E
 
-# 2. Configure environment (copy example)
+# 2. Install Python dependencies and configure environment
+uv pip install -r requirements.txt
 cp .env.example .env
-# Edit .env with your OPENROUTER_API_KEY
+# Add OPENROUTER_API_KEY; MEM0_API_KEY and EXA_API_KEY are optional
+# To install M8 hosted clients: uv pip install -r requirements-m8.txt
+# Without Mem0/Exa credentials, scoped SQLite recall and local FTS5 search remain active
 ```
 
 ### Start Backend API Server

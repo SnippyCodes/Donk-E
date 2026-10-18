@@ -8,6 +8,7 @@ export interface EvidenceBlockProps {
     title: string
     snippet?: string
     source?: string
+    url?: string
   }>
   evidence_ids: string[]
 }
@@ -77,6 +78,13 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {data.evidence_items.map((item, idx) => {
           const isOpen = expanded[idx] !== false
+          let safeUrl: string | undefined
+          try {
+            const parsedUrl = item.url ? new URL(item.url) : null
+            if (parsedUrl && (parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:')) safeUrl = parsedUrl.toString()
+          } catch {
+            safeUrl = undefined
+          }
           return (
             <div
               key={idx}
@@ -104,7 +112,11 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {isOpen ? <ChevronDown size={14} color="#a1a1aa" /> : <ChevronRight size={14} color="#a1a1aa" />}
                   <FileText size={14} color="#f59e0b" />
-                  <strong style={{ fontSize: '12.5px', color: '#f4f4f5' }}>{item.title}</strong>
+                  {safeUrl ? (
+                    <a href={safeUrl} target="_blank" rel="noopener noreferrer" onClick={event => event.stopPropagation()} style={{ fontSize: '12.5px', color: '#60a5fa', textDecoration: 'none' }}>{item.title}</a>
+                  ) : (
+                    <strong style={{ fontSize: '12.5px', color: '#f4f4f5' }}>{item.title}</strong>
+                  )}
                 </div>
 
                 <span style={{

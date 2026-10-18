@@ -1,0 +1,4 @@
+# Optional hosted semantic integrations for M8.
+# The backend imports these lazily; local SQLite/FTS5 fallbacks need neither package.
+mem0ai>=0.1.0
+exa-py>=1.0.0

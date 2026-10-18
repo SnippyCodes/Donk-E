@@ -1,7 +1,12 @@
 import json
+import os
+import re
 import sqlite3
 import time
 from typing import Any, Dict, List, Optional
+
+from src.domain.exa_search import is_external_oilfield_query
+from src.memory.mem0_adapter import Mem0Adapter
 
 from backend.copilot.agent.guardrails import CitationGuardrail
 from backend.copilot.agent.llm import LLMClient
@@ -13,8 +18,9 @@ from backend.copilot.tools.registry import TOOL_DEFINITIONS, execute_tool
 class AgentLoop:
     """Provider-agnostic agent loop executing tool-calling, citation guardrails, and generative UI."""
 
-    def __init__(self, llm_client: Optional[LLMClient] = None):
+    def __init__(self, llm_client: Optional[LLMClient] = None, memory_adapter: Optional[Mem0Adapter] = None):
         self.llm = llm_client or LLMClient()
+        self.memory_adapter = memory_adapter or Mem0Adapter()
         self.guardrail = CitationGuardrail(strip_invalid=True)
 
     def run_turn(
@@ -39,12 +45,35 @@ class AgentLoop:
             messages = [{"role": "system", "content": SYSTEM_PROMPT}]
             if history:
                 messages.extend(history)
+            memory_results = self.memory_adapter.search(message, user_id=user_id, conn=conn, limit=5)
+            if memory_results:
+                memory_lines = [str(item.get("memory", "")).strip() for item in memory_results]
+                memory_summary = "\n".join(line for line in memory_lines if line)[:2400]
+                if memory_summary:
+                    messages[0]["content"] += (
+                        "\n\nPrivate long-term memory for this user (continuity hints only; "
+                        "verify operational claims against current deterministic tool evidence):\n"
+                        + memory_summary
+                    )
             messages.append({"role": "user", "content": message})
 
-            # Fast-path deterministic route check (Rule 1 & Rule 2: Zero LLM Math)
-            deterministic_call = self.llm._route_query_to_tool(message)
+            # External regulatory/industry context is explicitly routed to Exa.
+            if is_external_oilfield_query(message):
+                deterministic_call = {
+                    "name": "search_external_oilfield_knowledge",
+                    "args": {"query": message, "limit": 5},
+                }
+            else:
+                # Fast-path deterministic route check (Rule 1 & Rule 2: Zero LLM Math)
+                deterministic_call = self.llm._route_query_to_tool(message)
             if deterministic_call:
-                tool_calls = [{"id": "det_call_0", **deterministic_call}]
+                if deterministic_call.get("name") == "search_external_oilfield_knowledge":
+                    tool_calls = [
+                        {"id": "det_call_local_docs", "name": "search_documentation", "args": {"query": message}},
+                        {"id": "det_call_external", **deterministic_call},
+                    ]
+                else:
+                    tool_calls = [{"id": "det_call_0", **deterministic_call}]
                 llm_resp = {"content": "", "tool_calls": tool_calls, "model": "deterministic-router"}
             else:
                 # LLM invocation for conversational queries
@@ -56,7 +85,6 @@ class AgentLoop:
             conflicts: List[Dict[str, Any]] = []
             tools_trace: List[Dict[str, Any]] = []
             raw_prose = llm_resp.get("content", "")
-            target_asset_id: Optional[str] = None
 
             # Execute tool calls
             raw_tool_results = []
@@ -64,11 +92,6 @@ class AgentLoop:
                 for tc in tool_calls:
                     fn_name = tc["name"]
                     fn_args = tc.get("args", {})
-                    if "asset_id" in fn_args:
-                        target_asset_id = fn_args["asset_id"]
-                    elif "well_id" in fn_args:
-                        target_asset_id = fn_args["well_id"]
-
                     if fn_name == "get_area_spills_map" and "reportable" in message.lower():
                         fn_args["reportable_only"] = True
 
@@ -107,8 +130,40 @@ class AgentLoop:
                 # Turn 2: Deterministic fact synthesis or conversational LLM synthesis
                 if not raw_prose and raw_tool_results:
                     if deterministic_call:
-                        # Deterministic synthesis guarantees 0 LLM math and strict citation grounding (Rule 1 & Rule 6)
-                        raw_prose = self.llm._synthesize_prose(raw_tool_results[0])
+                        if deterministic_call.get("name") == "search_external_oilfield_knowledge":
+                            local_result: Dict[str, Any] = {}
+                            external_result: Dict[str, Any] = {}
+                            for called_tool, result in zip(tool_calls, raw_tool_results):
+                                if called_tool.get("name") == "search_documentation":
+                                    local_result = result
+                                elif called_tool.get("name") == "search_external_oilfield_knowledge":
+                                    external_result = result
+                            local_citations = [
+                                f"[{evidence_id}]"
+                                for evidence_id in local_result.get("evidence_ids", [])
+                                if str(evidence_id).startswith("DOC:")
+                            ]
+                            exa_citations = [
+                                row.get("citation", "")
+                                for row in external_result.get("results", [])
+                                if row.get("citation")
+                            ]
+                            prose_parts = []
+                            if local_citations:
+                                prose_parts.append("Related local procedure references are also shown: " + " ".join(local_citations))
+                            if exa_citations:
+                                prose_parts.append(
+                                    "External references returned by Exa are shown below; verify their applicability to local procedures. "
+                                    + " ".join(exa_citations)
+                                )
+                            elif local_citations:
+                                prose_parts.append("External web search is unavailable; use the cited local procedure references below.")
+                            else:
+                                prose_parts.append("External web search is unavailable right now. I found no external sources to cite; local SQLite manuals and SOP search remains available.")
+                            raw_prose = " ".join(prose_parts)
+                        else:
+                            # Deterministic synthesis guarantees 0 LLM math and strict citation grounding (Rule 1 & Rule 6)
+                            raw_prose = self.llm._synthesize_prose(raw_tool_results[0])
                     elif getattr(self.llm, "provider", "") in ("openrouter", "gemma", "ollama", "openai", "vllm") and getattr(self.llm, "api_key", None):
                         try:
                             turn2_messages = list(messages)
@@ -177,20 +232,35 @@ class AgentLoop:
                 conn=conn,
             )
 
-            # Save session recall for discussed well if present
-            if target_asset_id:
-                execute_tool(
-                    "save_recall",
+            # Synchronously persist this user's turn and discussed wells in SQLite first.
+            memory_source = message + "\n" + final_prose + "\n" + json.dumps(raw_tool_results, default=str)
+            discussed_wells = list(dict.fromkeys(re.findall(r"\bWELL-\d{4}\b", memory_source, flags=re.IGNORECASE)))
+            discussed_wells = [well.upper() for well in discussed_wells]
+            from src.memory.recall import record_turn
+            record_turn(
+                user_id=user_id,
+                conn=conn,
+                session_id=sess_id,
+                query_text=message,
+                response_summary=final_prose[:2000],
+                last_discussed_wells=discussed_wells,
+            )
+            self.memory_adapter.add(
+                [
+                    {"role": "user", "content": message},
                     {
-                        "key": f"last_well_{target_asset_id}",
-                        "value_json": {"well_id": target_asset_id, "query": message},
+                        "role": "assistant",
+                        "content": final_prose + ("\nDiscussed wells: " + ", ".join(discussed_wells) if discussed_wells else ""),
                     },
-                    user_id=user_id,
-                    session_id=sess_id,
-                    conn=conn,
-                )
+                ],
+                user_id=user_id,
+            )
 
             total_elapsed_ms = round((time.perf_counter() - turn_start) * 1000, 2)
+            exa_search_succeeded = any(
+                tool.get("name") == "search_external_oilfield_knowledge" and result.get("status") == "ok"
+                for tool, result in zip(tools_trace, raw_tool_results)
+            )
 
             agent_trace = {
                 "tools_invoked": tools_trace,
@@ -199,6 +269,10 @@ class AgentLoop:
                 "grounded_ids": audit_result["valid_citations"],
                 "model": llm_resp.get("model", "google/gemma-4-26b-a4b-it:free"),
                 "provider": getattr(self.llm, "provider", "openrouter"),
+                "memory_engine": self.memory_adapter.engine_name,
+                "semantic_memories_used": len(memory_results),
+                "search_engine": "sqlite_fts5+exa" if exa_search_succeeded else "sqlite_fts5",
+                "exa_configured": bool(os.getenv("EXA_API_KEY") and not os.getenv("EXA_API_KEY", "").lower().startswith("your_")),
                 "total_latency_ms": total_elapsed_ms,
             }
 

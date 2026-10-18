@@ -32,3 +32,8 @@ The Asset Intelligence Copilot is an AI-powered operations assistant for oil and
 5. **Presentation & Generative UI Layer (`backend/copilot/tools/`, `frontend/`):**
    - Visual payload generation for 8 block types: StatusCard, Table, LineChart, BarChart, MapView, Heatmap, Conflict, and Evidence.
    - Provider-agnostic agent loop with citation guardrails.
+
+6. **Optional Semantic Integrations (M10 / requested M8):**
+   - `src/memory/mem0_adapter.py` scopes every Mem0 `add` and `search` with the server-injected `user_id`. SQLite `user_messages` remains the synchronous primary store; Mem0 failures fall back to SQLite-only recall.
+   - `src/domain/exa_search.py` is invoked only for explicit external regulatory or industry requests. Local manuals and maintenance reports continue through SQLite FTS5 + Hybrid RRF.
+   - Exa results are URL-validated and enter the turn evidence set as `[EXA:title|url]`; missing credentials/network errors produce no external citations.

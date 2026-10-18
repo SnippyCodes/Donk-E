@@ -18,6 +18,7 @@ from backend.copilot.tools.analytics import (
     tool_get_bitemporal_audit_diff,
 )
 from backend.copilot.tools.docs_tools import tool_search_documentation
+from backend.copilot.tools.exa_tools import tool_search_external_oilfield_knowledge
 from backend.copilot.tools.memory_tools import (
     tool_record_correction,
     tool_record_rule_override,
@@ -220,6 +221,18 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
         },
     },
     {
+        "name": "search_external_oilfield_knowledge",
+        "description": "Search external sources for EPA/OSHA spill rules, API RP 11L standards, regulatory context, or oilfield industry benchmarks. Use only when the operator asks for external guidance; local fleet manuals and SOPs remain in search_documentation.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "External regulatory or oilfield knowledge query"},
+                "limit": {"type": "integer", "description": "Maximum external results", "default": 5},
+            },
+            "required": ["query"],
+        },
+    },
+    {
         "name": "record_correction",
         "description": "Record a correction to sensor data or inspection findings in the immutable ledger.",
         "parameters": {
@@ -385,6 +398,7 @@ DISPATCH_MAP: Dict[str, Callable[..., Any]] = {
     "get_well_compliance_audit": tool_get_well_compliance_audit,
     "get_uncontained_spills": tool_get_uncontained_spills,
     "search_documentation": tool_search_documentation,
+    "search_external_oilfield_knowledge": tool_search_external_oilfield_knowledge,
     "record_correction": tool_record_correction,
     "record_rule_override": tool_record_rule_override,
     "record_well_fact": tool_record_well_fact,

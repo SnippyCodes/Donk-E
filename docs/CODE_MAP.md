@@ -86,5 +86,11 @@
 | `backend/tests/test_e2e_qa.py` | M9 | Pytest test harness validating all 18 cases across 4 pillars | Completed (100% green) |
 | `scripts/run_qa_audit.py` | M9 | Automated standalone CLI audit script emitting pass/fail matrix and bug log | Completed (100% green) |
 | `docs/QA_REPORT.md` | M9 | Comprehensive QA report: 4-layer architecture, 5 bugs caught & fixed, full matrix | Completed |
-| `backend/copilot/api/main.py` (`/api/qa/audit`) | M9 | Exposes full E2E 18/18 audit results and bug remediation log to UI and CLI | Completed |
+| `backend/copilot/api/main.py` (`/api/qa/audit`) | M9 | Exposes full E2E 18-case audit results and remediation log to UI and CLI | Completed |
+| `src/memory/mem0_adapter.py` | M10 / requested M8 | User-scoped Mem0 semantic memory with SQLite private-history fallback | Completed; optional API key |
+| `src/domain/exa_search.py` | M10 / requested M8 | External oilfield/regulatory semantic search with `[EXA:title|url]` citations | Completed; optional API key |
+| `backend/copilot/tools/exa_tools.py` + `tools/registry.py` | M10 / requested M8 | Explicit external research tool; local FTS5/Hybrid RRF remains primary for local docs | Completed |
+| `backend/copilot/agent/loop.py` | M10 / requested M8 | Syncs each turn to SQLite then Mem0, retrieves scoped memory, routes external context, traces engines | Completed |
+| `frontend/src/App.tsx`, `Chat.tsx`, `blocks/Evidence.tsx` | M10 / requested M8 | Engine badges and clickable external evidence citations | Completed |
+| `backend/tests/test_m8_mem0_and_exa.py` | M10 / requested M8 | Tests tenant isolation, SQLite fallback, Exa citation/fallback, agent routing and sync | Added |
 

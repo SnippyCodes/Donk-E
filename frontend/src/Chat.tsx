@@ -45,6 +45,10 @@ export interface ChatMessage {
     grounded_ids?: string[]
     model?: string
     provider?: string
+    memory_engine?: string
+    semantic_memories_used?: number
+    search_engine?: string
+    exa_configured?: boolean
     total_latency_ms?: number
   }
   timestamp: string
@@ -207,8 +211,20 @@ export const Chat: React.FC<ChatProps> = ({
   // Parse text with bracketed citations into interactive badges
   const renderFormattedText = (text: string) => {
     if (!text || typeof text !== 'string') return null
-    const parts = text.split(/(\[[A-Za-z0-9-]+\]|\[DOC:[^\]]+\]|\[RPT:[^\]]+\]|\[LEDGER-[^\]]+\])/g)
+    const parts = text.split(/(\[[A-Za-z0-9-]+\]|\[DOC:[^\]]+\]|\[RPT:[^\]]+\]|\[LEDGER-[^\]]+\]|\[EXA:[^\]]+\])/g)
     return parts.map((part, idx) => {
+      if (part.startsWith('[EXA:') && part.endsWith(']')) {
+        const separator = part.lastIndexOf('|')
+        const url = separator > 0 ? part.slice(separator + 1, -1) : ''
+        try {
+          const parsedUrl = new URL(url)
+          if (parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:') {
+            return <a key={idx} href={parsedUrl.toString()} target="_blank" rel="noopener noreferrer" title={`Open external source: ${part}`} style={{ color: '#60a5fa', textDecoration: 'underline' }}>{part}</a>
+          }
+        } catch {
+          // Keep malformed or untrusted links as plain citation text.
+        }
+      }
       if (part.startsWith('[') && part.endsWith(']')) {
         return (
           <span
@@ -437,6 +453,19 @@ export const Chat: React.FC<ChatProps> = ({
                         <span>·</span>
                         <span style={{ color: '#a1a1aa' }}>
                           Tools: {toolSummary}
+                        </span>
+                        {trace?.memory_engine && (
+                          <span title="Per-user conversational memory engine" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: trace.memory_engine === 'sqlite+mem0' ? '#10b981' : '#a1a1aa' }}>
+                            {trace.memory_engine === 'sqlite+mem0' ? 'Mem0 Scoped Memory' : 'Mem0 Scoped Memory · SQLite fallback'}
+                          </span>
+                        )}
+                        {trace?.search_engine && (
+                          <span title="Local documentation search remains primary; Exa handles explicit external research" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: trace.search_engine.includes('+exa') ? '#10b981' : '#a1a1aa' }}>
+                            {trace.search_engine.includes('+exa') ? 'Exa Semantic Search' : 'Exa Semantic Search · inactive'}
+                          </span>
+                        )}
+                        <span title="Deterministic local database and document index" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: '#10b981' }}>
+                          SQLite WAL + FTS5
                         </span>
                         {msg.evidence_ids && msg.evidence_ids.length > 0 && (
                           <>
