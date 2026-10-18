@@ -63,7 +63,7 @@ export const MapViewBlock: React.FC<{ data: MapViewProps }> = ({ data }) => {
   const getY = (lat: number) => height - pad - ((lat - minLat) / Math.max(maxLat - minLat, 0.001)) * (height - pad * 2)
 
   return (
-    <div className="rounded-xl bg-[#121215] border border-zinc-800/80 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] p-4 text-zinc-100 font-sans my-3">
+    <div className="rounded-xl bg-[#fffdfa] border border-zinc-800/80 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] p-4 text-zinc-100 font-sans my-3">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-800/70">
         <div className="flex items-center gap-2">
@@ -82,17 +82,17 @@ export const MapViewBlock: React.FC<{ data: MapViewProps }> = ({ data }) => {
       </div>
 
       {/* SVG Canvas */}
-      <div className="relative w-full overflow-hidden rounded-lg bg-[#09090b] border border-zinc-800/80">
+      <div className="relative w-full overflow-hidden rounded-lg bg-[#f7f5f0] border border-zinc-800/80">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto max-h-[300px] select-none">
           {/* Subtle Radar/Grid Coordinates */}
-          <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke="#27272a" strokeDasharray="3 3" />
-          <line x1={width / 2} y1={0} x2={width / 2} y2={height} stroke="#27272a" strokeDasharray="3 3" />
-          <circle cx={width / 2} cy={height / 2} r={height * 0.38} fill="none" stroke="#27272a" strokeDasharray="2 2" />
-          <circle cx={width / 2} cy={height / 2} r={height * 0.18} fill="none" stroke="#1f1f23" />
+          <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke="#ded6c9" strokeDasharray="3 3" />
+          <line x1={width / 2} y1={0} x2={width / 2} y2={height} stroke="#ded6c9" strokeDasharray="3 3" />
+          <circle cx={width / 2} cy={height / 2} r={height * 0.38} fill="none" stroke="#ded6c9" strokeDasharray="2 2" />
+          <circle cx={width / 2} cy={height / 2} r={height * 0.18} fill="none" stroke="#e8e0d4" />
 
           {/* Center Marker */}
-          <circle cx={width / 2} cy={height / 2} r={3} fill="#71717a" />
-          <text x={width / 2 + 6} y={height / 2 - 6} fill="#52525b" fontSize="9" fontFamily="var(--font-mono)">AREA CENTER</text>
+          <circle cx={width / 2} cy={height / 2} r={3} fill="#7a7268" />
+          <text x={width / 2 + 6} y={height / 2 - 6} fill="#857b6e" fontSize="9" fontFamily="var(--font-mono)">AREA CENTER</text>
 
           {/* Plot Pins */}
           {normalizedPins.map((pin, idx) => {
@@ -100,7 +100,7 @@ export const MapViewBlock: React.FC<{ data: MapViewProps }> = ({ data }) => {
             const y = getY(pin.lat)
             const isHovered = selectedPin?.assetId === pin.assetId
             const isReportable = (pin.volume_bbl || 0) >= 5.0
-            const pinColor = isReportable ? '#f43f5e' : '#f59e0b'
+            const pinColor = isReportable ? '#a94d46' : '#b85d3c'
 
             return (
               <g
@@ -111,20 +111,20 @@ export const MapViewBlock: React.FC<{ data: MapViewProps }> = ({ data }) => {
               >
                 {/* Ping wave for reportable */}
                 {isReportable && (
-                  <circle cx={x} cy={y} r={12} fill="none" stroke="#f43f5e" strokeWidth={1} opacity={0.4} />
+                  <circle cx={x} cy={y} r={12} fill="none" stroke="#a94d46" strokeWidth={1} opacity={0.4} />
                 )}
                 <circle
                   cx={x}
                   cy={y}
                   r={isHovered ? 7 : 5}
                   fill={pinColor}
-                  stroke="#09090b"
+                  stroke="#f7f5f0"
                   strokeWidth={2}
                 />
                 <text
                   x={x}
                   y={y - 9}
-                  fill={isHovered ? '#f4f4f5' : '#a1a1aa'}
+                  fill={isHovered ? '#28231e' : '#71695e'}
                   fontSize="10"
                   fontWeight={isHovered ? 600 : 500}
                   textAnchor="middle"
@@ -139,7 +139,7 @@ export const MapViewBlock: React.FC<{ data: MapViewProps }> = ({ data }) => {
 
         {/* Selected Pin Tooltip Card */}
         {selectedPin && (
-          <div className="absolute bottom-3 right-3 bg-[#121215] border border-zinc-700/80 rounded-lg p-2.5 text-xs font-mono shadow-2xl pointer-events-none z-10 max-w-[240px]">
+          <div className="absolute bottom-3 right-3 bg-[#fffdfa] border border-zinc-700/80 rounded-lg p-2.5 text-xs font-mono shadow-2xl pointer-events-none z-10 max-w-[240px]">
             <div className="flex items-center justify-between gap-2 border-b border-zinc-800 pb-1 mb-1.5">
               <span className="font-semibold text-zinc-100">{selectedPin.assetId}</span>
               {selectedPin.date && <span className="text-[10px] text-zinc-500">{selectedPin.date}</span>}

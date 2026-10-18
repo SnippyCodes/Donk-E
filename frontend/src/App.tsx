@@ -349,22 +349,22 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div style={{
+    <div className="app-shell" style={{
       height: '100vh',
       width: '100vw',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      background: '#09090b',
-      color: '#f4f4f5',
+      background: '#f7f5f0',
+      color: '#28231e',
       fontFamily: "'Inter', sans-serif"
     }}>
       {/* 1. TOP GLOBAL TELEMETRY HEADER (h-13, 52px) */}
-      <header style={{
+      <header className="app-topbar" style={{
         height: '52px',
         flexShrink: 0,
-        borderBottom: '1px solid #27272a',
-        background: '#09090b',
+        borderBottom: '1px solid #ded6c9',
+        background: '#f7f5f0',
         padding: '0 16px',
         display: 'flex',
         alignItems: 'center',
@@ -374,7 +374,7 @@ export const App: React.FC = () => {
         {/* Left Telemetry Group */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '-0.3px', color: '#f4f4f5' }}>
+            <span style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '-0.3px', color: '#28231e' }}>
               Donk-E
             </span>
             <span style={{
@@ -383,41 +383,41 @@ export const App: React.FC = () => {
               fontWeight: 600,
               padding: '1px 5px',
               borderRadius: '3px',
-              background: '#18181b',
-              border: '1px solid #27272a',
-              color: '#f59e0b',
+              background: '#f0ebe3',
+              border: '1px solid #ded6c9',
+              color: '#b85d3c',
               letterSpacing: '0.4px'
             }}>
               ASSET INTELLIGENCE
             </span>
           </div>
 
-          <div style={{ width: '1px', height: '16px', background: '#27272a' }} />
+          <div style={{ width: '1px', height: '16px', background: '#ded6c9' }} />
 
-          {/* Telemetry Counters */}
-          <div style={{
+          {/* Operational context */}
+          <div className="app-header-meta" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             fontSize: '11px',
             fontFamily: "'JetBrains Mono', monospace",
-            color: '#a1a1aa'
+            color: '#71695e'
           }}>
             <span className="tabular-nums">
-              Fleet: <strong style={{ color: '#f4f4f5' }}>{systemStats.assets || '200'}</strong> Wells
+              Fleet: <strong style={{ color: '#28231e' }}>{systemStats.assets || '200'}</strong> Wells
             </span>
             <span>·</span>
             <span className="tabular-nums">
-              Ref: <strong style={{ color: '#f4f4f5' }}>2026-10-17</strong>
+              Ref: <strong style={{ color: '#28231e' }}>2026-10-17</strong>
             </span>
             <span>·</span>
-            <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <CheckCircle2 size={11} color="#10b981" />
+            <span style={{ color: '#55785e', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <CheckCircle2 size={11} color="#55785e" />
               <span>0 LLM Math</span>
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <div className="engine-status-list" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             {[
               { label: 'SQLite WAL + FTS5', active: true, title: 'Primary local store and document search' },
               { label: 'Mem0 Scoped Memory', active: !!systemStats.engines?.mem0_configured, title: systemStats.engines?.mem0_configured ? 'Remote per-user semantic memory active' : 'SQLite private-memory fallback active' },
@@ -426,9 +426,9 @@ export const App: React.FC = () => {
               <span key={engine.label} title={engine.title} style={{
                 padding: '2px 6px',
                 borderRadius: '4px',
-                border: '1px solid #27272a',
-                background: '#121215',
-                color: engine.active ? '#10b981' : '#71717a',
+                border: '1px solid #ded6c9',
+                background: '#fffdfa',
+                color: engine.active ? '#55785e' : '#7a7268',
                 fontSize: '9px',
                 fontFamily: "'JetBrains Mono', monospace",
                 whiteSpace: 'nowrap',
@@ -436,14 +436,14 @@ export const App: React.FC = () => {
             ))}
           </div>
 
-          <div style={{ width: '1px', height: '16px', background: '#27272a' }} />
+          <div style={{ width: '1px', height: '16px', background: '#ded6c9' }} />
 
           {/* Mode Switcher: Console vs Auto-Tour */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '6px',
             padding: '2px',
             gap: '2px',
@@ -461,8 +461,8 @@ export const App: React.FC = () => {
                 fontWeight: 600,
                 borderRadius: '4px',
                 border: 'none',
-                background: viewMode === 'console' ? '#27272a' : 'transparent',
-                color: viewMode === 'console' ? '#f4f4f5' : '#71717a',
+                background: viewMode === 'console' ? '#ded6c9' : 'transparent',
+                color: viewMode === 'console' ? '#28231e' : '#7a7268',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
@@ -480,8 +480,8 @@ export const App: React.FC = () => {
                 fontWeight: 600,
                 borderRadius: '4px',
                 border: 'none',
-                background: viewMode === 'brag' ? '#f59e0b' : 'transparent',
-                color: viewMode === 'brag' ? '#09090b' : '#a1a1aa',
+                background: viewMode === 'brag' ? '#b85d3c' : 'transparent',
+                color: viewMode === 'brag' ? '#f7f5f0' : '#71695e',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -495,8 +495,8 @@ export const App: React.FC = () => {
                 fontWeight: 700,
                 padding: '0 3px',
                 borderRadius: '2px',
-                background: viewMode === 'brag' ? '#09090b' : '#27272a',
-                color: viewMode === 'brag' ? '#f59e0b' : '#a1a1aa',
+                background: viewMode === 'brag' ? '#f7f5f0' : '#ded6c9',
+                color: viewMode === 'brag' ? '#b85d3c' : '#71695e',
               }}>
                 VOICE
               </span>
@@ -505,7 +505,7 @@ export const App: React.FC = () => {
         </div>
 
         {/* Right Action Controls Group (Standardized h-8 = 32px height) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="app-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Proactive Fleet Radar Trigger */}
           <button
             onClick={() => {
@@ -518,9 +518,9 @@ export const App: React.FC = () => {
               borderRadius: '6px',
               fontSize: '12px',
               fontWeight: 500,
-              background: '#121215',
-              border: '1px solid #27272a',
-              color: '#f4f4f5',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
+              color: '#28231e',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -533,7 +533,7 @@ export const App: React.FC = () => {
             }}
             title="Scan proactive fleet risk radar"
           >
-            <Radar size={13} color="#f59e0b" style={{ flexShrink: 0 }} />
+            <Radar size={13} color="#b85d3c" style={{ flexShrink: 0 }} />
             <span>Fleet Radar {radarData?.summary ? `(${radarData.summary.fleet_risk_level})` : ''}</span>
           </button>
 
@@ -546,9 +546,9 @@ export const App: React.FC = () => {
               borderRadius: '6px',
               fontSize: '12px',
               fontWeight: 500,
-              background: '#121215',
-              border: '1px solid #27272a',
-              color: '#f4f4f5',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
+              color: '#28231e',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -561,7 +561,7 @@ export const App: React.FC = () => {
             }}
             title="Open Golden Scenarios Library (Q1–Q18 & M7)"
           >
-            <BookOpen size={13} color="#f59e0b" style={{ flexShrink: 0 }} />
+            <BookOpen size={13} color="#b85d3c" style={{ flexShrink: 0 }} />
             <span>Scenarios (Q1–Q18)</span>
           </button>
 
@@ -577,9 +577,9 @@ export const App: React.FC = () => {
               borderRadius: '6px',
               fontSize: '12px',
               fontWeight: 500,
-              background: '#121215',
-              border: '1px solid #27272a',
-              color: qaSuiteResult?.passed === 18 ? '#10b981' : '#f4f4f5',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
+              color: qaSuiteResult?.passed === 18 ? '#55785e' : '#28231e',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -592,7 +592,7 @@ export const App: React.FC = () => {
             }}
             title="Run end-to-end 18-case deterministic QA suite"
           >
-            <ShieldCheck size={13} color="#10b981" style={{ flexShrink: 0 }} />
+            <ShieldCheck size={13} color="#55785e" style={{ flexShrink: 0 }} />
             <span>QA Suite (18/18)</span>
           </button>
 
@@ -605,9 +605,9 @@ export const App: React.FC = () => {
               borderRadius: '6px',
               fontSize: '12px',
               fontWeight: 500,
-              background: '#121215',
-              border: '1px solid #27272a',
-              color: '#a1a1aa',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
+              color: '#71695e',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -708,35 +708,35 @@ export const App: React.FC = () => {
             maxWidth: '960px',
             maxHeight: '90vh',
             overflowY: 'auto',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '10px',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 20px 50px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
             padding: '22px',
             display: 'flex',
             flexDirection: 'column',
             gap: '16px'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1f1f23', paddingBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e8e0d4', paddingBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
                   width: '28px',
                   height: '28px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#f59e0b'
+                  color: '#b85d3c'
                 }}>
                   <BookOpen size={16} />
                 </div>
                 <div>
-                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#f4f4f5' }}>
+                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#28231e' }}>
                     Golden Scenarios & Evaluation Library
                   </span>
-                  <div style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+                  <div style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
                     Select any scenario to run deterministic analysis end-to-end
                   </div>
                 </div>
@@ -744,7 +744,7 @@ export const App: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setScenariosModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#7a7268', cursor: 'pointer' }}
               >
                 <X size={18} />
               </button>
@@ -758,8 +758,8 @@ export const App: React.FC = () => {
                   <div
                     key={cat.category}
                     style={{
-                      background: '#09090b',
-                      border: '1px solid #27272a',
+                      background: '#f7f5f0',
+                      border: '1px solid #ded6c9',
                       borderRadius: '8px',
                       padding: '12px',
                       display: 'flex',
@@ -773,14 +773,14 @@ export const App: React.FC = () => {
                       gap: '6px',
                       fontSize: '11px',
                       fontWeight: 600,
-                      color: '#a1a1aa',
+                      color: '#71695e',
                       textTransform: 'uppercase',
                       letterSpacing: '0.4px',
                       fontFamily: "'JetBrains Mono', monospace",
-                      borderBottom: '1px solid #1f1f23',
+                      borderBottom: '1px solid #e8e0d4',
                       paddingBottom: '6px'
                     }}>
-                      <Icon size={13} color="#f59e0b" />
+                      <Icon size={13} color="#b85d3c" />
                       <span>{cat.category}</span>
                     </div>
 
@@ -794,8 +794,8 @@ export const App: React.FC = () => {
                           }}
                           disabled={isLoading}
                           style={{
-                            background: '#121215',
-                            border: '1px solid #1f1f23',
+                            background: '#fffdfa',
+                            border: '1px solid #e8e0d4',
                             borderRadius: '5px',
                             padding: '8px 10px',
                             textAlign: 'left',
@@ -806,12 +806,12 @@ export const App: React.FC = () => {
                             transition: 'all 0.15s ease'
                           }}
                           onMouseEnter={e => {
-                            e.currentTarget.style.background = '#18181b'
-                            e.currentTarget.style.borderColor = '#3f3f46'
+                            e.currentTarget.style.background = '#f0ebe3'
+                            e.currentTarget.style.borderColor = '#c6bbaa'
                           }}
                           onMouseLeave={e => {
-                            e.currentTarget.style.background = '#121215'
-                            e.currentTarget.style.borderColor = '#1f1f23'
+                            e.currentTarget.style.background = '#fffdfa'
+                            e.currentTarget.style.borderColor = '#e8e0d4'
                           }}
                         >
                           <span style={{
@@ -820,9 +820,9 @@ export const App: React.FC = () => {
                             fontWeight: 700,
                             padding: '1px 5px',
                             borderRadius: '3px',
-                            background: '#09090b',
-                            border: '1px solid #27272a',
-                            color: '#f59e0b',
+                            background: '#f7f5f0',
+                            border: '1px solid #ded6c9',
+                            color: '#b85d3c',
                             flexShrink: 0,
                             marginTop: '1px'
                           }}>
@@ -830,7 +830,7 @@ export const App: React.FC = () => {
                           </span>
                           <span style={{
                             fontSize: '12px',
-                            color: '#e4e4e7',
+                            color: '#37322c',
                             lineHeight: 1.4
                           }}>
                             {p.label}
@@ -843,7 +843,7 @@ export const App: React.FC = () => {
               })}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #1f1f23', paddingTop: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid #e8e0d4', paddingTop: '12px' }}>
               <button
                 type="button"
                 onClick={() => setScenariosModalOpen(false)}
@@ -851,9 +851,9 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#f4f4f5',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#28231e',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -883,10 +883,10 @@ export const App: React.FC = () => {
             maxWidth: '840px',
             maxHeight: '90vh',
             overflowY: 'auto',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '8px',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 16px 40px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
             padding: '20px',
             display: 'flex',
             flexDirection: 'column',
@@ -894,22 +894,22 @@ export const App: React.FC = () => {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={18} color="#10b981" />
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#f4f4f5' }}>
+                <ShieldCheck size={18} color="#55785e" />
+                <span style={{ fontSize: '14px', fontWeight: 600, color: '#28231e' }}>
                   Deterministic QA Validation & Golden Suite Audit (Q1–Q18)
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setQaModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#7a7268', cursor: 'pointer' }}
               >
                 <X size={16} />
               </button>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontSize: '12px', color: '#a1a1aa', margin: 0 }}>
+              <p style={{ fontSize: '12px', color: '#71695e', margin: 0 }}>
                 Verifies all 18 official scenarios across facts, citations, visual contracts, and multi-user isolation.
               </p>
               <button
@@ -920,8 +920,8 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 12px',
                   borderRadius: '6px',
-                  background: '#f4f4f5',
-                  color: '#09090b',
+                  background: '#28231e',
+                  color: '#f7f5f0',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -944,27 +944,27 @@ export const App: React.FC = () => {
                   justifyContent: 'space-between',
                   padding: '10px 14px',
                   borderRadius: '6px',
-                  background: '#09090b',
-                  border: '1px solid #27272a',
+                  background: '#f7f5f0',
+                  border: '1px solid #ded6c9',
                   marginBottom: '12px',
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '12px'
                 }}>
                   <div>
-                    Pass Rate: <strong style={{ color: '#10b981' }}>{qaSuiteResult.passed || 18}/{qaSuiteResult.total || 18} (100%)</strong>
+                    Pass Rate: <strong style={{ color: '#55785e' }}>{qaSuiteResult.passed || 18}/{qaSuiteResult.total || 18} (100%)</strong>
                   </div>
                   <div>
-                    Total Runtime: <strong style={{ color: '#f4f4f5' }}>{qaSuiteResult.total_elapsed_ms || 2440}ms</strong>
+                    Total Runtime: <strong style={{ color: '#28231e' }}>{qaSuiteResult.total_elapsed_ms || 2440}ms</strong>
                   </div>
                   <div>
-                    Zero LLM Math: <strong style={{ color: '#10b981' }}>Enforced (Deterministic)</strong>
+                    Zero LLM Math: <strong style={{ color: '#55785e' }}>Enforced (Deterministic)</strong>
                   </div>
                 </div>
 
-                <div style={{ maxHeight: '280px', overflowY: 'auto', border: '1px solid #27272a', borderRadius: '6px' }}>
+                <div style={{ maxHeight: '280px', overflowY: 'auto', border: '1px solid #ded6c9', borderRadius: '6px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'JetBrains Mono', monospace" }}>
                     <thead>
-                      <tr style={{ background: '#18181b', borderBottom: '1px solid #27272a', color: '#71717a', textAlign: 'left' }}>
+                      <tr style={{ background: '#f0ebe3', borderBottom: '1px solid #ded6c9', color: '#7a7268', textAlign: 'left' }}>
                         <th style={{ padding: '8px 10px' }}>Case</th>
                         <th style={{ padding: '8px 10px' }}>User</th>
                         <th style={{ padding: '8px 10px' }}>Scenario Name</th>
@@ -979,23 +979,23 @@ export const App: React.FC = () => {
                       {(qaSuiteResult.results || qaSuiteResult.cases || []).map((r: any) => {
                         const isPass = r.status === 'PASS' || r.passed === true
                         return (
-                          <tr key={r.id || r.case_id} style={{ borderBottom: '1px solid #1f1f23' }}>
-                            <td style={{ padding: '6px 10px', fontWeight: 600, color: '#f4f4f5' }}>{r.id || r.case_id}</td>
-                            <td style={{ padding: '6px 10px', color: '#a1a1aa' }}>{r.user_id || 'U-102'}</td>
-                            <td style={{ padding: '6px 10px', color: '#d4d4d8', maxWidth: '240px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          <tr key={r.id || r.case_id} style={{ borderBottom: '1px solid #e8e0d4' }}>
+                            <td style={{ padding: '6px 10px', fontWeight: 600, color: '#28231e' }}>{r.id || r.case_id}</td>
+                            <td style={{ padding: '6px 10px', color: '#71695e' }}>{r.user_id || 'U-102'}</td>
+                            <td style={{ padding: '6px 10px', color: '#3f3932', maxWidth: '240px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                               {r.name || r.question}
                             </td>
-                            <td style={{ padding: '6px 10px', color: '#71717a' }}>{r.visual || r.visual_type || 'none'}</td>
-                            <td style={{ padding: '6px 10px', color: '#10b981' }}>OK</td>
-                            <td style={{ padding: '6px 10px', color: '#10b981' }}>OK</td>
-                            <td style={{ padding: '6px 10px', color: '#71717a' }}>{r.elapsed_ms || r.latency_ms || 120}ms</td>
+                            <td style={{ padding: '6px 10px', color: '#7a7268' }}>{r.visual || r.visual_type || 'none'}</td>
+                            <td style={{ padding: '6px 10px', color: '#55785e' }}>OK</td>
+                            <td style={{ padding: '6px 10px', color: '#55785e' }}>OK</td>
+                            <td style={{ padding: '6px 10px', color: '#7a7268' }}>{r.elapsed_ms || r.latency_ms || 120}ms</td>
                             <td style={{ padding: '6px 10px', textAlign: 'right' }}>
                               <span style={{
                                 padding: '1px 6px',
                                 borderRadius: '4px',
-                                background: isPass ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-                                color: isPass ? '#10b981' : '#f43f5e',
-                                border: isPass ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(244, 63, 94, 0.25)',
+                                background: isPass ? 'rgba(85, 120, 94, 0.1)' : 'rgba(169, 77, 70, 0.1)',
+                                color: isPass ? '#55785e' : '#a94d46',
+                                border: isPass ? '1px solid rgba(85, 120, 94, 0.25)' : '1px solid rgba(169, 77, 70, 0.25)',
                                 fontWeight: 600
                               }}>
                                 {isPass ? 'PASS' : 'FAIL'}
@@ -1018,9 +1018,9 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#f4f4f5',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#28231e',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -1048,10 +1048,10 @@ export const App: React.FC = () => {
           <div style={{
             width: '100%',
             maxWidth: '480px',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '8px',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 16px 40px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
             padding: '20px',
             display: 'flex',
             flexDirection: 'column',
@@ -1059,26 +1059,26 @@ export const App: React.FC = () => {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Database size={16} color="#f59e0b" />
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+                <Database size={16} color="#b85d3c" />
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
                   2-Hour Hot-Drop Dataset Ingestion Engine
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIngestModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#7a7268', cursor: 'pointer' }}
               >
                 <X size={16} />
               </button>
             </div>
 
-            <p style={{ fontSize: '12px', color: '#a1a1aa', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: '#71695e', lineHeight: 1.5 }}>
               Hot-loads multi-root dataset folders idempotently without wiping historical ledger entries.
             </p>
 
             <div>
-              <label style={{ fontSize: '11px', color: '#71717a', display: 'block', marginBottom: '4px', fontFamily: "'JetBrains Mono', monospace" }}>
+              <label style={{ fontSize: '11px', color: '#7a7268', display: 'block', marginBottom: '4px', fontFamily: "'JetBrains Mono', monospace" }}>
                 Comma-Separated Dataset Roots:
               </label>
               <input
@@ -1089,9 +1089,9 @@ export const App: React.FC = () => {
                   width: '100%',
                   padding: '6px 10px',
                   borderRadius: '6px',
-                  background: '#09090b',
-                  border: '1px solid #27272a',
-                  color: '#f4f4f5',
+                  background: '#f7f5f0',
+                  border: '1px solid #ded6c9',
+                  color: '#28231e',
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '12px',
                   outline: 'none'
@@ -1103,9 +1103,9 @@ export const App: React.FC = () => {
               <div style={{
                 padding: '10px 12px',
                 borderRadius: '6px',
-                background: ingestResult.error ? 'rgba(244, 63, 94, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                border: `1px solid ${ingestResult.error ? 'rgba(244, 63, 94, 0.25)' : 'rgba(16, 185, 129, 0.25)'}`,
-                color: ingestResult.error ? '#f43f5e' : '#10b981',
+                background: ingestResult.error ? 'rgba(169, 77, 70, 0.1)' : 'rgba(85, 120, 94, 0.1)',
+                border: `1px solid ${ingestResult.error ? 'rgba(169, 77, 70, 0.25)' : 'rgba(85, 120, 94, 0.25)'}`,
+                color: ingestResult.error ? '#a94d46' : '#55785e',
                 fontSize: '12px',
                 fontFamily: "'JetBrains Mono', monospace",
               }}>
@@ -1130,9 +1130,9 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 12px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#a1a1aa',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#71695e',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -1147,8 +1147,8 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: '#f4f4f5',
-                  color: '#09090b',
+                  background: '#28231e',
+                  color: '#f7f5f0',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -1182,10 +1182,10 @@ export const App: React.FC = () => {
           <div style={{
             width: '100%',
             maxWidth: '560px',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '8px',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 16px 40px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
             padding: '20px',
             display: 'flex',
             flexDirection: 'column',
@@ -1193,21 +1193,21 @@ export const App: React.FC = () => {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Radar size={16} color="#f59e0b" />
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+                <Radar size={16} color="#b85d3c" />
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
                   Proactive Fleet Risk & Anomaly Radar
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setRadarModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#7a7268', cursor: 'pointer' }}
               >
                 <X size={16} />
               </button>
             </div>
 
-            <p style={{ fontSize: '12px', color: '#a1a1aa', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: '#71695e', lineHeight: 1.5 }}>
               Autonomous telemetry scanner surfacing near-stalling wells, recurring equipment breakdowns approaching RCA limits, and unresolved operator conflicts.
             </p>
 
@@ -1216,14 +1216,14 @@ export const App: React.FC = () => {
               <div style={{
                 padding: '12px',
                 borderRadius: '6px',
-                background: '#09090b',
-                border: '1px solid #27272a',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
               }}>
-                <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 600, marginBottom: '2px' }}>
+                <div style={{ fontSize: '11px', color: '#7a7268', fontWeight: 600, marginBottom: '2px' }}>
                   Thermal Margin Stalls
                 </div>
-                <div style={{ fontSize: '18px', fontWeight: 700, color: '#f4f4f5', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
-                  {radarData?.summary?.thermal_margin_warnings_count ?? 0} <span style={{ fontSize: '11px', color: '#71717a' }}>wells</span>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: '#28231e', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {radarData?.summary?.thermal_margin_warnings_count ?? 0} <span style={{ fontSize: '11px', color: '#7a7268' }}>wells</span>
                 </div>
                 <button
                   onClick={() => {
@@ -1234,9 +1234,9 @@ export const App: React.FC = () => {
                     width: '100%',
                     height: '28px',
                     borderRadius: '4px',
-                    background: '#18181b',
-                    border: '1px solid #27272a',
-                    color: '#d4d4d8',
+                    background: '#f0ebe3',
+                    border: '1px solid #ded6c9',
+                    color: '#3f3932',
                     fontSize: '11px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -1254,14 +1254,14 @@ export const App: React.FC = () => {
               <div style={{
                 padding: '12px',
                 borderRadius: '6px',
-                background: '#09090b',
-                border: '1px solid #27272a',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
               }}>
-                <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 600, marginBottom: '2px' }}>
+                <div style={{ fontSize: '11px', color: '#7a7268', fontWeight: 600, marginBottom: '2px' }}>
                   Pre-RCA Watchlist
                 </div>
-                <div style={{ fontSize: '18px', fontWeight: 700, color: '#f4f4f5', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
-                  {radarData?.summary?.pre_rca_watchlist_count ?? 0} <span style={{ fontSize: '11px', color: '#71717a' }}>equipment</span>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: '#28231e', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {radarData?.summary?.pre_rca_watchlist_count ?? 0} <span style={{ fontSize: '11px', color: '#7a7268' }}>equipment</span>
                 </div>
                 <button
                   onClick={() => {
@@ -1272,9 +1272,9 @@ export const App: React.FC = () => {
                     width: '100%',
                     height: '28px',
                     borderRadius: '4px',
-                    background: '#18181b',
-                    border: '1px solid #27272a',
-                    color: '#d4d4d8',
+                    background: '#f0ebe3',
+                    border: '1px solid #ded6c9',
+                    color: '#3f3932',
                     fontSize: '11px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -1292,14 +1292,14 @@ export const App: React.FC = () => {
               <div style={{
                 padding: '12px',
                 borderRadius: '6px',
-                background: '#09090b',
-                border: '1px solid #27272a',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
               }}>
-                <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 600, marginBottom: '2px' }}>
+                <div style={{ fontSize: '11px', color: '#7a7268', fontWeight: 600, marginBottom: '2px' }}>
                   Stale Status Wells
                 </div>
-                <div style={{ fontSize: '18px', fontWeight: 700, color: '#f4f4f5', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
-                  {radarData?.summary?.stale_status_wells_count ?? 0} <span style={{ fontSize: '11px', color: '#71717a' }}>wells</span>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: '#28231e', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {radarData?.summary?.stale_status_wells_count ?? 0} <span style={{ fontSize: '11px', color: '#7a7268' }}>wells</span>
                 </div>
                 <button
                   onClick={() => {
@@ -1310,9 +1310,9 @@ export const App: React.FC = () => {
                     width: '100%',
                     height: '28px',
                     borderRadius: '4px',
-                    background: '#18181b',
-                    border: '1px solid #27272a',
-                    color: '#d4d4d8',
+                    background: '#f0ebe3',
+                    border: '1px solid #ded6c9',
+                    color: '#3f3932',
                     fontSize: '11px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -1330,14 +1330,14 @@ export const App: React.FC = () => {
               <div style={{
                 padding: '12px',
                 borderRadius: '6px',
-                background: '#09090b',
-                border: '1px solid #27272a',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
               }}>
-                <div style={{ fontSize: '11px', color: '#71717a', fontWeight: 600, marginBottom: '2px' }}>
+                <div style={{ fontSize: '11px', color: '#7a7268', fontWeight: 600, marginBottom: '2px' }}>
                   Unresolved Conflicts
                 </div>
-                <div style={{ fontSize: '18px', fontWeight: 700, color: '#f4f4f5', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
-                  {radarData?.summary?.unresolved_conflicts_count ?? 0} <span style={{ fontSize: '11px', color: '#71717a' }}>disputes</span>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: '#28231e', marginBottom: '8px', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {radarData?.summary?.unresolved_conflicts_count ?? 0} <span style={{ fontSize: '11px', color: '#7a7268' }}>disputes</span>
                 </div>
                 <button
                   onClick={() => {
@@ -1348,9 +1348,9 @@ export const App: React.FC = () => {
                     width: '100%',
                     height: '28px',
                     borderRadius: '4px',
-                    background: '#18181b',
-                    border: '1px solid #27272a',
-                    color: '#d4d4d8',
+                    background: '#f0ebe3',
+                    border: '1px solid #ded6c9',
+                    color: '#3f3932',
                     fontSize: '11px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -1373,9 +1373,9 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 12px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#a1a1aa',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#71695e',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -1392,8 +1392,8 @@ export const App: React.FC = () => {
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: '#f4f4f5',
-                  color: '#09090b',
+                  background: '#28231e',
+                  color: '#f7f5f0',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -1403,7 +1403,7 @@ export const App: React.FC = () => {
                   gap: '6px'
                 }}
               >
-                <Radar size={12} color="#f59e0b" />
+                <Radar size={12} color="#b85d3c" />
                 <span>Run Full Radar Turn</span>
               </button>
             </div>

@@ -313,7 +313,7 @@ const LIVE_DEMO_FIXTURES: Record<number, ChatMessage[]> = {
           series: [
             {
               name: 'Wellhead Temp (°C)',
-              color: '#f59e0b',
+              color: '#b85d3c',
               data: [
                 { x: '07-23', y: 42.1 }, { x: '07-30', y: 43.4 }, { x: '08-06', y: 41.8 },
                 { x: '08-13', y: 44.0 }, { x: '08-20', y: 42.5 }, { x: '08-27', y: 43.1 },
@@ -324,7 +324,7 @@ const LIVE_DEMO_FIXTURES: Record<number, ChatMessage[]> = {
             },
             {
               name: 'Ambient Temp (°C)',
-              color: '#38bdf8',
+              color: '#477b7a',
               data: [
                 { x: '07-23', y: 28.2 }, { x: '07-30', y: 29.1 }, { x: '08-06', y: 28.0 },
                 { x: '08-13', y: 29.5 }, { x: '08-20', y: 27.8 }, { x: '08-27', y: 28.4 },
@@ -335,8 +335,8 @@ const LIVE_DEMO_FIXTURES: Record<number, ChatMessage[]> = {
             },
           ],
           markers: [
-            { x: '10-08', label: 'Not Producing (ΔT 2.7°C)', color: '#ef4444' },
-            { x: '10-15', label: 'Not Producing (ΔT 3.2°C)', color: '#ef4444' },
+            { x: '10-08', label: 'Not Producing (ΔT 2.7°C)', color: '#a94d46' },
+            { x: '10-15', label: 'Not Producing (ΔT 3.2°C)', color: '#a94d46' },
           ],
           evidence_ids: ['INS-0001-0191', 'INS-0001-0203', 'DOC:OM-T200#9.3'],
         },
@@ -1262,9 +1262,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
           position: 'sticky',
           top: 0,
           zIndex: 45,
-          background: '#09090b',
-          borderBottom: '1px solid #27272a',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
+          background: '#f7f5f0',
+          borderBottom: '1px solid #ded6c9',
+          boxShadow: '0 4px 20px rgba(68, 52, 35, 0.10)',
           padding: '8px 16px',
         }}
       >
@@ -1287,7 +1287,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   fontSize: '12.5px',
                   fontFamily: "'JetBrains Mono', monospace",
                   fontWeight: 700,
-                  color: '#f59e0b',
+                  color: '#b85d3c',
                   letterSpacing: '-0.2px',
                 }}
               >
@@ -1300,9 +1300,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   fontWeight: 600,
                   padding: '1px 5px',
                   borderRadius: '3px',
-                  background: activeChapterIndex < 4 ? '#18181b' : 'rgba(56, 189, 248, 0.15)',
-                  border: '1px solid #27272a',
-                  color: activeChapterIndex < 4 ? '#f59e0b' : '#38bdf8',
+                  background: activeChapterIndex < 4 ? '#f0ebe3' : 'rgba(56, 189, 248, 0.15)',
+                  border: '1px solid #ded6c9',
+                  color: activeChapterIndex < 4 ? '#b85d3c' : '#477b7a',
                 }}
               >
                 {activeChapterIndex < 4 ? 'PART 1: ARCHITECTURE' : 'PART 2: LIVE QUERIES'}
@@ -1317,15 +1317,15 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 gap: '8px',
                 fontSize: '12px',
                 fontFamily: "'JetBrains Mono', monospace",
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '3px 8px',
               }}
             >
-              <Clock size={12} color="#a1a1aa" />
-              <span style={{ color: '#f4f4f5', fontWeight: 600 }}>{formatTime(elapsedSeconds)}</span>
-              <span style={{ color: '#71717a' }}>/ 5:00</span>
+              <Clock size={12} color="#71695e" />
+              <span style={{ color: '#28231e', fontWeight: 600 }}>{formatTime(elapsedSeconds)}</span>
+              <span style={{ color: '#7a7268' }}>/ 5:00</span>
             </div>
           </div>
 
@@ -1335,8 +1335,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
               <button
                 onClick={() => handleStartDemo(0)}
                 style={{
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                  color: '#09090b',
+                  background: '#b85d3c',
+                  color: '#f7f5f0',
                   border: 'none',
                   borderRadius: '6px',
                   padding: '6px 14px',
@@ -1346,11 +1346,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: '0 2px 10px rgba(245, 158, 11, 0.3)',
+                  boxShadow: '0 2px 10px rgba(184, 93, 60, 0.3)',
                   transition: 'all 0.15s ease',
                 }}
               >
-                <Play size={13} fill="#09090b" />
+                <Play size={13} fill="#f7f5f0" />
                 <span>🎬 Run Full 5-Min Auto-Narrated Video Demo</span>
               </button>
             ) : (
@@ -1359,8 +1359,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
-                  background: '#121215',
-                  border: '1px solid #27272a',
+                  background: '#fffdfa',
+                  border: '1px solid #ded6c9',
                   borderRadius: '6px',
                   padding: '2px',
                 }}
@@ -1372,7 +1372,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     borderRadius: '4px',
                     background: 'transparent',
                     border: 'none',
-                    color: '#a1a1aa',
+                    color: '#71695e',
                     cursor: 'pointer',
                   }}
                   title="Previous Chapter"
@@ -1384,9 +1384,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   style={{
                     padding: '4px 10px',
                     borderRadius: '4px',
-                    background: '#27272a',
+                    background: '#ded6c9',
                     border: 'none',
-                    color: '#f4f4f5',
+                    color: '#28231e',
                     fontSize: '11px',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -1395,7 +1395,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     gap: '4px',
                   }}
                 >
-                  {isPaused ? <Play size={11} fill="#f4f4f5" /> : <Pause size={11} />}
+                  {isPaused ? <Play size={11} fill="#28231e" /> : <Pause size={11} />}
                   <span>{isPaused ? 'Resume' : 'Pause'}</span>
                 </button>
                 <button
@@ -1405,7 +1405,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     borderRadius: '4px',
                     background: 'transparent',
                     border: 'none',
-                    color: '#a1a1aa',
+                    color: '#71695e',
                     cursor: 'pointer',
                   }}
                   title="Next Chapter"
@@ -1419,7 +1419,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     borderRadius: '4px',
                     background: 'transparent',
                     border: 'none',
-                    color: '#ef4444',
+                    color: '#a94d46',
                     cursor: 'pointer',
                   }}
                   title="Reset Demo to 0:00"
@@ -1434,8 +1434,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
               <button
                 onClick={startRecording}
                 style={{
-                  background: '#18181b',
-                  color: '#ef4444',
+                  background: '#f0ebe3',
+                  color: '#a94d46',
                   border: '1px solid rgba(239, 68, 68, 0.4)',
                   borderRadius: '6px',
                   padding: '6px 10px',
@@ -1454,7 +1454,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: '#ef4444',
+                    background: '#a94d46',
                     display: 'inline-block',
                   }}
                 />
@@ -1464,8 +1464,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
               <button
                 onClick={stopRecording}
                 style={{
-                  background: '#ef4444',
-                  color: '#09090b',
+                  background: '#a94d46',
+                  color: '#f7f5f0',
                   border: 'none',
                   borderRadius: '6px',
                   padding: '6px 12px',
@@ -1489,13 +1489,13 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 setReplayMode(prev => (prev === 'deterministic' ? 'live' : 'deterministic'))
               }
               style={{
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '5px 9px',
                 fontSize: '11px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: replayMode === 'deterministic' ? '#10b981' : '#f59e0b',
+                color: replayMode === 'deterministic' ? '#55785e' : '#b85d3c',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1518,8 +1518,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 gap: '6px',
                 padding: '4px 8px',
                 borderRadius: '6px',
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 fontSize: '11px',
                 fontFamily: "'JetBrains Mono', monospace",
               }}
@@ -1530,11 +1530,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   width: '6px',
                   height: '6px',
                   borderRadius: '50%',
-                  background: isAudioSpeaking ? '#10b981' : '#71717a',
+                  background: isAudioSpeaking ? '#55785e' : '#7a7268',
                   display: 'inline-block',
                 }}
               />
-              <span style={{ color: isAudioSpeaking ? '#10b981' : '#a1a1aa', fontWeight: 600 }}>
+              <span style={{ color: isAudioSpeaking ? '#55785e' : '#71695e', fontWeight: 600 }}>
                 {isAudioSpeaking ? 'Voice: Live (WAV)' : 'Voice: Studio WAV'}
               </span>
             </div>
@@ -1545,13 +1545,13 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 setSpeechRate(next)
               }}
               style={{
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '4px 8px',
                 fontSize: '11px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: '#a1a1aa',
+                color: '#71695e',
                 cursor: 'pointer',
               }}
               title="Voice playback rate"
@@ -1562,11 +1562,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
             <button
               onClick={() => setIsMuted(!isMuted)}
               style={{
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '5px 7px',
-                color: isMuted ? '#ef4444' : '#a1a1aa',
+                color: isMuted ? '#a94d46' : '#71695e',
                 cursor: 'pointer',
               }}
               title={isMuted ? 'Unmute Audio' : 'Mute Voice (Subtitles Only)'}
@@ -1598,12 +1598,12 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 style={{
                   flex: 1,
                   minWidth: '100px',
-                  background: isActive ? '#1c1c22' : '#121215',
+                  background: isActive ? '#fffdfa' : '#fffdfa',
                   border: isActive
-                    ? '1px solid #f59e0b'
+                    ? '1px solid #b85d3c'
                     : isCompleted
-                    ? '1px solid #27272a'
-                    : '1px solid #1f1f23',
+                    ? '1px solid #ded6c9'
+                    : '1px solid #e8e0d4',
                   borderRadius: '4px',
                   padding: '3px 6px',
                   textAlign: 'left',
@@ -1620,7 +1620,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                       fontSize: '9px',
                       fontFamily: "'JetBrains Mono', monospace",
                       fontWeight: 700,
-                      color: isActive ? '#f59e0b' : isCompleted ? '#10b981' : '#71717a',
+                      color: isActive ? '#b85d3c' : isCompleted ? '#55785e' : '#7a7268',
                     }}
                   >
                     CH {ch.id} ({ch.timeRange})
@@ -1631,7 +1631,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                         width: '6px',
                         height: '6px',
                         borderRadius: '50%',
-                        background: '#f59e0b',
+                        background: '#b85d3c',
                         display: 'inline-block',
                       }}
                     />
@@ -1641,7 +1641,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   style={{
                     fontSize: '10px',
                     fontWeight: 500,
-                    color: isActive ? '#f4f4f5' : '#a1a1aa',
+                    color: isActive ? '#28231e' : '#71695e',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -1663,11 +1663,11 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
           left: 0,
           right: 0,
           zIndex: 50,
-          background: 'rgba(9, 9, 11, 0.98)',
-          borderTop: '1px solid #27272a',
+          background: '#fffdfa',
+          borderTop: '1px solid #ded6c9',
           backdropFilter: 'blur(12px)',
           padding: '10px 20px',
-          boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.8)',
+          boxShadow: '0 -10px 40px rgba(68, 52, 35, 0.10)',
         }}
       >
         <div
@@ -1695,7 +1695,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     width: '3px',
                     height: isAudioSpeaking ? '16px' : isPlaying && !isPaused ? '10px' : '4px',
                     borderRadius: '2px',
-                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    background: isAudioSpeaking ? '#55785e' : '#b85d3c',
                     transition: 'all 0.15s ease',
                   }}
                 />
@@ -1704,7 +1704,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     width: '3px',
                     height: isAudioSpeaking ? '20px' : isPlaying && !isPaused ? '14px' : '6px',
                     borderRadius: '2px',
-                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    background: isAudioSpeaking ? '#55785e' : '#b85d3c',
                     transition: 'all 0.15s ease',
                   }}
                 />
@@ -1713,7 +1713,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     width: '3px',
                     height: isAudioSpeaking ? '14px' : isPlaying && !isPaused ? '8px' : '4px',
                     borderRadius: '2px',
-                    background: isAudioSpeaking ? '#10b981' : '#f59e0b',
+                    background: isAudioSpeaking ? '#55785e' : '#b85d3c',
                     transition: 'all 0.15s ease',
                   }}
                 />
@@ -1726,9 +1726,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   fontWeight: 700,
                   padding: '2px 6px',
                   borderRadius: '4px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#f59e0b',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#b85d3c',
                 }}
               >
                 {activeChapter.timeRange}
@@ -1741,9 +1741,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                   fontWeight: 600,
                   padding: '2px 5px',
                   borderRadius: '3px',
-                  background: isAudioSpeaking ? 'rgba(16, 185, 129, 0.15)' : '#18181b',
-                  border: '1px solid #27272a',
-                  color: isAudioSpeaking ? '#10b981' : '#71717a',
+                  background: isAudioSpeaking ? 'rgba(85, 120, 94, 0.15)' : '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: isAudioSpeaking ? '#55785e' : '#7a7268',
                 }}
               >
                 {isAudioSpeaking ? '● ON AIR (DIGITAL MIX)' : 'STANDBY'}
@@ -1753,7 +1753,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 style={{
                   fontSize: '11px',
                   fontWeight: 600,
-                  color: '#f4f4f5',
+                  color: '#28231e',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -1765,8 +1765,8 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                     style={{
                       fontSize: '9.5px',
                       fontFamily: "'JetBrains Mono', monospace",
-                      color: '#38bdf8',
-                      background: 'rgba(56, 189, 248, 0.12)',
+                      color: '#477b7a',
+                      background: 'rgba(71, 123, 122, 0.12)',
                       padding: '1px 5px',
                       borderRadius: '3px',
                     }}
@@ -1784,9 +1784,9 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
                 style={{
                   fontSize: '11px',
                   fontWeight: 600,
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#f4f4f5',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#28231e',
                   borderRadius: '4px',
                   padding: '3px 8px',
                   cursor: 'pointer',
@@ -1802,15 +1802,15 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
             style={{
               padding: '6px 12px',
               borderRadius: '6px',
-              background: '#0d1117',
-              border: '1px solid #21262d',
+              background: '#fbfaf7',
+              border: '1px solid #ded6c9',
             }}
           >
             <p
               style={{
                 fontSize: '13.5px',
                 fontWeight: 500,
-                color: '#f0f6fc',
+                color: '#37322c',
                 lineHeight: 1.45,
                 margin: 0,
               }}
@@ -1824,7 +1824,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
             style={{
               width: '100%',
               height: '3px',
-              background: '#18181b',
+              background: '#f0ebe3',
               borderRadius: '2px',
               overflow: 'hidden',
             }}
@@ -1832,7 +1832,7 @@ export const DemoDirector: React.FC<DemoDirectorProps> = ({
             <div
               style={{
                 height: '100%',
-                background: 'linear-gradient(90deg, #f59e0b 0%, #10b981 100%)',
+                background: '#b85d3c',
                 width: `${Math.min(100, (elapsedSeconds / 300) * 100)}%`,
                 transition: 'width 0.3s ease',
               }}

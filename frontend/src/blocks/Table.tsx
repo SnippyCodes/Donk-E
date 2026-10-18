@@ -35,9 +35,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
           fontSize: '10.5px',
           fontFamily: "'JetBrains Mono', monospace",
           fontWeight: 600,
-          background: 'rgba(244, 63, 94, 0.12)',
-          color: '#f43f5e',
-          border: '1px solid rgba(244, 63, 94, 0.28)',
+          background: 'rgba(169, 77, 70, 0.12)',
+          color: '#a94d46',
+          border: '1px solid rgba(169, 77, 70, 0.28)',
           whiteSpace: 'nowrap'
         }}>
           {statusStr}
@@ -54,9 +54,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
           fontSize: '10.5px',
           fontFamily: "'JetBrains Mono', monospace",
           fontWeight: 600,
-          background: 'rgba(16, 185, 129, 0.12)',
-          color: '#10b981',
-          border: '1px solid rgba(16, 185, 129, 0.28)',
+          background: 'rgba(85, 120, 94, 0.12)',
+          color: '#55785e',
+          border: '1px solid rgba(85, 120, 94, 0.28)',
           whiteSpace: 'nowrap'
         }}>
           {statusStr}
@@ -73,9 +73,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
           fontSize: '10.5px',
           fontFamily: "'JetBrains Mono', monospace",
           fontWeight: 600,
-          background: 'rgba(245, 158, 11, 0.12)',
-          color: '#f59e0b',
-          border: '1px solid rgba(245, 158, 11, 0.28)',
+          background: 'rgba(184, 93, 60, 0.12)',
+          color: '#b85d3c',
+          border: '1px solid rgba(184, 93, 60, 0.28)',
           whiteSpace: 'nowrap'
         }}>
           {statusStr}
@@ -90,9 +90,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
         borderRadius: '3px',
         fontSize: '11px',
         fontFamily: "'JetBrains Mono', monospace",
-        background: '#18181b',
-        border: '1px solid #27272a',
-        color: '#e4e4e7',
+        background: '#f0ebe3',
+        border: '1px solid #ded6c9',
+        color: '#37322c',
         whiteSpace: 'nowrap'
       }}>
         {statusStr}
@@ -102,9 +102,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
 
   return (
     <div style={{
-      background: '#121215',
-      border: '1px solid rgba(39, 39, 42, 0.8)',
-      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 2px 4px rgba(0, 0, 0, 0.4)',
+      background: '#fffdfa',
+      border: '1px solid rgba(222, 214, 201, 0.8)',
+      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 2px 4px rgba(68, 52, 35, 0.10)',
       borderRadius: '8px',
       padding: '16px',
       margin: '10px 0',
@@ -122,27 +122,27 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
         flexWrap: 'wrap',
         gap: '8px',
         paddingBottom: '10px',
-        borderBottom: '1px solid #1f1f23'
+        borderBottom: '1px solid #e8e0d4'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '24px',
             height: '24px',
             borderRadius: '6px',
-            background: '#18181b',
-            border: '1px solid #27272a',
+            background: '#f0ebe3',
+            border: '1px solid #ded6c9',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#f4f4f5'
+            color: '#28231e'
           }}>
             <TableIcon size={14} />
           </div>
           <div>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
               {data.title || 'Structured Intelligence Table'}
             </div>
-            <div style={{ fontSize: '10.5px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+            <div style={{ fontSize: '10.5px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
               Records: {rows.length} entries
             </div>
           </div>
@@ -156,14 +156,14 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                 style={{
                   padding: '2px 8px',
                   borderRadius: '4px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
                   fontSize: '11px',
                   fontFamily: "'JetBrains Mono', monospace",
-                  color: '#a1a1aa'
+                  color: '#71695e'
                 }}
               >
-                {k.replace(/_/g, ' ')}: <strong style={{ color: '#f4f4f5' }}>{String(v)}</strong>
+                {k.replace(/_/g, ' ')}: <strong style={{ color: '#28231e' }}>{String(v)}</strong>
               </span>
             ))}
           </div>
@@ -174,8 +174,8 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
       <div style={{
         overflowX: 'auto',
         borderRadius: '6px',
-        border: '1px solid #27272a',
-        background: '#09090b',
+        border: '1px solid #ded6c9',
+        background: '#f7f5f0',
         width: '100%'
       }}>
         <table style={{
@@ -187,9 +187,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
         }}>
           <thead>
             <tr style={{
-              background: '#18181b',
-              borderBottom: '1px solid #27272a',
-              color: '#a1a1aa',
+              background: '#f0ebe3',
+              borderBottom: '1px solid #ded6c9',
+              color: '#71695e',
               fontSize: '10.5px',
               fontFamily: "'JetBrains Mono', monospace",
               textTransform: 'uppercase',
@@ -203,7 +203,7 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                     padding: '8px 12px',
                     fontWeight: 600,
                     whiteSpace: 'nowrap',
-                    borderRight: cIdx < normalizedColumns.length - 1 ? '1px solid #1f1f23' : 'none'
+                    borderRight: cIdx < normalizedColumns.length - 1 ? '1px solid #e8e0d4' : 'none'
                   }}
                 >
                   {col.label}
@@ -219,7 +219,7 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                   style={{
                     padding: '24px',
                     textAlign: 'center',
-                    color: '#71717a',
+                    color: '#7a7268',
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: '12px'
                   }}
@@ -232,7 +232,7 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                 <tr
                   key={idx}
                   style={{
-                    borderBottom: idx < rows.length - 1 ? '1px solid #1f1f23' : 'none',
+                    borderBottom: idx < rows.length - 1 ? '1px solid #e8e0d4' : 'none',
                     background: idx % 2 === 1 ? 'rgba(255, 255, 255, 0.015)' : 'transparent',
                     transition: 'background 0.1s ease'
                   }}
@@ -251,10 +251,10 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                         key={`${col.key}-${cIdx}`}
                         style={{
                           padding: '8px 12px',
-                          color: '#e4e4e7',
+                          color: '#37322c',
                           fontFamily: (isNumeric || isAsset || isDelta) ? "'JetBrains Mono', monospace" : "'Inter', sans-serif",
                           fontSize: (isNumeric || isAsset || isDelta) ? '11px' : '12px',
-                          borderRight: cIdx < normalizedColumns.length - 1 ? '1px solid #1a1a1e' : 'none',
+                          borderRight: cIdx < normalizedColumns.length - 1 ? '1px solid #fffdfa' : 'none',
                           verticalAlign: 'middle',
                           whiteSpace: (isAsset || isNumeric || isStatus) ? 'nowrap' : 'normal',
                           lineHeight: 1.45
@@ -269,11 +269,11 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                                 style={{
                                   padding: '1px 5px',
                                   borderRadius: '3px',
-                                  background: '#18181b',
-                                  border: '1px solid #27272a',
+                                  background: '#f0ebe3',
+                                  border: '1px solid #ded6c9',
                                   fontSize: '10px',
                                   fontFamily: "'JetBrains Mono', monospace",
-                                  color: '#f59e0b',
+                                  color: '#b85d3c',
                                   whiteSpace: 'nowrap'
                                 }}
                               >
@@ -284,7 +284,7 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                         ) : isDelta && typeof val === 'number' ? (
                           <span style={{
                             fontWeight: 600,
-                            color: val < 15.0 ? '#f43f5e' : '#10b981',
+                            color: val < 15.0 ? '#a94d46' : '#55785e',
                             whiteSpace: 'nowrap'
                           }}>
                             {val >= 0 ? `+${val.toFixed(1)}°C` : `${val.toFixed(1)}°C`}
@@ -318,10 +318,10 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
           gap: '6px',
           flexWrap: 'wrap',
           paddingTop: '6px',
-          borderTop: '1px solid #1f1f23'
+          borderTop: '1px solid #e8e0d4'
         }}>
-          <ShieldCheck size={13} color="#71717a" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+          <ShieldCheck size={13} color="#7a7268" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
             Verified Citations ({data.evidence_ids.length}):
           </span>
           {data.evidence_ids.map(eid => (
@@ -332,9 +332,9 @@ export const TableBlock: React.FC<{ data: TableBlockProps }> = ({ data }) => {
                 fontFamily: "'JetBrains Mono', monospace",
                 padding: '1px 5px',
                 borderRadius: '3px',
-                background: '#18181b',
-                border: '1px solid #27272a',
-                color: '#d4d4d8',
+                background: '#f0ebe3',
+                border: '1px solid #ded6c9',
+                color: '#3f3932',
                 whiteSpace: 'nowrap'
               }}
             >

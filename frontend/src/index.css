@@ -1,45 +1,44 @@
-/* Linear / Vercel Geist / Palantir Foundry Industrial Theme */
+/* Warm field-notebook palette: restrained surfaces, clear hierarchy, no gloss. */
 :root {
-  --bg-canvas: #09090b;       /* Zinc 950 */
-  --bg-surface: #121215;      /* Elevated Card Surface */
-  --bg-subtle: #18181b;       /* Zinc 900 */
-  --bg-header: #09090b;
-  --bg-sidebar: #0c0c0e;      /* High-discipline sidebar */
-  --bg-hover: #27272a;        /* Zinc 800 */
-  
-  --border-color: #27272a;    /* Zinc 800 */
-  --border-subtle: #1f1f23;
-  --border-active: #52525b;   /* Zinc 600 */
-  
-  --text-primary: #f4f4f5;    /* Zinc 100 */
-  --text-secondary: #a1a1aa;  /* Zinc 400 */
-  --text-muted: #71717a;      /* Zinc 500 */
-  
-  /* Semantic Status Colors - Crisp & Unblurred */
-  --status-success: #10b981;  /* Emerald 500 */
-  --status-success-bg: rgba(16, 185, 129, 0.10);
-  --status-success-border: rgba(16, 185, 129, 0.25);
-  
-  --status-danger: #f43f5e;   /* Rose 500 */
-  --status-danger-bg: rgba(244, 63, 94, 0.10);
-  --status-danger-border: rgba(244, 63, 94, 0.25);
-  
-  --status-warning: #f59e0b;  /* Amber 500 */
-  --status-warning-bg: rgba(245, 158, 11, 0.10);
-  --status-warning-border: rgba(245, 158, 11, 0.25);
+  --bg-canvas: #f7f5f0;
+  --bg-surface: #fffdfa;
+  --bg-subtle: #f0ebe3;
+  --bg-header: #fbfaf7;
+  --bg-sidebar: #f3efe8;
+  --bg-hover: #e9e2d7;
 
-  --status-info: #38bdf8;     /* Sky 400 */
-  --status-info-bg: rgba(56, 189, 248, 0.10);
-  --status-info-border: rgba(56, 189, 248, 0.25);
+  --border-color: #ded6c9;
+  --border-subtle: #e8e0d4;
+  --border-active: #b9ad9d;
+
+  --text-primary: #28231e;
+  --text-secondary: #71695e;
+  --text-muted: #7a7268;
+
+  --status-success: #55785e;
+  --status-success-bg: rgba(85, 120, 94, 0.10);
+  --status-success-border: rgba(85, 120, 94, 0.25);
+
+  --status-danger: #a94d46;
+  --status-danger-bg: rgba(169, 77, 70, 0.10);
+  --status-danger-border: rgba(169, 77, 70, 0.25);
+
+  --status-warning: #b85d3c;
+  --status-warning-bg: rgba(184, 93, 60, 0.10);
+  --status-warning-border: rgba(184, 93, 60, 0.25);
+
+  --status-info: #477b7a;
+  --status-info-bg: rgba(71, 123, 122, 0.10);
+  --status-info-border: rgba(71, 123, 122, 0.25);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --radius-sm: 6px;
-  --radius-md: 8px;
+  --radius-md: 9px;
   --radius-lg: 12px;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+  --shadow-card: 0 1px 3px rgba(68, 52, 35, 0.06);
 }
 
 * {
@@ -490,6 +489,74 @@ body {
   40% {
     transform: scale(1.15);
     opacity: 1;
+  }
+}
+
+/* Calm, legible defaults and an accessible focus treatment. */
+body {
+  line-height: 1.45;
+}
+
+button, input, textarea {
+  font-family: var(--font-sans);
+}
+
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--status-info);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(184, 93, 60, 0.18);
+}
+
+@media (max-width: 1320px) {
+  .app-topbar {
+    height: auto !important;
+    min-height: 52px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 16px !important;
+  }
+
+  .app-header-meta,
+  .engine-status-list {
+    display: none !important;
+  }
+
+  .app-topbar > div:first-child > div:first-child {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1020px) {
+  .app-topbar {
+    height: auto !important;
+    min-height: 52px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px !important;
+  }
+
+  .app-topbar > div:first-child,
+  .app-header-actions {
+    flex-wrap: wrap;
+  }
+
+  .app-header-meta {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header-actions {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+
+  #chat-messages-container {
+    padding: 16px !important;
   }
 }
 

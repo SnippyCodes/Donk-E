@@ -44,7 +44,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
 
   return (
     <div
-      className="rounded-xl bg-[#121215] border border-zinc-800/80 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] p-4 text-zinc-100 font-sans my-3"
+      className="rounded-xl bg-[#fffdfa] border border-zinc-800/80 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] p-4 text-zinc-100 font-sans my-3"
       id={`status-${data.asset_id}`}
     >
       {/* Top Asset Title & Live Producing Badge */}
@@ -80,7 +80,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
       {/* 4-Column Metric Bento Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-3">
         {/* 1. Wellhead Temp */}
-        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+        <div className="p-3 rounded-lg bg-[#f7f5f0] border border-zinc-800/80">
           <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">Wellhead Temp</div>
           <div className="text-lg font-mono font-bold text-zinc-100 tabular-nums">
             {typeof metrics.wellhead_temp_c === 'number' ? `${metrics.wellhead_temp_c.toFixed(1)}°C` : 'N/A'}
@@ -89,7 +89,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         </div>
 
         {/* 2. Ambient Temp */}
-        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+        <div className="p-3 rounded-lg bg-[#f7f5f0] border border-zinc-800/80">
           <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">Ambient Air</div>
           <div className="text-lg font-mono font-bold text-zinc-400 tabular-nums">
             {typeof metrics.ambient_temp_c === 'number' ? `${metrics.ambient_temp_c.toFixed(1)}°C` : 'N/A'}
@@ -99,7 +99,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
 
         {/* 3. Temp Delta (ΔT) */}
         <div
-          className={`p-3 rounded-lg bg-[#09090b] border ${
+          className={`p-3 rounded-lg bg-[#f7f5f0] border ${
             isProducing ? 'border-emerald-500/30' : 'border-rose-500/30'
           }`}
         >
@@ -115,7 +115,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
         </div>
 
         {/* 4. Rule Threshold */}
-        <div className="p-3 rounded-lg bg-[#09090b] border border-zinc-800/80">
+        <div className="p-3 rounded-lg bg-[#f7f5f0] border border-zinc-800/80">
           <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 mb-1">SOP Threshold</div>
           <div className="text-lg font-mono font-bold text-amber-400 tabular-nums">
             ≥ {typeof metrics.threshold_temp_delta === 'number' ? `${metrics.threshold_temp_delta.toFixed(1)}°C` : '15.0°C'}
@@ -141,7 +141,7 @@ export const StatusCard: React.FC<{ data: StatusCardProps }> = ({ data }) => {
       )}
 
       {/* Operational Reason & Inspector Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 rounded-lg bg-[#09090b] border border-zinc-800/80 text-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 rounded-lg bg-[#f7f5f0] border border-zinc-800/80 text-xs">
         <div className="flex items-center gap-1.5">
           <span className="text-zinc-500 font-mono text-[11px]">Cause / Reason:</span>
           <span className="text-zinc-200 font-medium">

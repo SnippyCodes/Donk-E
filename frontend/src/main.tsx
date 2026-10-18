@@ -25,8 +25,8 @@ class AppErrorBoundary extends React.Component<
       return (
         <div style={{
           minHeight: '100vh',
-          background: '#0d1117',
-          color: '#f0f6fc',
+          background: '#fbfaf7',
+          color: '#37322c',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -37,27 +37,27 @@ class AppErrorBoundary extends React.Component<
           <div style={{
             maxWidth: '560px',
             width: '100%',
-            background: '#161b22',
-            border: '1px solid #30363d',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '6px',
             padding: '24px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.6)'
+            boxShadow: '0 8px 24px rgba(68, 52, 35, 0.10)'
           }}>
-            <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#f85149', marginBottom: '8px' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#a94d46', marginBottom: '8px' }}>
               Operational Session Interrupted
             </h2>
-            <p style={{ fontSize: '13px', color: '#8b949e', marginBottom: '16px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '13px', color: '#71695e', marginBottom: '16px', lineHeight: 1.5 }}>
               A rendering exception was safely caught. Your local SQLite data and append-only ledger are pristine and unaffected.
             </p>
             {this.state.error && (
               <pre style={{
-                background: '#010409',
-                border: '1px solid #21262d',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
                 borderRadius: '4px',
                 padding: '10px 12px',
                 fontSize: '11px',
                 fontFamily: 'JetBrains Mono, monospace',
-                color: '#f0f6fc',
+                color: '#37322c',
                 overflowX: 'auto',
                 marginBottom: '16px'
               }}>
@@ -70,9 +70,9 @@ class AppErrorBoundary extends React.Component<
                 window.location.reload()
               }}
               style={{
-                background: '#f0f6fc',
-                color: '#0d1117',
-                border: '1px solid #f0f6fc',
+                background: '#b85d3c',
+                color: '#fbfaf7',
+                border: '1px solid #b85d3c',
                 borderRadius: '4px',
                 padding: '6px 14px',
                 fontSize: '12px',

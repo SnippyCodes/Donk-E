@@ -15,9 +15,9 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
 
   return (
     <div style={{
-      background: '#121215',
-      border: '1px solid rgba(39, 39, 42, 0.8)',
-      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.5)',
+      background: '#fffdfa',
+      border: '1px solid rgba(222, 214, 201, 0.8)',
+      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(68, 52, 35, 0.10)',
       borderRadius: '8px',
       padding: '16px',
       margin: '8px 0',
@@ -33,23 +33,23 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
         flexWrap: 'wrap',
         gap: '8px',
         paddingBottom: '10px',
-        borderBottom: '1px solid #1f1f23'
+        borderBottom: '1px solid #e8e0d4'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '24px',
             height: '24px',
             borderRadius: '6px',
-            background: '#18181b',
-            border: '1px solid #27272a',
+            background: '#f0ebe3',
+            border: '1px solid #ded6c9',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#f59e0b'
+            color: '#b85d3c'
           }}>
             <BarChart3 size={14} />
           </div>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
             {data.title}
           </span>
         </div>
@@ -60,13 +60,13 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
           gap: '6px',
           padding: '2px 8px',
           borderRadius: '4px',
-          background: '#18181b',
-          border: '1px solid #27272a',
+          background: '#f0ebe3',
+          border: '1px solid #ded6c9',
           fontSize: '11px',
           fontFamily: "'JetBrains Mono', monospace",
-          color: '#a1a1aa'
+          color: '#71695e'
         }}>
-          Metric Unit: <strong style={{ color: '#f4f4f5' }}>{data.unit}</strong>
+          Metric Unit: <strong style={{ color: '#28231e' }}>{data.unit}</strong>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
                 width: '130px',
                 fontSize: '11.5px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: isHovered ? '#f59e0b' : '#d4d4d8',
+                color: isHovered ? '#b85d3c' : '#3f3932',
                 fontWeight: isHovered ? 600 : 400,
                 textAlign: 'right',
                 flexShrink: 0,
@@ -109,8 +109,8 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
               </div>
               <div style={{
                 flex: 1,
-                background: '#09090b',
-                border: isHovered ? '1px solid #f59e0b' : '1px solid #27272a',
+                background: '#f7f5f0',
+                border: isHovered ? '1px solid #b85d3c' : '1px solid #ded6c9',
                 borderRadius: '5px',
                 height: '26px',
                 overflow: 'hidden',
@@ -120,7 +120,7 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
                 <div style={{
                   width: `${pct}%`,
                   height: '100%',
-                  background: isHovered ? '#f59e0b' : (idx === 0 ? '#d97706' : '#3f3f46'),
+                  background: isHovered ? '#b85d3c' : (idx === 0 ? '#a64e33' : '#c6bbaa'),
                   borderRadius: '3px',
                   display: 'flex',
                   alignItems: 'center',
@@ -131,7 +131,7 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
                   <span style={{
                     fontSize: '11px',
                     fontWeight: 700,
-                    color: isHovered || idx === 0 ? '#09090b' : '#f4f4f5',
+                    color: isHovered || idx === 0 ? '#f7f5f0' : '#28231e',
                     fontFamily: "'JetBrains Mono', monospace"
                   }} className="tabular-nums">
                     {val} {data.unit}
@@ -151,10 +151,10 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
           gap: '6px',
           flexWrap: 'wrap',
           paddingTop: '6px',
-          borderTop: '1px solid #1f1f23'
+          borderTop: '1px solid #e8e0d4'
         }}>
-          <ShieldCheck size={13} color="#71717a" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+          <ShieldCheck size={13} color="#7a7268" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
             Verified Evidence ({data.evidence_ids.length}):
           </span>
           {data.evidence_ids.map(eid => (
@@ -165,9 +165,9 @@ export const BarChartBlock: React.FC<{ data: BarChartProps }> = ({ data }) => {
                 fontFamily: "'JetBrains Mono', monospace",
                 padding: '1px 6px',
                 borderRadius: '4px',
-                background: '#18181b',
-                border: '1px solid #27272a',
-                color: '#d4d4d8'
+                background: '#f0ebe3',
+                border: '1px solid #ded6c9',
+                color: '#3f3932'
               }}
             >
               [{eid}]

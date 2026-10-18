@@ -78,9 +78,9 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
 
   return (
     <div style={{
-      background: '#121215',
-      border: '1px solid rgba(39, 39, 42, 0.8)',
-      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.5)',
+      background: '#fffdfa',
+      border: '1px solid rgba(222, 214, 201, 0.8)',
+      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(68, 52, 35, 0.10)',
       borderRadius: '8px',
       padding: '16px',
       margin: '8px 0',
@@ -97,23 +97,23 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
         flexWrap: 'wrap',
         gap: '8px',
         paddingBottom: '10px',
-        borderBottom: '1px solid #1f1f23'
+        borderBottom: '1px solid #e8e0d4'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '24px',
             height: '24px',
             borderRadius: '6px',
-            background: '#18181b',
-            border: '1px solid #27272a',
+            background: '#f0ebe3',
+            border: '1px solid #ded6c9',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#f59e0b'
+            color: '#b85d3c'
           }}>
             <TrendingUp size={14} />
           </div>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
             {data.title || 'Telemetry Line Chart'}
           </span>
         </div>
@@ -128,12 +128,12 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
           flexWrap: 'wrap'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '12px', height: '2px', background: '#f4f4f5', borderRadius: '1px' }} />
-            <span style={{ color: '#d4d4d8' }}>Wellhead Temp</span>
+            <div style={{ width: '12px', height: '2px', background: '#28231e', borderRadius: '1px' }} />
+            <span style={{ color: '#3f3932' }}>Wellhead Temp</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '12px', height: '2px', borderTop: '2px dashed #71717a' }} />
-            <span style={{ color: '#a1a1aa' }}>Air Temp</span>
+            <div style={{ width: '12px', height: '2px', borderTop: '2px dashed #7a7268' }} />
+            <span style={{ color: '#71695e' }}>Air Temp</span>
           </div>
           {markerDates.size > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -141,10 +141,10 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                background: 'rgba(244, 63, 94, 0.2)',
-                border: '1.5px solid #f43f5e'
+                background: 'rgba(169, 77, 70, 0.2)',
+                border: '1.5px solid #a94d46'
               }} />
-              <span style={{ color: '#f43f5e', fontWeight: 500 }}>
+              <span style={{ color: '#a94d46', fontWeight: 500 }}>
                 Not Producing ({markerDates.size})
               </span>
             </div>
@@ -155,8 +155,8 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
       {/* Interactive Tooltip Card */}
       {hoveredIndex !== null && hoveredWellhead !== null && (
         <div style={{
-          background: '#18181b',
-          border: '1px solid #3f3f46',
+          background: '#f0ebe3',
+          border: '1px solid #c6bbaa',
           borderRadius: '6px',
           padding: '6px 12px',
           display: 'flex',
@@ -166,26 +166,26 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
           gap: '12px',
           fontSize: '11px',
           fontFamily: "'JetBrains Mono', monospace",
-          boxShadow: '0 4px 16px rgba(0,0,0,0.6)'
+          boxShadow: '0 4px 16px rgba(68, 52, 35, 0.10)'
         }}>
           <div>
-            <span style={{ color: '#71717a' }}>Date: </span>
-            <strong style={{ color: '#f4f4f5' }}>{hoveredDate}</strong>
+            <span style={{ color: '#7a7268' }}>Date: </span>
+            <strong style={{ color: '#28231e' }}>{hoveredDate}</strong>
           </div>
           <div>
-            <span style={{ color: '#71717a' }}>Wellhead: </span>
-            <strong style={{ color: '#f4f4f5' }}>{hoveredWellhead.toFixed(1)}°C</strong>
+            <span style={{ color: '#7a7268' }}>Wellhead: </span>
+            <strong style={{ color: '#28231e' }}>{hoveredWellhead.toFixed(1)}°C</strong>
           </div>
           {hoveredAir !== null && (
             <div>
-              <span style={{ color: '#71717a' }}>Air: </span>
-              <strong style={{ color: '#a1a1aa' }}>{hoveredAir.toFixed(1)}°C</strong>
+              <span style={{ color: '#7a7268' }}>Air: </span>
+              <strong style={{ color: '#71695e' }}>{hoveredAir.toFixed(1)}°C</strong>
             </div>
           )}
           {hoveredDelta !== null && (
             <div>
-              <span style={{ color: '#71717a' }}>Delta: </span>
-              <strong style={{ color: hoveredDelta >= 15.0 ? '#10b981' : '#f43f5e' }}>
+              <span style={{ color: '#7a7268' }}>Delta: </span>
+              <strong style={{ color: hoveredDelta >= 15.0 ? '#55785e' : '#a94d46' }}>
                 {hoveredDelta >= 0 ? `+${hoveredDelta.toFixed(1)}°C` : `${hoveredDelta.toFixed(1)}°C`}
               </strong>
             </div>
@@ -195,9 +195,9 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
             borderRadius: '4px',
             fontSize: '10px',
             fontWeight: 600,
-            background: hoveredIsStopped ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-            color: hoveredIsStopped ? '#f43f5e' : '#10b981',
-            border: hoveredIsStopped ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+            background: hoveredIsStopped ? 'rgba(169, 77, 70, 0.15)' : 'rgba(85, 120, 94, 0.15)',
+            color: hoveredIsStopped ? '#a94d46' : '#55785e',
+            border: hoveredIsStopped ? '1px solid rgba(169, 77, 70, 0.3)' : '1px solid rgba(85, 120, 94, 0.3)',
           }}>
             {hoveredIsStopped ? 'NOT PRODUCING' : 'PRODUCING OIL'}
           </span>
@@ -208,9 +208,9 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
       <div style={{
         width: '100%',
         overflowX: 'auto',
-        background: '#09090b',
+        background: '#f7f5f0',
         borderRadius: '6px',
-        border: '1px solid #1f1f23',
+        border: '1px solid #e8e0d4',
         padding: '8px 0',
         position: 'relative'
       }}>
@@ -221,11 +221,11 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
             const val = maxY - (maxY - minY) * pct
             return (
               <g key={idx}>
-                <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#27272a" strokeDasharray="3 3" strokeWidth={1} />
+                <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#ded6c9" strokeDasharray="3 3" strokeWidth={1} />
                 <text
                   x={padLeft - 8}
                   y={y + 3.5}
-                  fill="#71717a"
+                  fill="#7a7268"
                   fontSize="10"
                   textAnchor="end"
                   fontFamily="'JetBrains Mono', monospace"
@@ -249,16 +249,16 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                   y={padTop}
                   width={colW}
                   height={chartH}
-                  fill="rgba(244, 63, 94, 0.08)"
-                  stroke="rgba(244, 63, 94, 0.25)"
+                  fill="rgba(169, 77, 70, 0.08)"
+                  stroke="rgba(169, 77, 70, 0.25)"
                   strokeDasharray="2 2"
                 />
                 <circle
                   cx={x}
                   cy={padTop + 8}
                   r={3.5}
-                  fill="#09090b"
-                  stroke="#f43f5e"
+                  fill="#f7f5f0"
+                  stroke="#a94d46"
                   strokeWidth={1.5}
                 />
               </g>
@@ -272,7 +272,7 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
               y1={padTop}
               x2={getX(hoveredIndex)}
               y2={padTop + chartH}
-              stroke="#f59e0b"
+              stroke="#b85d3c"
               strokeWidth={1}
               strokeDasharray="2 2"
             />
@@ -282,7 +282,7 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
           {data.series.map((s, sIdx) => {
             const sData = Array.isArray(s.data) ? s.data : []
             const isWellhead = sIdx === 0 || s.name.toLowerCase().includes('wellhead')
-            const strokeColor = isWellhead ? '#f4f4f5' : '#71717a'
+            const strokeColor = isWellhead ? '#28231e' : '#7a7268'
             const strokeDash = isWellhead ? 'none' : '4 4'
             const strokeW = isWellhead ? 2.2 : 1.5
 
@@ -311,8 +311,8 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                       cx={getX(idx)}
                       cy={getY(yVal)}
                       r={isHovered ? 6 : (isNotProducing ? 4.5 : 3)}
-                      fill={isHovered ? '#f59e0b' : (isNotProducing ? '#09090b' : strokeColor)}
-                      stroke={isHovered ? '#ffffff' : (isNotProducing ? '#f43f5e' : '#121215')}
+                      fill={isHovered ? '#b85d3c' : (isNotProducing ? '#f7f5f0' : strokeColor)}
+                      stroke={isHovered ? '#ffffff' : (isNotProducing ? '#a94d46' : '#fffdfa')}
                       strokeWidth={isHovered ? 2 : (isNotProducing ? 2 : 1.5)}
                       style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
                       onMouseEnter={() => setHoveredIndex(idx)}
@@ -353,7 +353,7 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                 key={`x-${idx}`}
                 x={x}
                 y={height - padBottom + 16}
-                fill={isHovered ? '#f59e0b' : (isMarked ? '#f43f5e' : '#71717a')}
+                fill={isHovered ? '#b85d3c' : (isMarked ? '#a94d46' : '#7a7268')}
                 fontSize="9.5"
                 fontWeight={isHovered || isMarked ? 700 : 400}
                 textAnchor="middle"
@@ -374,10 +374,10 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
           gap: '6px',
           flexWrap: 'wrap',
           paddingTop: '6px',
-          borderTop: '1px solid #1f1f23'
+          borderTop: '1px solid #e8e0d4'
         }}>
-          <ShieldCheck size={13} color="#71717a" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+          <ShieldCheck size={13} color="#7a7268" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
             Verified Evidence ({data.evidence_ids.length}):
           </span>
           {data.evidence_ids.map(eid => (
@@ -388,9 +388,9 @@ export const LineChartBlock: React.FC<{ data: LineChartProps }> = ({ data }) => 
                 fontFamily: "'JetBrains Mono', monospace",
                 padding: '1px 6px',
                 borderRadius: '4px',
-                background: '#18181b',
-                border: '1px solid #27272a',
-                color: '#d4d4d8'
+                background: '#f0ebe3',
+                border: '1px solid #ded6c9',
+                color: '#3f3932'
               }}
             >
               [{eid}]

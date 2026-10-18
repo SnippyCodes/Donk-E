@@ -91,6 +91,6 @@
 | `src/domain/exa_search.py` | M10 / requested M8 | External oilfield/regulatory semantic search with `[EXA:title|url]` citations | Completed; optional API key |
 | `backend/copilot/tools/exa_tools.py` + `tools/registry.py` | M10 / requested M8 | Explicit external research tool; local FTS5/Hybrid RRF remains primary for local docs | Completed |
 | `backend/copilot/agent/loop.py` | M10 / requested M8 | Syncs each turn to SQLite then Mem0, retrieves scoped memory, routes external context, traces engines | Completed |
-| `frontend/src/App.tsx`, `Chat.tsx`, `blocks/Evidence.tsx` | M10 / requested M8 | Engine badges and clickable external evidence citations | Completed |
+| `frontend/src/App.tsx`, `Chat.tsx`, `blocks/Evidence.tsx`, `index.css` | M10 / requested M8 + UI polish | Engine badges, clickable external evidence, warm gradient-free theme, responsive header | Completed |
 | `backend/tests/test_m8_mem0_and_exa.py` | M10 / requested M8 | Tests tenant isolation, SQLite fallback, Exa citation/fallback, agent routing and sync | Added |
 

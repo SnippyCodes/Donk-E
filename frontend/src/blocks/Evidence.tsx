@@ -22,9 +22,9 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
 
   return (
     <div style={{
-      background: '#121215',
-      border: '1px solid rgba(39, 39, 42, 0.8)',
-      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.5)',
+      background: '#fffdfa',
+      border: '1px solid rgba(222, 214, 201, 0.8)',
+      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(68, 52, 35, 0.10)',
       borderRadius: '8px',
       padding: '16px',
       margin: '8px 0',
@@ -40,35 +40,35 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
         flexWrap: 'wrap',
         gap: '8px',
         paddingBottom: '10px',
-        borderBottom: '1px solid #1f1f23'
+        borderBottom: '1px solid #e8e0d4'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '24px',
             height: '24px',
             borderRadius: '6px',
-            background: '#18181b',
-            border: '1px solid #27272a',
+            background: '#f0ebe3',
+            border: '1px solid #ded6c9',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#f59e0b'
+            color: '#b85d3c'
           }}>
             <BookOpen size={14} />
           </div>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
             {data.title}
           </span>
         </div>
 
         <span style={{
           fontSize: '11px',
-          color: '#a1a1aa',
+          color: '#71695e',
           fontFamily: "'JetBrains Mono', monospace",
           padding: '2px 8px',
           borderRadius: '4px',
-          background: '#18181b',
-          border: '1px solid #27272a'
+          background: '#f0ebe3',
+          border: '1px solid #ded6c9'
         }}>
           {data.evidence_items.length} Grounded Documents
         </span>
@@ -89,8 +89,8 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
             <div
               key={idx}
               style={{
-                background: '#09090b',
-                border: '1px solid #27272a',
+                background: '#f7f5f0',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 overflow: 'hidden',
                 transition: 'border-color 0.15s ease'
@@ -105,17 +105,17 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                   padding: '10px 12px',
                   cursor: 'pointer',
                   userSelect: 'none',
-                  background: isOpen ? '#121215' : '#09090b',
-                  borderBottom: isOpen ? '1px solid #1f1f23' : 'none'
+                  background: isOpen ? '#fffdfa' : '#f7f5f0',
+                  borderBottom: isOpen ? '1px solid #e8e0d4' : 'none'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {isOpen ? <ChevronDown size={14} color="#a1a1aa" /> : <ChevronRight size={14} color="#a1a1aa" />}
-                  <FileText size={14} color="#f59e0b" />
+                  {isOpen ? <ChevronDown size={14} color="#71695e" /> : <ChevronRight size={14} color="#71695e" />}
+                  <FileText size={14} color="#b85d3c" />
                   {safeUrl ? (
-                    <a href={safeUrl} target="_blank" rel="noopener noreferrer" onClick={event => event.stopPropagation()} style={{ fontSize: '12.5px', color: '#60a5fa', textDecoration: 'none' }}>{item.title}</a>
+                    <a href={safeUrl} target="_blank" rel="noopener noreferrer" onClick={event => event.stopPropagation()} style={{ fontSize: '12.5px', color: '#477b7a', textDecoration: 'none' }}>{item.title}</a>
                   ) : (
-                    <strong style={{ fontSize: '12.5px', color: '#f4f4f5' }}>{item.title}</strong>
+                    <strong style={{ fontSize: '12.5px', color: '#28231e' }}>{item.title}</strong>
                   )}
                 </div>
 
@@ -124,9 +124,9 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                   fontFamily: "'JetBrains Mono', monospace",
                   padding: '1px 6px',
                   borderRadius: '4px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#f59e0b'
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#b85d3c'
                 }}>
                   [{item.id}]
                 </span>
@@ -137,15 +137,15 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                   {item.snippet && (
                     <div style={{
                       fontSize: '12px',
-                      color: '#d4d4d8',
+                      color: '#3f3932',
                       lineHeight: 1.55,
-                      background: '#121215',
+                      background: '#fffdfa',
                       padding: '10px 12px',
                       borderRadius: '5px',
-                      borderLeft: '2px solid #f59e0b',
-                      border: '1px solid #1f1f23',
+                      borderLeft: '2px solid #b85d3c',
+                      border: '1px solid #e8e0d4',
                       borderLeftWidth: '3px',
-                      borderLeftColor: '#f59e0b',
+                      borderLeftColor: '#b85d3c',
                       fontFamily: "'JetBrains Mono', monospace"
                     }}>
                       {item.snippet}
@@ -155,7 +155,7 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                   {item.source && (
                     <div style={{
                       fontSize: '10.5px',
-                      color: '#71717a',
+                      color: '#7a7268',
                       fontFamily: "'JetBrains Mono', monospace",
                       display: 'flex',
                       alignItems: 'center',
@@ -180,10 +180,10 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
           gap: '6px',
           flexWrap: 'wrap',
           paddingTop: '6px',
-          borderTop: '1px solid #1f1f23'
+          borderTop: '1px solid #e8e0d4'
         }}>
-          <ShieldCheck size={13} color="#71717a" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+          <ShieldCheck size={13} color="#7a7268" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
             Citation Ledger Index:
           </span>
           {data.evidence_ids.map(eid => (
@@ -194,9 +194,9 @@ export const EvidenceBlock: React.FC<{ data: EvidenceBlockProps }> = ({ data }) 
                 fontFamily: "'JetBrains Mono', monospace",
                 padding: '1px 6px',
                 borderRadius: '4px',
-                background: '#18181b',
-                border: '1px solid #27272a',
-                color: '#d4d4d8'
+                background: '#f0ebe3',
+                border: '1px solid #ded6c9',
+                color: '#3f3932'
               }}
             >
               [{eid}]

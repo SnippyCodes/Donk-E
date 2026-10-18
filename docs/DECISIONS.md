@@ -71,3 +71,8 @@
 - **Decision:** Keep SQLite `user_messages`/`user_sessions` as the synchronous private-memory primary; synchronously write each turn there before best-effort Mem0 synchronization and fuse Mem0 results only after `user_id`-scoped search. Keep local SQLite FTS5/Hybrid RRF as primary for manuals and reports; route explicit external EPA/OSHA/API RP 11L/industry requests to optional Exa search. Validate only HTTP(S) results and emit `[EXA:title|url]` IDs in the current-turn evidence set for citation guardrails and clickable UI cards. Missing credentials or network errors degrade to local-only behavior without fabricated citations.
 - **Impact:** No LLM owns arithmetic or regulatory conclusions; private memories remain tenant-scoped; external claims are verifiable; offline tests and local search remain available.
 
+## Decision 16: Warm, Gradient-Free Operator Interface
+- **Context:** The operations console should feel calm and credible to field users rather than like a generic AI dashboard, while keeping status and evidence easy to scan.
+- **Decision:** Replace gradient/glow treatments with a warm neutral canvas, solid off-white surfaces, restrained terracotta and sage accents, softer borders, readable dark text, and visible keyboard focus. Keep the same operational controls and visual evidence blocks; reflow the top bar on narrower screens.
+- **Impact:** A quieter, more legible presentation without changing operational behavior or semantic status cues.
+

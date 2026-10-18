@@ -80,9 +80,9 @@ class SafeBlockBoundary extends React.Component<{ children: React.ReactNode }, {
         <div style={{
           padding: '8px 12px',
           borderRadius: '6px',
-          background: 'rgba(244, 63, 94, 0.1)',
-          border: '1px solid rgba(244, 63, 94, 0.25)',
-          color: '#f43f5e',
+          background: 'rgba(169, 77, 70, 0.1)',
+          border: '1px solid rgba(169, 77, 70, 0.25)',
+          color: '#a94d46',
           fontSize: '11px',
           fontFamily: "'JetBrains Mono', monospace",
           margin: '6px 0',
@@ -219,7 +219,7 @@ export const Chat: React.FC<ChatProps> = ({
         try {
           const parsedUrl = new URL(url)
           if (parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:') {
-            return <a key={idx} href={parsedUrl.toString()} target="_blank" rel="noopener noreferrer" title={`Open external source: ${part}`} style={{ color: '#60a5fa', textDecoration: 'underline' }}>{part}</a>
+            return <a key={idx} href={parsedUrl.toString()} target="_blank" rel="noopener noreferrer" title={`Open external source: ${part}`} style={{ color: '#477b7a', textDecoration: 'underline' }}>{part}</a>
           }
         } catch {
           // Keep malformed or untrusted links as plain citation text.
@@ -235,11 +235,11 @@ export const Chat: React.FC<ChatProps> = ({
               padding: '1px 6px',
               margin: '0 2px',
               borderRadius: '4px',
-              background: 'rgba(39, 39, 42, 0.9)',
-              border: '1px solid #3f3f46',
+              background: 'rgba(222, 214, 201, 0.9)',
+              border: '1px solid #c6bbaa',
               fontSize: '11px',
               fontFamily: "'JetBrains Mono', monospace",
-              color: '#f59e0b',
+              color: '#b85d3c',
               cursor: 'pointer',
               verticalAlign: 'baseline',
               lineHeight: '1.4'
@@ -300,7 +300,7 @@ export const Chat: React.FC<ChatProps> = ({
       flexDirection: 'column',
       height: '100%',
       width: '100%',
-      background: '#09090b',
+      background: '#f7f5f0',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -342,14 +342,14 @@ export const Chat: React.FC<ChatProps> = ({
               >
                 <div style={{
                   maxWidth: '75%',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
                   borderRadius: '8px',
                   padding: '10px 14px',
                   fontSize: '13.5px',
-                  color: '#f4f4f5',
+                  color: '#28231e',
                   lineHeight: 1.5,
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.4)'
+                  boxShadow: '0 1px 3px rgba(68, 52, 35, 0.10)'
                 }}>
                   {msg.content}
                 </div>
@@ -373,12 +373,12 @@ export const Chat: React.FC<ChatProps> = ({
                 width: '28px',
                 height: '28px',
                 borderRadius: '6px',
-                background: '#121215',
-                border: '1px solid #27272a',
+                background: '#fffdfa',
+                border: '1px solid #ded6c9',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#f59e0b',
+                color: '#b85d3c',
                 flexShrink: 0,
                 marginTop: '2px'
               }}>
@@ -397,7 +397,7 @@ export const Chat: React.FC<ChatProps> = ({
                 <div style={{
                   fontSize: '13.5px',
                   lineHeight: '1.6',
-                  color: '#e4e4e7',
+                  color: '#37322c',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   fontFamily: "'Inter', sans-serif"
@@ -417,8 +417,8 @@ export const Chat: React.FC<ChatProps> = ({
                   <div style={{
                     marginTop: '4px',
                     borderRadius: '6px',
-                    border: '1px solid #1f1f23',
-                    background: '#0c0c0e',
+                    border: '1px solid #e8e0d4',
+                    background: '#fbfaf7',
                     overflow: 'hidden',
                   }}>
                     {/* 1-Line Status Ribbon */}
@@ -432,39 +432,39 @@ export const Chat: React.FC<ChatProps> = ({
                         cursor: 'pointer',
                         fontSize: '11px',
                         fontFamily: "'JetBrains Mono', monospace",
-                        color: '#71717a',
+                        color: '#7a7268',
                         userSelect: 'none',
                         transition: 'background 0.15s ease',
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#121215'}
-                      onMouseLeave={e => e.currentTarget.style.background = '#0c0c0e'}
+                      onMouseEnter={e => e.currentTarget.style.background = '#fffdfa'}
+                      onMouseLeave={e => e.currentTarget.style.background = '#fbfaf7'}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         <span style={{
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '4px',
-                          color: '#10b981',
+                          color: '#55785e',
                           fontWeight: 600
                         }}>
-                          <CheckCircle2 size={12} color="#10b981" />
+                          <CheckCircle2 size={12} color="#55785e" />
                           QA Passed ({passedChecks}/{totalChecks} Checks)
                         </span>
                         <span>·</span>
-                        <span style={{ color: '#a1a1aa' }}>
+                        <span style={{ color: '#71695e' }}>
                           Tools: {toolSummary}
                         </span>
                         {trace?.memory_engine && (
-                          <span title="Per-user conversational memory engine" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: trace.memory_engine === 'sqlite+mem0' ? '#10b981' : '#a1a1aa' }}>
+                          <span title="Per-user conversational memory engine" style={{ padding: '1px 5px', border: '1px solid #ded6c9', borderRadius: '4px', color: trace.memory_engine === 'sqlite+mem0' ? '#55785e' : '#71695e' }}>
                             {trace.memory_engine === 'sqlite+mem0' ? 'Mem0 Scoped Memory' : 'Mem0 Scoped Memory · SQLite fallback'}
                           </span>
                         )}
                         {trace?.search_engine && (
-                          <span title="Local documentation search remains primary; Exa handles explicit external research" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: trace.search_engine.includes('+exa') ? '#10b981' : '#a1a1aa' }}>
+                          <span title="Local documentation search remains primary; Exa handles explicit external research" style={{ padding: '1px 5px', border: '1px solid #ded6c9', borderRadius: '4px', color: trace.search_engine.includes('+exa') ? '#55785e' : '#71695e' }}>
                             {trace.search_engine.includes('+exa') ? 'Exa Semantic Search' : 'Exa Semantic Search · inactive'}
                           </span>
                         )}
-                        <span title="Deterministic local database and document index" style={{ padding: '1px 5px', border: '1px solid #27272a', borderRadius: '4px', color: '#10b981' }}>
+                        <span title="Deterministic local database and document index" style={{ padding: '1px 5px', border: '1px solid #ded6c9', borderRadius: '4px', color: '#55785e' }}>
                           SQLite WAL + FTS5
                         </span>
                         {msg.evidence_ids && msg.evidence_ids.length > 0 && (
@@ -480,13 +480,13 @@ export const Chat: React.FC<ChatProps> = ({
                           </>
                         )}
                         {trace?.total_latency_ms !== undefined && (
-                          <span style={{ color: '#71717a' }}>
+                          <span style={{ color: '#7a7268' }}>
                             ({trace.total_latency_ms.toFixed(0)}ms)
                           </span>
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#71717a' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#7a7268' }}>
                         <span>{isTraceOpen ? 'Hide Audit' : 'Audit Details'}</span>
                         {isTraceOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                       </div>
@@ -496,9 +496,9 @@ export const Chat: React.FC<ChatProps> = ({
                     {isTraceOpen && (
                       <div style={{
                         padding: '12px',
-                        borderTop: '1px solid #1f1f23',
-                        background: '#09090b',
-                        color: '#a1a1aa',
+                        borderTop: '1px solid #e8e0d4',
+                        background: '#f7f5f0',
+                        color: '#71695e',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '10px'
@@ -510,7 +510,7 @@ export const Chat: React.FC<ChatProps> = ({
                             fontWeight: 600,
                             textTransform: 'uppercase',
                             letterSpacing: '0.4px',
-                            color: '#71717a',
+                            color: '#7a7268',
                             fontFamily: "'JetBrains Mono', monospace",
                             marginBottom: '6px'
                           }}>
@@ -520,36 +520,36 @@ export const Chat: React.FC<ChatProps> = ({
                             display: 'grid',
                             gridTemplateColumns: '1fr',
                             gap: '4px',
-                            background: '#121215',
+                            background: '#fffdfa',
                             padding: '8px 10px',
                             borderRadius: '6px',
-                            border: '1px solid #1f1f23',
+                            border: '1px solid #e8e0d4',
                             fontSize: '11px',
                             fontFamily: "'JetBrains Mono', monospace"
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <CheckCircle2 size={12} color="#10b981" />
-                              <strong style={{ color: '#f4f4f5' }}>citation_fidelity:</strong>
+                              <CheckCircle2 size={12} color="#55785e" />
+                              <strong style={{ color: '#28231e' }}>citation_fidelity:</strong>
                               <span>100% of bracketed IDs verified in deterministic evidence set.</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <CheckCircle2 size={12} color="#10b981" />
-                              <strong style={{ color: '#f4f4f5' }}>numeric_fidelity:</strong>
+                              <CheckCircle2 size={12} color="#55785e" />
+                              <strong style={{ color: '#28231e' }}>numeric_fidelity:</strong>
                               <span>Numbers computed by Python/SQLite (Zero LLM math rule).</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <CheckCircle2 size={12} color="#10b981" />
-                              <strong style={{ color: '#f4f4f5' }}>visual_contract:</strong>
+                              <CheckCircle2 size={12} color="#55785e" />
+                              <strong style={{ color: '#28231e' }}>visual_contract:</strong>
                               <span>Generative UI visual block type & payload validated.</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <CheckCircle2 size={12} color="#10b981" />
-                              <strong style={{ color: '#f4f4f5' }}>isolation_scope:</strong>
+                              <CheckCircle2 size={12} color="#55785e" />
+                              <strong style={{ color: '#28231e' }}>isolation_scope:</strong>
                               <span>Session bound to WHERE user_id = ? with fresh eff_inspection.</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <CheckCircle2 size={12} color="#10b981" />
-                              <strong style={{ color: '#f4f4f5' }}>conflict_honesty:</strong>
+                              <CheckCircle2 size={12} color="#55785e" />
+                              <strong style={{ color: '#28231e' }}>conflict_honesty:</strong>
                               <span>Discrepancies & no_recorded_reason explicitly surfaced.</span>
                             </div>
                           </div>
@@ -563,7 +563,7 @@ export const Chat: React.FC<ChatProps> = ({
                               fontWeight: 600,
                               textTransform: 'uppercase',
                               letterSpacing: '0.4px',
-                              color: '#71717a',
+                              color: '#7a7268',
                               fontFamily: "'JetBrains Mono', monospace",
                               marginBottom: '4px'
                             }}>
@@ -576,17 +576,17 @@ export const Chat: React.FC<ChatProps> = ({
                                   style={{
                                     padding: '6px 8px',
                                     borderRadius: '4px',
-                                    background: '#121215',
-                                    border: '1px solid #1f1f23',
+                                    background: '#fffdfa',
+                                    border: '1px solid #e8e0d4',
                                     fontSize: '11px',
                                     fontFamily: "'JetBrains Mono', monospace"
                                   }}
                                 >
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f4f4f5' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#28231e' }}>
                                     <strong>{t.name}</strong>
-                                    <span style={{ color: '#71717a' }}>{t.elapsed_ms}ms · {t.evidence_count} records</span>
+                                    <span style={{ color: '#7a7268' }}>{t.elapsed_ms}ms · {t.evidence_count} records</span>
                                   </div>
-                                  <div style={{ color: '#71717a', marginTop: '2px', wordBreak: 'break-all' }}>
+                                  <div style={{ color: '#7a7268', marginTop: '2px', wordBreak: 'break-all' }}>
                                     Args: {JSON.stringify(t.args)}
                                   </div>
                                 </div>
@@ -603,7 +603,7 @@ export const Chat: React.FC<ChatProps> = ({
                               fontWeight: 600,
                               textTransform: 'uppercase',
                               letterSpacing: '0.4px',
-                              color: '#71717a',
+                              color: '#7a7268',
                               fontFamily: "'JetBrains Mono', monospace",
                               marginBottom: '4px'
                             }}>
@@ -618,9 +618,9 @@ export const Chat: React.FC<ChatProps> = ({
                                     fontFamily: "'JetBrains Mono', monospace",
                                     padding: '1px 5px',
                                     borderRadius: '3px',
-                                    background: '#18181b',
-                                    border: '1px solid #27272a',
-                                    color: '#d4d4d8'
+                                    background: '#f0ebe3',
+                                    border: '1px solid #ded6c9',
+                                    color: '#3f3932'
                                   }}
                                 >
                                   [{eid}]
@@ -650,19 +650,19 @@ export const Chat: React.FC<ChatProps> = ({
               width: '28px',
               height: '28px',
               borderRadius: '6px',
-              background: '#121215',
-              border: '1px solid #27272a',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#f59e0b',
+              color: '#b85d3c',
               flexShrink: 0
             }}>
               <Bot size={15} />
             </div>
             <div style={{
-              background: '#121215',
-              border: '1px solid #27272a',
+              background: '#fffdfa',
+              border: '1px solid #ded6c9',
               borderRadius: '8px',
               padding: '10px 16px',
               display: 'flex',
@@ -670,7 +670,7 @@ export const Chat: React.FC<ChatProps> = ({
               gap: '10px'
             }}>
               <LoaderOne />
-              <span style={{ fontSize: '12px', color: '#a1a1aa', fontFamily: "'JetBrains Mono', monospace" }}>
+              <span style={{ fontSize: '12px', color: '#71695e', fontFamily: "'JetBrains Mono', monospace" }}>
                 Querying telemetry database & synthesizing grounded report...
               </span>
             </div>
@@ -696,10 +696,10 @@ export const Chat: React.FC<ChatProps> = ({
           <div style={{
             width: '100%',
             maxWidth: '440px',
-            background: '#121215',
-            border: '1px solid #27272a',
+            background: '#fffdfa',
+            border: '1px solid #ded6c9',
             borderRadius: '8px',
-            boxShadow: '0 16px 36px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 16px 36px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
             padding: '20px',
             display: 'flex',
             flexDirection: 'column',
@@ -707,21 +707,21 @@ export const Chat: React.FC<ChatProps> = ({
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Camera size={16} color="#f59e0b" />
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
+                <Camera size={16} color="#b85d3c" />
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
                   Field Inspection Photo Cross-Check
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setVisionModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#7a7268', cursor: 'pointer' }}
               >
                 <X size={16} />
               </button>
             </div>
 
-            <p style={{ fontSize: '12px', color: '#a1a1aa', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: '#71695e', lineHeight: 1.5 }}>
               Verify physical pump jack motion and spill containment against latest recorded telemetry.
             </p>
 
@@ -730,14 +730,14 @@ export const Chat: React.FC<ChatProps> = ({
                 maxHeight: '180px',
                 overflow: 'hidden',
                 borderRadius: '6px',
-                border: '1px solid #27272a',
+                border: '1px solid #ded6c9',
               }}>
                 <img src={selectedImageBase64} alt="Inspection Preview" style={{ width: '100%', objectFit: 'cover' }} />
               </div>
             )}
 
             <div>
-              <label style={{ fontSize: '11px', color: '#71717a', display: 'block', marginBottom: '4px', fontFamily: "'JetBrains Mono', monospace" }}>
+              <label style={{ fontSize: '11px', color: '#7a7268', display: 'block', marginBottom: '4px', fontFamily: "'JetBrains Mono', monospace" }}>
                 Target Well Asset ID
               </label>
               <input
@@ -748,9 +748,9 @@ export const Chat: React.FC<ChatProps> = ({
                   width: '100%',
                   padding: '6px 10px',
                   borderRadius: '6px',
-                  background: '#09090b',
-                  border: '1px solid #27272a',
-                  color: '#f4f4f5',
+                  background: '#f7f5f0',
+                  border: '1px solid #ded6c9',
+                  color: '#28231e',
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '12px',
                   outline: 'none'
@@ -766,9 +766,9 @@ export const Chat: React.FC<ChatProps> = ({
                   height: '32px',
                   padding: '0 12px',
                   borderRadius: '6px',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
-                  color: '#a1a1aa',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
+                  color: '#71695e',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -783,8 +783,8 @@ export const Chat: React.FC<ChatProps> = ({
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: '#f4f4f5',
-                  color: '#09090b',
+                  background: '#28231e',
+                  color: '#f7f5f0',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -820,9 +820,9 @@ export const Chat: React.FC<ChatProps> = ({
       }}>
         <div style={{
           borderRadius: '12px',
-          background: '#121215',
-          border: '1px solid #27272a',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.04)',
+          background: '#fffdfa',
+          border: '1px solid #ded6c9',
+          boxShadow: '0 4px 20px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.04)',
           padding: '10px 12px',
           display: 'flex',
           flexDirection: 'column',
@@ -847,7 +847,7 @@ export const Chat: React.FC<ChatProps> = ({
               outline: 'none',
               padding: '4px 6px',
               fontSize: '13.5px',
-              color: '#f4f4f5',
+              color: '#28231e',
               lineHeight: 1.5,
               fontFamily: "'Inter', sans-serif"
             }}
@@ -859,7 +859,7 @@ export const Chat: React.FC<ChatProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingTop: '6px',
-            borderTop: '1px solid rgba(39, 39, 42, 0.6)',
+            borderTop: '1px solid rgba(222, 214, 201, 0.6)',
           }}>
             {/* Left Toolbar Group */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -873,9 +873,9 @@ export const Chat: React.FC<ChatProps> = ({
                   borderRadius: '6px',
                   fontSize: '12px',
                   fontWeight: 500,
-                  color: '#a1a1aa',
-                  background: '#18181b',
-                  border: '1px solid #27272a',
+                  color: '#71695e',
+                  background: '#f0ebe3',
+                  border: '1px solid #ded6c9',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -884,12 +884,12 @@ export const Chat: React.FC<ChatProps> = ({
                 }}
                 title="Upload drone inspection photo or field snapshot"
                 onMouseEnter={e => {
-                  e.currentTarget.style.color = '#f4f4f5'
-                  e.currentTarget.style.borderColor = '#3f3f46'
+                  e.currentTarget.style.color = '#28231e'
+                  e.currentTarget.style.borderColor = '#c6bbaa'
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.color = '#a1a1aa'
-                  e.currentTarget.style.borderColor = '#27272a'
+                  e.currentTarget.style.color = '#71695e'
+                  e.currentTarget.style.borderColor = '#ded6c9'
                 }}
               >
                 <Camera size={14} style={{ flexShrink: 0 }} />
@@ -906,9 +906,9 @@ export const Chat: React.FC<ChatProps> = ({
                   borderRadius: '6px',
                   fontSize: '12px',
                   fontWeight: 500,
-                  color: isRecording ? '#f43f5e' : '#a1a1aa',
-                  background: isRecording ? 'rgba(244, 63, 94, 0.1)' : '#18181b',
-                  border: isRecording ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid #27272a',
+                  color: isRecording ? '#a94d46' : '#71695e',
+                  background: isRecording ? 'rgba(169, 77, 70, 0.1)' : '#f0ebe3',
+                  border: isRecording ? '1px solid rgba(169, 77, 70, 0.3)' : '1px solid #ded6c9',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -923,7 +923,7 @@ export const Chat: React.FC<ChatProps> = ({
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      background: '#f43f5e',
+                      background: '#a94d46',
                       animation: 'pulse 1.2s infinite'
                     }} />
                     <span>Listening...</span>
@@ -941,17 +941,17 @@ export const Chat: React.FC<ChatProps> = ({
                 height: '32px',
                 padding: '0 10px',
                 borderRadius: '6px',
-                background: '#09090b',
-                border: '1px solid #1f1f23',
+                background: '#f7f5f0',
+                border: '1px solid #e8e0d4',
                 fontSize: '11px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: '#71717a',
+                color: '#7a7268',
                 display: 'none',
                 alignItems: 'center',
                 gap: '5px'
               }} className="sm:inline-flex" title="All queries and memories isolated to this operator">
-                <Lock size={11} color="#10b981" />
-                <span style={{ color: '#d4d4d8' }}>{currentUser.name}</span>
+                <Lock size={11} color="#55785e" />
+                <span style={{ color: '#3f3932' }}>{currentUser.name}</span>
               </div>
             </div>
 
@@ -960,7 +960,7 @@ export const Chat: React.FC<ChatProps> = ({
               <span style={{
                 fontSize: '11px',
                 fontFamily: "'JetBrains Mono', monospace",
-                color: '#52525b',
+                color: '#857b6e',
                 display: 'none',
                 alignItems: 'center',
                 gap: '2px'
@@ -977,8 +977,8 @@ export const Chat: React.FC<ChatProps> = ({
                   height: '32px',
                   padding: '0 14px',
                   borderRadius: '6px',
-                  background: !input.trim() || isLoading ? '#27272a' : '#f4f4f5',
-                  color: !input.trim() || isLoading ? '#71717a' : '#09090b',
+                  background: !input.trim() || isLoading ? '#ded6c9' : '#28231e',
+                  color: !input.trim() || isLoading ? '#7a7268' : '#f7f5f0',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: !input.trim() || isLoading ? 'not-allowed' : 'pointer',

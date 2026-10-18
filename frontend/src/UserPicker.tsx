@@ -50,11 +50,11 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
         style={{
           height: '32px',
           padding: '0 10px',
-          background: '#121215',
-          border: '1px solid #27272a',
+          background: '#fffdfa',
+          border: '1px solid #ded6c9',
           borderRadius: '6px',
           cursor: 'pointer',
-          color: '#f4f4f5',
+          color: '#28231e',
           fontSize: '12px',
           fontWeight: 500,
           display: 'inline-flex',
@@ -74,8 +74,8 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
           width: '18px',
           height: '18px',
           borderRadius: '4px',
-          background: '#27272a',
-          color: '#f59e0b',
+          background: '#ded6c9',
+          color: '#b85d3c',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -87,14 +87,14 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
           {getInitials(currentUser.name)}
         </div>
 
-        <span style={{ fontWeight: 600, color: '#f4f4f5' }}>{currentUser.name}</span>
+        <span style={{ fontWeight: 600, color: '#28231e' }}>{currentUser.name}</span>
 
         <span style={{
           fontSize: '10px',
-          color: '#71717a',
+          color: '#7a7268',
           fontFamily: "'JetBrains Mono', monospace",
-          background: '#09090b',
-          border: '1px solid #27272a',
+          background: '#f7f5f0',
+          border: '1px solid #ded6c9',
           padding: '2px 5px',
           borderRadius: '3px',
         }}>
@@ -106,7 +106,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
           display: 'inline-flex',
           alignItems: 'center',
           gap: '3px',
-          color: '#10b981',
+          color: '#55785e',
           fontSize: '10px',
           fontFamily: "'JetBrains Mono', monospace"
         }} title="Private Memory & Rule Scope Isolated to Current Operator">
@@ -114,7 +114,7 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
           <span>Isolated</span>
         </div>
 
-        <ChevronDown size={12} color="#71717a" style={{ flexShrink: 0, marginLeft: '2px' }} />
+        <ChevronDown size={12} color="#7a7268" style={{ flexShrink: 0, marginLeft: '2px' }} />
       </button>
 
       {/* Dropdown Menu */}
@@ -124,9 +124,9 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
           top: '38px',
           right: 0,
           width: '320px',
-          background: '#121215',
-          border: '1px solid #27272a',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+          background: '#fffdfa',
+          border: '1px solid #ded6c9',
+          boxShadow: '0 8px 24px rgba(68, 52, 35, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
           borderRadius: '8px',
           padding: '6px',
           zIndex: 100,
@@ -140,15 +140,15 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
             fontFamily: "'JetBrains Mono', monospace",
             textTransform: 'uppercase',
             letterSpacing: '0.4px',
-            color: '#71717a',
-            borderBottom: '1px solid #1f1f23',
+            color: '#7a7268',
+            borderBottom: '1px solid #e8e0d4',
             marginBottom: '4px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
             <span>Field Operator Session</span>
-            <span style={{ color: '#10b981' }}>WHERE user_id = ?</span>
+            <span style={{ color: '#55785e' }}>WHERE user_id = ?</span>
           </div>
 
           <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -168,12 +168,12 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
                     padding: '8px 10px',
                     borderRadius: '6px',
                     cursor: 'pointer',
-                    background: isSelected ? '#18181b' : 'transparent',
-                    border: isSelected ? '1px solid #27272a' : '1px solid transparent',
+                    background: isSelected ? '#f0ebe3' : 'transparent',
+                    border: isSelected ? '1px solid #ded6c9' : '1px solid transparent',
                     transition: 'all 0.15s ease'
                   }}
                   onMouseEnter={e => {
-                    if (!isSelected) e.currentTarget.style.background = '#18181b'
+                    if (!isSelected) e.currentTarget.style.background = '#f0ebe3'
                   }}
                   onMouseLeave={e => {
                     if (!isSelected) e.currentTarget.style.background = 'transparent'
@@ -184,8 +184,8 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
                       width: '24px',
                       height: '24px',
                       borderRadius: '4px',
-                      background: isSelected ? '#f59e0b' : '#27272a',
-                      color: isSelected ? '#09090b' : '#a1a1aa',
+                      background: isSelected ? '#b85d3c' : '#ded6c9',
+                      color: isSelected ? '#f7f5f0' : '#71695e',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -196,12 +196,12 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
                       {getInitials(u.name)}
                     </div>
                     <div>
-                      <div style={{ fontSize: '12px', fontWeight: 600, color: '#f4f4f5' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 600, color: '#28231e' }}>
                         {u.name}
                       </div>
                       <div style={{
                         fontSize: '10px',
-                        color: '#71717a',
+                        color: '#7a7268',
                         textTransform: 'capitalize',
                         display: 'flex',
                         alignItems: 'center',
@@ -217,15 +217,15 @@ export const UserPicker: React.FC<UserPickerProps> = ({ currentUser, users, onSe
                     <span style={{
                       fontSize: '10px',
                       fontFamily: "'JetBrains Mono', monospace",
-                      color: '#a1a1aa',
-                      background: '#09090b',
+                      color: '#71695e',
+                      background: '#f7f5f0',
                       padding: '1px 5px',
                       borderRadius: '3px',
-                      border: '1px solid #1f1f23'
+                      border: '1px solid #e8e0d4'
                     }}>
                       {u.user_id}
                     </span>
-                    {isSelected && <Check size={14} color="#10b981" />}
+                    {isSelected && <Check size={14} color="#55785e" />}
                   </div>
                 </div>
               )

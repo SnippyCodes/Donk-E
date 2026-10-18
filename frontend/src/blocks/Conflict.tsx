@@ -18,10 +18,10 @@ export interface ConflictBlockProps {
 export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) => {
   return (
     <div style={{
-      background: '#121215',
-      border: '1px solid rgba(39, 39, 42, 0.8)',
-      borderLeft: '3px solid #f59e0b',
-      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.5)',
+      background: '#fffdfa',
+      border: '1px solid rgba(222, 214, 201, 0.8)',
+      borderLeft: '3px solid #b85d3c',
+      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(68, 52, 35, 0.10)',
       borderRadius: '8px',
       padding: '16px',
       margin: '8px 0',
@@ -37,24 +37,24 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
         flexWrap: 'wrap',
         gap: '8px',
         paddingBottom: '10px',
-        borderBottom: '1px solid #1f1f23'
+        borderBottom: '1px solid #e8e0d4'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '24px',
             height: '24px',
             borderRadius: '6px',
-            background: 'rgba(245, 158, 11, 0.1)',
-            border: '1px solid rgba(245, 158, 11, 0.25)',
+            background: 'rgba(184, 93, 60, 0.1)',
+            border: '1px solid rgba(184, 93, 60, 0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#f59e0b'
+            color: '#b85d3c'
           }}>
             <AlertOctagon size={14} />
           </div>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#f4f4f5' }}>
-            {data.title} <span style={{ fontFamily: "'JetBrains Mono', monospace", color: '#f59e0b' }}>({data.asset_id})</span>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#28231e' }}>
+            {data.title} <span style={{ fontFamily: "'JetBrains Mono', monospace", color: '#b85d3c' }}>({data.asset_id})</span>
           </span>
         </div>
 
@@ -63,10 +63,10 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
           fontFamily: "'JetBrains Mono', monospace",
           padding: '2px 8px',
           borderRadius: '4px',
-          background: 'rgba(245, 158, 11, 0.1)',
-          color: '#f59e0b',
+          background: 'rgba(184, 93, 60, 0.1)',
+          color: '#b85d3c',
           fontWeight: 600,
-          border: '1px solid rgba(245, 158, 11, 0.25)',
+          border: '1px solid rgba(184, 93, 60, 0.25)',
           display: 'inline-flex',
           alignItems: 'center',
           gap: '5px'
@@ -76,8 +76,8 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
         </span>
       </div>
 
-      <div style={{ fontSize: '12px', color: '#a1a1aa' }}>
-        Disputed Field Item / Parameter: <strong style={{ color: '#f4f4f5', fontFamily: "'JetBrains Mono', monospace" }}>{data.item}</strong>
+      <div style={{ fontSize: '12px', color: '#71695e' }}>
+        Disputed Field Item / Parameter: <strong style={{ color: '#28231e', fontFamily: "'JetBrains Mono', monospace" }}>{data.item}</strong>
       </div>
 
       {/* Disputing Claims Comparison Grid (Layer 1 vs Layer 2) */}
@@ -90,8 +90,8 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
           <div
             key={idx}
             style={{
-              background: '#09090b',
-              border: '1px solid #27272a',
+              background: '#f7f5f0',
+              border: '1px solid #ded6c9',
               borderRadius: '6px',
               padding: '12px',
               display: 'flex',
@@ -106,13 +106,13 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 marginBottom: '6px',
-                borderBottom: '1px solid #1f1f23',
+                borderBottom: '1px solid #e8e0d4',
                 paddingBottom: '4px'
               }}>
                 <span style={{
                   fontSize: '10.5px',
                   fontWeight: 600,
-                  color: '#71717a',
+                  color: '#7a7268',
                   textTransform: 'uppercase',
                   letterSpacing: '0.4px',
                   fontFamily: "'JetBrains Mono', monospace"
@@ -125,9 +125,9 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
                     fontFamily: "'JetBrains Mono', monospace",
                     padding: '1px 5px',
                     borderRadius: '3px',
-                    background: '#18181b',
-                    border: '1px solid #27272a',
-                    color: '#d4d4d8'
+                    background: '#f0ebe3',
+                    border: '1px solid #ded6c9',
+                    color: '#3f3932'
                   }}>
                     [{claim.evidence_id}]
                   </span>
@@ -135,18 +135,18 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
-                <User size={12} color="#a1a1aa" />
-                <strong style={{ fontSize: '12px', color: '#f4f4f5' }}>{claim.source}</strong>
+                <User size={12} color="#71695e" />
+                <strong style={{ fontSize: '12px', color: '#28231e' }}>{claim.source}</strong>
               </div>
 
               <div style={{
                 fontSize: '12px',
-                color: '#d4d4d8',
+                color: '#3f3932',
                 lineHeight: 1.5,
-                background: '#121215',
+                background: '#fffdfa',
                 padding: '8px 10px',
                 borderRadius: '5px',
-                border: '1px solid #1f1f23',
+                border: '1px solid #e8e0d4',
                 fontStyle: 'italic'
               }}>
                 "{claim.statement}"
@@ -156,7 +156,7 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
             {claim.timestamp && (
               <div style={{
                 fontSize: '10px',
-                color: '#71717a',
+                color: '#7a7268',
                 fontFamily: "'JetBrains Mono', monospace"
               }}>
                 Recorded: {claim.timestamp} UTC
@@ -172,15 +172,15 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
         alignItems: 'flex-start',
         gap: '10px',
         padding: '10px 12px',
-        background: '#09090b',
-        border: '1px solid #27272a',
+        background: '#f7f5f0',
+        border: '1px solid #ded6c9',
         borderRadius: '6px',
         fontSize: '12px',
-        color: '#a1a1aa'
+        color: '#71695e'
       }}>
-        <HelpCircle size={15} style={{ flexShrink: 0, marginTop: '2px', color: '#f59e0b' }} />
+        <HelpCircle size={15} style={{ flexShrink: 0, marginTop: '2px', color: '#b85d3c' }} />
         <div>
-          <strong style={{ color: '#f4f4f5' }}>Industrial Protocol:</strong> {data.recommendation}
+          <strong style={{ color: '#28231e' }}>Industrial Protocol:</strong> {data.recommendation}
         </div>
       </div>
 
@@ -192,10 +192,10 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
           gap: '6px',
           flexWrap: 'wrap',
           paddingTop: '6px',
-          borderTop: '1px solid #1f1f23'
+          borderTop: '1px solid #e8e0d4'
         }}>
-          <ShieldCheck size={13} color="#71717a" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+          <ShieldCheck size={13} color="#7a7268" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '11px', color: '#7a7268', fontFamily: "'JetBrains Mono', monospace" }}>
             Audit Evidence ({data.evidence_ids.length}):
           </span>
           {data.evidence_ids.map(eid => (
@@ -206,9 +206,9 @@ export const ConflictBlock: React.FC<{ data: ConflictBlockProps }> = ({ data }) 
                 fontFamily: "'JetBrains Mono', monospace",
                 padding: '1px 6px',
                 borderRadius: '4px',
-                background: '#18181b',
-                border: '1px solid #27272a',
-                color: '#d4d4d8'
+                background: '#f0ebe3',
+                border: '1px solid #ded6c9',
+                color: '#3f3932'
               }}
             >
               [{eid}]

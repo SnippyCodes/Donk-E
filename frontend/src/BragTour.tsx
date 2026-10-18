@@ -440,8 +440,8 @@ export const BragTour: React.FC<BragTourProps> = ({
         position: 'relative',
         minHeight: '100vh',
         width: '100%',
-        backgroundColor: '#0d1117',
-        color: '#f0f6fc',
+        backgroundColor: '#fbfaf7',
+        color: '#37322c',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         paddingBottom: '140px'
       }}
@@ -460,7 +460,7 @@ export const BragTour: React.FC<BragTourProps> = ({
           display: inline-block;
           width: 3px;
           border-radius: 2px;
-          background-color: #f0883e;
+          background-color: #b85d3c;
           animation: eq-bounce 0.8s ease-in-out infinite;
         }
         .live-eq-bar:nth-child(2) { animation-delay: 0.15s; }
@@ -476,10 +476,10 @@ export const BragTour: React.FC<BragTourProps> = ({
           top: 0,
           zIndex: 50,
           width: '100%',
-          backgroundColor: '#161b22',
-          borderBottom: '1px solid #30363d',
+          backgroundColor: '#fffdfa',
+          borderBottom: '1px solid #ded6c9',
           padding: '12px 24px',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+          boxShadow: '0 2px 10px rgba(68, 52, 35, 0.10)'
         }}
       >
         <div
@@ -496,7 +496,7 @@ export const BragTour: React.FC<BragTourProps> = ({
           {/* Left: Branding & Timer */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '14px', fontWeight: 700, color: '#f0f6fc', letterSpacing: '-0.2px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#37322c', letterSpacing: '-0.2px' }}>
                 DEMO DIRECTOR
               </span>
               <span
@@ -506,9 +506,9 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontWeight: 700,
                   padding: '2px 6px',
                   borderRadius: '4px',
-                  backgroundColor: '#21262d',
-                  border: '1px solid #30363d',
-                  color: '#f0883e'
+                  backgroundColor: '#ded6c9',
+                  border: '1px solid #ded6c9',
+                  color: '#b85d3c'
                 }}
               >
                 5-MIN TOUR
@@ -522,16 +522,16 @@ export const BragTour: React.FC<BragTourProps> = ({
                 gap: '8px',
                 fontSize: '12px',
                 fontFamily: 'monospace',
-                color: '#8b949e',
-                borderLeft: '1px solid #30363d',
+                color: '#71695e',
+                borderLeft: '1px solid #ded6c9',
                 paddingLeft: '12px'
               }}
             >
-              <span style={{ color: '#58a6ff' }}>
+              <span style={{ color: '#477b7a' }}>
                 {isPlaying ? `Chapter ${activeChapterIndex + 1} of 5` : 'Overview Mode'}
               </span>
               <span>·</span>
-              <span style={{ color: '#3fb950', fontWeight: 600 }}>
+              <span style={{ color: '#55785e', fontWeight: 600 }}>
                 {formatTime(elapsedSeconds)} / 05:00
               </span>
             </div>
@@ -550,11 +550,11 @@ export const BragTour: React.FC<BragTourProps> = ({
                   borderRadius: '6px',
                   fontSize: '12.5px',
                   fontWeight: 600,
-                  backgroundColor: '#f0883e',
+                  backgroundColor: '#b85d3c',
                   color: '#ffffff',
                   border: 'none',
                   cursor: 'pointer',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  boxShadow: '0 1px 3px rgba(68, 52, 35, 0.10)',
                   transition: 'opacity 0.15s ease'
                 }}
               >
@@ -567,8 +567,8 @@ export const BragTour: React.FC<BragTourProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
-                  backgroundColor: '#090d13',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#f7f5f0',
+                  border: '1px solid #ded6c9',
                   borderRadius: '6px',
                   padding: '4px'
                 }}
@@ -579,7 +579,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                     padding: '6px 8px',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    color: '#8b949e',
+                    color: '#71695e',
                     cursor: 'pointer',
                     borderRadius: '4px'
                   }}
@@ -593,9 +593,9 @@ export const BragTour: React.FC<BragTourProps> = ({
                     padding: '6px 12px',
                     fontSize: '12px',
                     fontWeight: 600,
-                    backgroundColor: '#21262d',
-                    border: '1px solid #30363d',
-                    color: '#f0f6fc',
+                    backgroundColor: '#ded6c9',
+                    border: '1px solid #ded6c9',
+                    color: '#37322c',
                     cursor: 'pointer',
                     borderRadius: '4px',
                     display: 'flex',
@@ -612,7 +612,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                     padding: '6px 8px',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    color: '#8b949e',
+                    color: '#71695e',
                     cursor: 'pointer',
                     borderRadius: '4px'
                   }}
@@ -626,7 +626,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                     padding: '6px 8px',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    color: '#f85149',
+                    color: '#a94d46',
                     cursor: 'pointer',
                     borderRadius: '4px'
                   }}
@@ -650,9 +650,9 @@ export const BragTour: React.FC<BragTourProps> = ({
                 fontSize: '12px',
                 fontFamily: 'monospace',
                 fontWeight: 600,
-                backgroundColor: '#21262d',
-                border: '1px solid #30363d',
-                color: '#c9d1d9',
+                backgroundColor: '#ded6c9',
+                border: '1px solid #ded6c9',
+                color: '#3f3932',
                 cursor: 'pointer'
               }}
               title="Voice playback rate"
@@ -666,9 +666,9 @@ export const BragTour: React.FC<BragTourProps> = ({
               style={{
                 padding: '7px 10px',
                 borderRadius: '6px',
-                backgroundColor: '#21262d',
-                border: '1px solid #30363d',
-                color: isMuted ? '#f85149' : '#8b949e',
+                backgroundColor: '#ded6c9',
+                border: '1px solid #ded6c9',
+                color: isMuted ? '#a94d46' : '#71695e',
                 cursor: 'pointer'
               }}
               title={isMuted ? 'Unmute Audio Voice' : 'Mute Voice (Subtitles Only)'}
@@ -687,9 +687,9 @@ export const BragTour: React.FC<BragTourProps> = ({
                 borderRadius: '6px',
                 fontSize: '12px',
                 fontWeight: 600,
-                backgroundColor: isRecording ? '#f85149' : '#21262d',
-                border: isRecording ? '1px solid #da3633' : '1px solid #30363d',
-                color: isRecording ? '#ffffff' : '#f85149',
+                backgroundColor: isRecording ? '#a94d46' : '#ded6c9',
+                border: isRecording ? '1px solid #a94d46' : '1px solid #ded6c9',
+                color: isRecording ? '#ffffff' : '#a94d46',
                 cursor: 'pointer'
               }}
               title="Record full demo video + audio to .webm file"
@@ -708,9 +708,9 @@ export const BragTour: React.FC<BragTourProps> = ({
                 style={{
                   maxWidth: '140px',
                   fontSize: '11.5px',
-                  backgroundColor: '#21262d',
-                  border: '1px solid #30363d',
-                  color: '#c9d1d9',
+                  backgroundColor: '#ded6c9',
+                  border: '1px solid #ded6c9',
+                  color: '#3f3932',
                   borderRadius: '6px',
                   padding: '6px 8px',
                   cursor: 'pointer'
@@ -734,8 +734,8 @@ export const BragTour: React.FC<BragTourProps> = ({
                 borderRadius: '6px',
                 fontSize: '12px',
                 fontWeight: 600,
-                backgroundColor: '#238636',
-                border: '1px solid #2ea043',
+                backgroundColor: '#55785e',
+                border: '1px solid #55785e',
                 color: '#ffffff',
                 cursor: 'pointer'
               }}
@@ -754,8 +754,8 @@ export const BragTour: React.FC<BragTourProps> = ({
         <section
           id="chapter-1"
           style={{
-            backgroundColor: '#161b22',
-            border: activeChapterIndex === 0 && isPlaying ? '2px solid #f0883e' : '1px solid #30363d',
+            backgroundColor: '#fffdfa',
+            border: activeChapterIndex === 0 && isPlaying ? '2px solid #b85d3c' : '1px solid #ded6c9',
             boxShadow:
               activeChapterIndex === 0 && isPlaying
                 ? '0 0 0 3px rgba(240, 136, 62, 0.15)'
@@ -771,7 +771,7 @@ export const BragTour: React.FC<BragTourProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #30363d',
+              borderBottom: '1px solid #ded6c9',
               paddingBottom: '12px',
               marginBottom: '16px'
             }}
@@ -782,16 +782,16 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  backgroundColor: '#21262d',
-                  color: '#f0883e',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#ded6c9',
+                  color: '#b85d3c',
+                  border: '1px solid #ded6c9',
                   padding: '2px 8px',
                   borderRadius: '4px'
                 }}
               >
                 CHAPTER 1 (0:00 – 0:25)
               </span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f0f6fc', margin: 0 }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#37322c', margin: 0 }}>
                 Architecture &amp; Zero-LLM-Math Invariant
               </h2>
             </div>
@@ -802,7 +802,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '12px',
-                  color: '#3fb950',
+                  color: '#55785e',
                   fontFamily: 'monospace',
                   fontWeight: 600
                 }}
@@ -812,7 +812,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: '#3fb950',
+                    backgroundColor: '#55785e',
                     animation: 'pulse-dot 1s infinite'
                   }}
                 />
@@ -821,7 +821,7 @@ export const BragTour: React.FC<BragTourProps> = ({
             )}
           </div>
 
-          <p style={{ fontSize: '13px', color: '#8b949e', lineHeight: 1.6, marginBottom: '18px' }}>
+          <p style={{ fontSize: '13px', color: '#71695e', lineHeight: 1.6, marginBottom: '18px' }}>
             Core engineering philosophy: <b>Deterministic code owns facts and compliance math, Gemma 4 owns conversational synthesis, and an append-only ledger owns memory.</b>
           </p>
 
@@ -836,8 +836,8 @@ export const BragTour: React.FC<BragTourProps> = ({
           >
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
@@ -846,7 +846,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                 style={{
                   fontSize: '11px',
                   fontFamily: 'monospace',
-                  color: '#8b949e',
+                  color: '#71695e',
                   textTransform: 'uppercase',
                   marginBottom: '4px'
                 }}
@@ -858,21 +858,21 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontSize: '22px',
                   fontWeight: 700,
                   fontFamily: 'monospace',
-                  color: '#f0f6fc',
+                  color: '#37322c',
                   marginBottom: '2px'
                 }}
               >
                 2.54s
               </div>
-              <div style={{ fontSize: '11px', color: '#3fb950', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '11px', color: '#55785e', fontFamily: 'monospace' }}>
                 0 LLM Calls
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
@@ -881,7 +881,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                 style={{
                   fontSize: '11px',
                   fontFamily: 'monospace',
-                  color: '#8b949e',
+                  color: '#71695e',
                   textTransform: 'uppercase',
                   marginBottom: '4px'
                 }}
@@ -893,21 +893,21 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontSize: '22px',
                   fontWeight: 700,
                   fontFamily: 'monospace',
-                  color: '#f0f6fc',
+                  color: '#37322c',
                   marginBottom: '2px'
                 }}
               >
                 39,567
               </div>
-              <div style={{ fontSize: '11px', color: '#8b949e', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '11px', color: '#71695e', fontFamily: 'monospace' }}>
                 Immutable SQLite
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
@@ -916,7 +916,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                 style={{
                   fontSize: '11px',
                   fontFamily: 'monospace',
-                  color: '#8b949e',
+                  color: '#71695e',
                   textTransform: 'uppercase',
                   marginBottom: '4px'
                 }}
@@ -928,21 +928,21 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontSize: '22px',
                   fontWeight: 700,
                   fontFamily: 'monospace',
-                  color: '#f0f6fc',
+                  color: '#37322c',
                   marginBottom: '2px'
                 }}
               >
                 1,509 / 1,509
               </div>
-              <div style={{ fontSize: '11px', color: '#3fb950', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '11px', color: '#55785e', fontFamily: 'monospace' }}>
                 100% Regex Coverage
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
@@ -951,7 +951,7 @@ export const BragTour: React.FC<BragTourProps> = ({
                 style={{
                   fontSize: '11px',
                   fontFamily: 'monospace',
-                  color: '#8b949e',
+                  color: '#71695e',
                   textTransform: 'uppercase',
                   marginBottom: '4px'
                 }}
@@ -963,13 +963,13 @@ export const BragTour: React.FC<BragTourProps> = ({
                   fontSize: '22px',
                   fontWeight: 700,
                   fontFamily: 'monospace',
-                  color: '#f0f6fc',
+                  color: '#37322c',
                   marginBottom: '2px'
                 }}
               >
                 &lt; 20 ms
               </div>
-              <div style={{ fontSize: '11px', color: '#8b949e', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '11px', color: '#71695e', fontFamily: 'monospace' }}>
                 eff_inspection / spills
               </div>
             </div>
@@ -978,13 +978,13 @@ export const BragTour: React.FC<BragTourProps> = ({
           {/* ASCII Architecture Diagram */}
           <pre
             style={{
-              backgroundColor: '#090d13',
-              border: '1px solid #30363d',
+              backgroundColor: '#f7f5f0',
+              border: '1px solid #ded6c9',
               borderRadius: '6px',
               padding: '14px',
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: '12px',
-              color: '#79c0ff',
+              color: '#477b7a',
               lineHeight: 1.5,
               overflowX: 'auto',
               margin: '12px 0 0 0'
@@ -1003,8 +1003,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         <section
           id="chapter-2"
           style={{
-            backgroundColor: '#161b22',
-            border: activeChapterIndex === 1 && isPlaying ? '2px solid #f0883e' : '1px solid #30363d',
+            backgroundColor: '#fffdfa',
+            border: activeChapterIndex === 1 && isPlaying ? '2px solid #b85d3c' : '1px solid #ded6c9',
             boxShadow:
               activeChapterIndex === 1 && isPlaying
                 ? '0 0 0 3px rgba(240, 136, 62, 0.15)'
@@ -1020,7 +1020,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #30363d',
+              borderBottom: '1px solid #ded6c9',
               paddingBottom: '12px',
               marginBottom: '16px'
             }}
@@ -1031,16 +1031,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  backgroundColor: '#21262d',
-                  color: '#f0883e',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#ded6c9',
+                  color: '#b85d3c',
+                  border: '1px solid #ded6c9',
                   padding: '2px 8px',
                   borderRadius: '4px'
                 }}
               >
                 CHAPTER 2 (0:25 – 0:55)
               </span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f0f6fc', margin: 0 }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#37322c', margin: 0 }}>
                 Truth Hierarchy &amp; Cross-Source Synthesis
               </h2>
             </div>
@@ -1051,7 +1051,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '12px',
-                  color: '#3fb950',
+                  color: '#55785e',
                   fontFamily: 'monospace',
                   fontWeight: 600
                 }}
@@ -1061,7 +1061,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: '#3fb950',
+                    backgroundColor: '#55785e',
                     animation: 'pulse-dot 1s infinite'
                   }}
                 />
@@ -1080,8 +1080,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
           >
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1094,16 +1094,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   marginBottom: '10px'
                 }}
               >
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0f6fc' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#37322c' }}>
                   Q1: Stale Status Flag
                 </span>
                 <span
                   style={{
                     fontSize: '11px',
                     fontFamily: 'monospace',
-                    backgroundColor: '#21262d',
-                    border: '1px solid #30363d',
-                    color: '#58a6ff',
+                    backgroundColor: '#ded6c9',
+                    border: '1px solid #ded6c9',
+                    color: '#477b7a',
                     padding: '2px 8px',
                     borderRadius: '4px'
                   }}
@@ -1111,15 +1111,15 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   WELL-0001
                 </span>
               </div>
-              <p style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                Recorded status claims <span style={{ color: '#f85149', fontFamily: 'monospace' }}>active</span>, but empirical ΔT is <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>3.2°C &lt; 15.0°C</span>. Copilot flags metadata as stale and surfaces Jake Morales's <span style={{ color: '#58a6ff', fontFamily: 'monospace' }}>[CTX-0001-003]</span> rod string shut-in note.
+              <p style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                Recorded status claims <span style={{ color: '#a94d46', fontFamily: 'monospace' }}>active</span>, but empirical ΔT is <span style={{ color: '#37322c', fontFamily: 'monospace' }}>3.2°C &lt; 15.0°C</span>. Copilot flags metadata as stale and surfaces Jake Morales's <span style={{ color: '#477b7a', fontFamily: 'monospace' }}>[CTX-0001-003]</span> rod string shut-in note.
               </p>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1132,16 +1132,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   marginBottom: '10px'
                 }}
               >
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0f6fc' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#37322c' }}>
                   Q5: Downtime Rule
                 </span>
                 <span
                   style={{
                     fontSize: '11px',
                     fontFamily: 'monospace',
-                    backgroundColor: '#21262d',
-                    border: '1px solid #30363d',
-                    color: '#3fb950',
+                    backgroundColor: '#ded6c9',
+                    border: '1px solid #ded6c9',
+                    color: '#55785e',
                     padding: '2px 8px',
                     borderRadius: '4px'
                   }}
@@ -1149,15 +1149,15 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   21 Days
                 </span>
               </div>
-              <p style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.5, margin: 0 }}>
                 Evaluated strictly as <b>7 days × 3 non-producing inspections</b> (24 Jul motor trip MNT-0001-021; 16 &amp; 23 Oct packing leak MNT-0001-023), completely ignoring erroneous self-reported maintenance hours.
               </p>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1170,16 +1170,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   marginBottom: '10px'
                 }}
               >
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0f6fc' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#37322c' }}>
                   Q9 &amp; Q10: SR-02 4h Breach
                 </span>
                 <span
                   style={{
                     fontSize: '11px',
                     fontFamily: 'monospace',
-                    backgroundColor: '#21262d',
-                    border: '1px solid #30363d',
-                    color: '#f0883e',
+                    backgroundColor: '#ded6c9',
+                    border: '1px solid #ded6c9',
+                    color: '#b85d3c',
                     padding: '2px 8px',
                     borderRadius: '4px'
                   }}
@@ -1187,8 +1187,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   Free-Text Joining
                 </span>
               </div>
-              <p style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                SOP SR-02 requires spill containment within 4 hours. By deterministically parsing free-text repair markdown files, copilot catches <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>WELL-0082 (7.1h)</span> and <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>WELL-0100 (8.1h)</span> breaches.
+              <p style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                SOP SR-02 requires spill containment within 4 hours. By deterministically parsing free-text repair markdown files, copilot catches <span style={{ color: '#37322c', fontFamily: 'monospace' }}>WELL-0082 (7.1h)</span> and <span style={{ color: '#37322c', fontFamily: 'monospace' }}>WELL-0100 (8.1h)</span> breaches.
               </p>
             </div>
           </div>
@@ -1198,8 +1198,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         <section
           id="chapter-3"
           style={{
-            backgroundColor: '#161b22',
-            border: activeChapterIndex === 2 && isPlaying ? '2px solid #f0883e' : '1px solid #30363d',
+            backgroundColor: '#fffdfa',
+            border: activeChapterIndex === 2 && isPlaying ? '2px solid #b85d3c' : '1px solid #ded6c9',
             boxShadow:
               activeChapterIndex === 2 && isPlaying
                 ? '0 0 0 3px rgba(240, 136, 62, 0.15)'
@@ -1215,7 +1215,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #30363d',
+              borderBottom: '1px solid #ded6c9',
               paddingBottom: '12px',
               marginBottom: '16px'
             }}
@@ -1226,16 +1226,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  backgroundColor: '#21262d',
-                  color: '#f0883e',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#ded6c9',
+                  color: '#b85d3c',
+                  border: '1px solid #ded6c9',
                   padding: '2px 8px',
                   borderRadius: '4px'
                 }}
               >
                 CHAPTER 3 (0:55 – 1:25)
               </span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f0f6fc', margin: 0 }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#37322c', margin: 0 }}>
                 Two-Level Memory &amp; Scoped Overrides
               </h2>
             </div>
@@ -1246,7 +1246,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '12px',
-                  color: '#3fb950',
+                  color: '#55785e',
                   fontFamily: 'monospace',
                   fontWeight: 600
                 }}
@@ -1256,7 +1256,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: '#3fb950',
+                    backgroundColor: '#55785e',
                     animation: 'pulse-dot 1s infinite'
                   }}
                 />
@@ -1274,8 +1274,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
           >
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1285,23 +1285,23 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#3fb950',
+                  color: '#55785e',
                   marginBottom: '8px'
                 }}
               >
                 SHARED APPEND-ONLY LEDGER (Q12–Q14)
               </div>
-              <div style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.6 }}>
+              <div style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.6 }}>
                 • <b>Q12 (WELL-0164 Temp):</b> Michael corrects temp 24.0°C ➔ 41.0°C. Derived table flips producing status and re-evaluating Q2 removes WELL-0164 in &lt;20ms.<br />
                 • <b>Q13 (WELL-0151 Volume):</b> Michael corrects spill 4.5 ➔ 5.4 bbl. Crossing 5.0 bbl threshold triggers SR-01 breach.<br />
-                • <b>Q14 (Scope Containment):</b> Michael overrides T350 pump jack RCA threshold to 2 repairs. Rule applies strictly to <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>WELL-0120 (T350)</span>, strictly excluding <span style={{ color: '#8b949e', fontFamily: 'monospace' }}>WELL-0102 (T200)</span>.
+                • <b>Q14 (Scope Containment):</b> Michael overrides T350 pump jack RCA threshold to 2 repairs. Rule applies strictly to <span style={{ color: '#37322c', fontFamily: 'monospace' }}>WELL-0120 (T350)</span>, strictly excluding <span style={{ color: '#71695e', fontFamily: 'monospace' }}>WELL-0102 (T200)</span>.
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1311,16 +1311,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#58a6ff',
+                  color: '#477b7a',
                   marginBottom: '8px'
                 }}
               >
                 PRIVATE PER-USER ISOLATION (Q11 vs Q16)
               </div>
-              <div style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.6 }}>
-                • <b>Code-Enforced Privacy:</b> User identity is injected by backend session header, never by the LLM. All private queries enforce <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>WHERE user_id = ?</span>.<br />
+              <div style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.6 }}>
+                • <b>Code-Enforced Privacy:</b> User identity is injected by backend session header, never by the LLM. All private queries enforce <span style={{ color: '#37322c', fontFamily: 'monospace' }}>WHERE user_id = ?</span>.<br />
                 • <b>Q11 (Michael Turner Recall):</b> Recalls NE-07 top wells (WELL-0121, WELL-0138, WELL-0107) and sums 2026 repair costs ($77,912).<br />
-                • <b>Q16 (Jessica Reed Isolation):</b> When Jessica asks identical question, copilot strictly returns <span style={{ color: '#3fb950', fontFamily: 'monospace' }}>"no earlier conversation"</span> with zero cross-user leakage.
+                • <b>Q16 (Jessica Reed Isolation):</b> When Jessica asks identical question, copilot strictly returns <span style={{ color: '#55785e', fontFamily: 'monospace' }}>"no earlier conversation"</span> with zero cross-user leakage.
               </div>
             </div>
           </div>
@@ -1330,8 +1330,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         <section
           id="chapter-4"
           style={{
-            backgroundColor: '#161b22',
-            border: activeChapterIndex === 3 && isPlaying ? '2px solid #f0883e' : '1px solid #30363d',
+            backgroundColor: '#fffdfa',
+            border: activeChapterIndex === 3 && isPlaying ? '2px solid #b85d3c' : '1px solid #ded6c9',
             boxShadow:
               activeChapterIndex === 3 && isPlaying
                 ? '0 0 0 3px rgba(240, 136, 62, 0.15)'
@@ -1347,7 +1347,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #30363d',
+              borderBottom: '1px solid #ded6c9',
               paddingBottom: '12px',
               marginBottom: '16px'
             }}
@@ -1358,16 +1358,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  backgroundColor: '#21262d',
-                  color: '#f0883e',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#ded6c9',
+                  color: '#b85d3c',
+                  border: '1px solid #ded6c9',
                   padding: '2px 8px',
                   borderRadius: '4px'
                 }}
               >
                 CHAPTER 4 (1:25 – 1:50)
               </span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f0f6fc', margin: 0 }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#37322c', margin: 0 }}>
                 Conflict Honesty &amp; Disputed Claims
               </h2>
             </div>
@@ -1378,7 +1378,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '12px',
-                  color: '#3fb950',
+                  color: '#55785e',
                   fontFamily: 'monospace',
                   fontWeight: 600
                 }}
@@ -1388,7 +1388,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: '#3fb950',
+                    backgroundColor: '#55785e',
                     animation: 'pulse-dot 1s infinite'
                   }}
                 />
@@ -1406,8 +1406,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
           >
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1417,27 +1417,27 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#f85149',
+                  color: '#a94d46',
                   marginBottom: '8px'
                 }}
               >
                 Q17: TELEMETRY VS HUMAN CLAIM
               </div>
-              <p style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.5, marginBottom: '10px' }}>
+              <p style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.5, marginBottom: '10px' }}>
                 Tyler Hughes claims <i>"WELL-0175 is running fine"</i>. The claims verification engine checks the latest inspection: ΔT is 0.4°C (&lt; 15°C) and Michael Turner logged a shut-in.
               </p>
               <div
                 style={{
-                  backgroundColor: '#161b22',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#fffdfa',
+                  border: '1px solid #ded6c9',
                   borderRadius: '4px',
                   padding: '10px',
                   fontFamily: 'monospace',
                   fontSize: '11px',
-                  color: '#f0f6fc'
+                  color: '#37322c'
                 }}
               >
-                <span style={{ color: '#f85149', fontWeight: 700 }}>STATUS: UNCONFIRMED</span>
+                <span style={{ color: '#a94d46', fontWeight: 700 }}>STATUS: UNCONFIRMED</span>
                 <br />
                 Surface both sides: Tyler's assertion vs Jessica Reed's drone inspection [INS-0175-0193].
               </div>
@@ -1445,8 +1445,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '16px'
               }}
@@ -1456,27 +1456,27 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#f0883e',
+                  color: '#b85d3c',
                   marginBottom: '8px'
                 }}
               >
                 Q18: DISPUTED AI SPILL ANALYSIS (WELL-0101)
               </div>
-              <p style={{ fontSize: '12.5px', color: '#8b949e', lineHeight: 1.5, marginBottom: '10px' }}>
-                Ryan Brooks <span style={{ color: '#58a6ff', fontFamily: 'monospace' }}>[CTX-0101-002]</span> claims the 20 Aug spill was produced water; HSE officer Chris Dalton <span style={{ color: '#58a6ff', fontFamily: 'monospace' }}>[CTX-0101-003]</span> recorded crude oil.
+              <p style={{ fontSize: '12.5px', color: '#71695e', lineHeight: 1.5, marginBottom: '10px' }}>
+                Ryan Brooks <span style={{ color: '#477b7a', fontFamily: 'monospace' }}>[CTX-0101-002]</span> claims the 20 Aug spill was produced water; HSE officer Chris Dalton <span style={{ color: '#477b7a', fontFamily: 'monospace' }}>[CTX-0101-003]</span> recorded crude oil.
               </p>
               <div
                 style={{
-                  backgroundColor: '#161b22',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#fffdfa',
+                  border: '1px solid #ded6c9',
                   borderRadius: '4px',
                   padding: '10px',
                   fontFamily: 'monospace',
                   fontSize: '11px',
-                  color: '#f0f6fc'
+                  color: '#37322c'
                 }}
               >
-                <span style={{ color: '#3fb950', fontWeight: 700 }}>OUTCOME: REAL CRUDE CONFIRMED</span>
+                <span style={{ color: '#55785e', fontWeight: 700 }}>OUTCOME: REAL CRUDE CONFIRMED</span>
                 <br />
                 Verified via repair report [MNT-0101-029] flowline patch while transparently citing the water dispute.
               </div>
@@ -1488,8 +1488,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         <section
           id="chapter-5"
           style={{
-            backgroundColor: '#161b22',
-            border: activeChapterIndex === 4 && isPlaying ? '2px solid #f0883e' : '1px solid #30363d',
+            backgroundColor: '#fffdfa',
+            border: activeChapterIndex === 4 && isPlaying ? '2px solid #b85d3c' : '1px solid #ded6c9',
             boxShadow:
               activeChapterIndex === 4 && isPlaying
                 ? '0 0 0 3px rgba(240, 136, 62, 0.15)'
@@ -1505,7 +1505,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px solid #30363d',
+              borderBottom: '1px solid #ded6c9',
               paddingBottom: '12px',
               marginBottom: '16px'
             }}
@@ -1516,16 +1516,16 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '11px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  backgroundColor: '#21262d',
-                  color: '#f0883e',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#ded6c9',
+                  color: '#b85d3c',
+                  border: '1px solid #ded6c9',
                   padding: '2px 8px',
                   borderRadius: '4px'
                 }}
               >
                 CHAPTER 5 (1:50 – 2:00)
               </span>
-              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#f0f6fc', margin: 0 }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#37322c', margin: 0 }}>
                 4-Layer QA Pipeline &amp; Failure Post-Mortem
               </h2>
             </div>
@@ -1536,7 +1536,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '12px',
-                  color: '#3fb950',
+                  color: '#55785e',
                   fontFamily: 'monospace',
                   fontWeight: 600
                 }}
@@ -1546,7 +1546,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: '#3fb950',
+                    backgroundColor: '#55785e',
                     animation: 'pulse-dot 1s infinite'
                   }}
                 />
@@ -1560,20 +1560,20 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              backgroundColor: '#0d1117',
-              border: '1px solid #30363d',
+              backgroundColor: '#fbfaf7',
+              border: '1px solid #ded6c9',
               borderRadius: '6px',
               padding: '14px 18px',
               marginBottom: '16px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <ShieldCheck size={22} color="#3fb950" />
+              <ShieldCheck size={22} color="#55785e" />
               <div>
-                <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#f0f6fc' }}>
+                <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#37322c' }}>
                   18 / 18 Golden Scenarios Verified Green
                 </div>
-                <div style={{ fontSize: '11.5px', fontFamily: 'monospace', color: '#8b949e' }}>
+                <div style={{ fontSize: '11.5px', fontFamily: 'monospace', color: '#71695e' }}>
                   Full AgentLoop sequential pass in 2.44s across Part A &amp; Part B
                 </div>
               </div>
@@ -1586,7 +1586,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                 fontFamily: 'monospace',
                 fontWeight: 700,
                 backgroundColor: 'rgba(63, 185, 80, 0.15)',
-                color: '#3fb950',
+                color: '#55785e',
                 border: '1px solid rgba(63, 185, 80, 0.3)'
               }}
             >
@@ -1605,65 +1605,65 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
           >
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
             >
-              <div style={{ fontWeight: 700, color: '#f85149', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: '#a94d46', marginBottom: '4px' }}>
                 1. &lt;|tool_call&gt; Token Leakage:
               </div>
-              <p style={{ color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                Gemma 4 emitted raw AST tokens in prose. <b>Fixed:</b> AST regex parser in <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>llm.py</span> intercepting tokens and forcing structured synthesis.
+              <p style={{ color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                Gemma 4 emitted raw AST tokens in prose. <b>Fixed:</b> AST regex parser in <span style={{ color: '#37322c', fontFamily: 'monospace' }}>llm.py</span> intercepting tokens and forcing structured synthesis.
               </p>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
             >
-              <div style={{ fontWeight: 700, color: '#f85149', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: '#a94d46', marginBottom: '4px' }}>
                 2. Keyword Argument Drift:
               </div>
-              <p style={{ color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                Interchanging <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>window</span> with <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>from_date/to_date</span>. <b>Fixed:</b> Universal <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>**kwargs</span> in <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>registry.py</span> and fuzzy date resolver.
+              <p style={{ color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                Interchanging <span style={{ color: '#37322c', fontFamily: 'monospace' }}>window</span> with <span style={{ color: '#37322c', fontFamily: 'monospace' }}>from_date/to_date</span>. <b>Fixed:</b> Universal <span style={{ color: '#37322c', fontFamily: 'monospace' }}>**kwargs</span> in <span style={{ color: '#37322c', fontFamily: 'monospace' }}>registry.py</span> and fuzzy date resolver.
               </p>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
             >
-              <div style={{ fontWeight: 700, color: '#f85149', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: '#a94d46', marginBottom: '4px' }}>
                 3. Duplicate Markdown Tables:
               </div>
-              <p style={{ color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                Redundant ASCII tables above React visuals. <b>Fixed:</b> Table stripper in <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>guardrails.py</span> that strips raw pipe tables when visual blocks exist.
+              <p style={{ color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                Redundant ASCII tables above React visuals. <b>Fixed:</b> Table stripper in <span style={{ color: '#37322c', fontFamily: 'monospace' }}>guardrails.py</span> that strips raw pipe tables when visual blocks exist.
               </p>
             </div>
 
             <div
               style={{
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#fbfaf7',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px'
               }}
             >
-              <div style={{ fontWeight: 700, color: '#f85149', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: '#a94d46', marginBottom: '4px' }}>
                 4. Cross-Scope Rule Contamination:
               </div>
-              <p style={{ color: '#8b949e', lineHeight: 1.5, margin: 0 }}>
-                T350 2-repair override risked leaking to T200 wells. <b>Fixed:</b> Hierarchical scope containment in <span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>params.py</span> (<span style={{ color: '#f0f6fc', fontFamily: 'monospace' }}>well &gt; well_type &gt; fleet</span>).
+              <p style={{ color: '#71695e', lineHeight: 1.5, margin: 0 }}>
+                T350 2-repair override risked leaking to T200 wells. <b>Fixed:</b> Hierarchical scope containment in <span style={{ color: '#37322c', fontFamily: 'monospace' }}>params.py</span> (<span style={{ color: '#37322c', fontFamily: 'monospace' }}>well &gt; well_type &gt; fleet</span>).
               </p>
             </div>
           </div>
@@ -1672,18 +1672,18 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         {/* 2:00 TRANSITION BANNER */}
         <div
           style={{
-            backgroundColor: '#0d1117',
-            border: '2px dashed #f0883e',
+            backgroundColor: '#fbfaf7',
+            border: '2px dashed #b85d3c',
             borderRadius: '8px',
             padding: '20px',
             textAlign: 'center',
             marginBottom: '24px'
           }}
         >
-          <div style={{ fontSize: '14px', fontWeight: 700, color: '#f0883e', marginBottom: '6px' }}>
+          <div style={{ fontSize: '14px', fontWeight: 700, color: '#b85d3c', marginBottom: '6px' }}>
             AT 2:00: AUTOMATIC TRANSITION TO LIVE OPERATIONAL CONSOLE (2:00–5:00)
           </div>
-          <p style={{ fontSize: '13px', color: '#8b949e', maxWidth: '720px', margin: '0 auto 14px auto', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '13px', color: '#71695e', maxWidth: '720px', margin: '0 auto 14px auto', lineHeight: 1.5 }}>
             The auto-narrated tour transitions smoothly into the Live Console, demonstrating multi-user carry-forward across Nathan Pierce, Robert Hayes, Laura Simmons, and interactive visuals.
           </p>
           <button
@@ -1693,7 +1693,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
             }}
             style={{
               padding: '9px 20px',
-              backgroundColor: '#f0883e',
+              backgroundColor: '#b85d3c',
               border: 'none',
               borderRadius: '6px',
               color: '#ffffff',
@@ -1708,7 +1708,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
 
         {/* QUICK INTERACTIVE LAUNCH PADS */}
         <div style={{ marginTop: '24px' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#f0f6fc', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#37322c', marginBottom: '12px' }}>
             Direct Visual Block Launchpads:
           </h3>
           <div
@@ -1727,8 +1727,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               }
               style={{
                 textAlign: 'left',
-                backgroundColor: '#161b22',
-                border: '1px solid #30363d',
+                backgroundColor: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px',
                 cursor: 'pointer',
@@ -1740,13 +1740,13 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#f0883e',
+                  color: '#b85d3c',
                   marginBottom: '4px'
                 }}
               >
                 Q1: StatusCard Visual
               </div>
-              <div style={{ fontSize: '12px', color: '#8b949e' }}>
+              <div style={{ fontSize: '12px', color: '#71695e' }}>
                 ΔT=3.2°C &lt; 15°C stale status check
               </div>
             </button>
@@ -1760,8 +1760,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               }
               style={{
                 textAlign: 'left',
-                backgroundColor: '#161b22',
-                border: '1px solid #30363d',
+                backgroundColor: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px',
                 cursor: 'pointer',
@@ -1773,13 +1773,13 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#58a6ff',
+                  color: '#477b7a',
                   marginBottom: '4px'
                 }}
               >
                 Q3: LineChart Visual
               </div>
-              <div style={{ fontSize: '12px', color: '#8b949e' }}>
+              <div style={{ fontSize: '12px', color: '#71695e' }}>
                 13-week interactive hover guidelines
               </div>
             </button>
@@ -1793,8 +1793,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               }
               style={{
                 textAlign: 'left',
-                backgroundColor: '#161b22',
-                border: '1px solid #30363d',
+                backgroundColor: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px',
                 cursor: 'pointer',
@@ -1806,13 +1806,13 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#3fb950',
+                  color: '#55785e',
                   marginBottom: '4px'
                 }}
               >
                 Q6: BarChart Visual
               </div>
-              <div style={{ fontSize: '12px', color: '#8b949e' }}>
+              <div style={{ fontSize: '12px', color: '#71695e' }}>
                 WELL-0121 (49d), WELL-0138 (42d), WELL-0107 (42d)
               </div>
             </button>
@@ -1823,8 +1823,8 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               }
               style={{
                 textAlign: 'left',
-                backgroundColor: '#161b22',
-                border: '1px solid #30363d',
+                backgroundColor: '#fffdfa',
+                border: '1px solid #ded6c9',
                 borderRadius: '6px',
                 padding: '14px',
                 cursor: 'pointer',
@@ -1836,13 +1836,13 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                   fontSize: '12px',
                   fontFamily: 'monospace',
                   fontWeight: 700,
-                  color: '#f0883e',
+                  color: '#b85d3c',
                   marginBottom: '4px'
                 }}
               >
                 Q8: Heatmap Visual
               </div>
-              <div style={{ fontSize: '12px', color: '#8b949e' }}>
+              <div style={{ fontSize: '12px', color: '#71695e' }}>
                 141 confirmed spills by area and month
               </div>
             </button>
@@ -1859,11 +1859,11 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
           left: 0,
           right: 0,
           zIndex: 9999,
-          backgroundColor: 'rgba(13, 17, 23, 0.96)',
+          backgroundColor: '#fffdfa',
           backdropFilter: 'blur(10px)',
-          borderTop: '2px solid #f0883e',
+          borderTop: '2px solid #b85d3c',
           padding: '14px 28px',
-          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.7)'
+          boxShadow: '0 -4px 20px rgba(68, 52, 35, 0.10)'
         }}
       >
         <div
@@ -1890,9 +1890,9 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                 fontSize: '11px',
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                backgroundColor: '#21262d',
-                border: '1px solid #30363d',
-                color: '#f0883e',
+                backgroundColor: '#ded6c9',
+                border: '1px solid #ded6c9',
+                color: '#b85d3c',
                 padding: '2px 8px',
                 borderRadius: '4px'
               }}
@@ -1904,7 +1904,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
               style={{
                 fontSize: '12px',
                 fontFamily: 'monospace',
-                color: '#8b949e'
+                color: '#71695e'
               }}
             >
               [{formatTime(elapsedSeconds)} / 05:00]
@@ -1935,9 +1935,9 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
                 borderRadius: '6px',
                 fontSize: '12px',
                 fontWeight: 600,
-                backgroundColor: '#21262d',
-                border: '1px solid #30363d',
-                color: '#f0f6fc',
+                backgroundColor: '#ded6c9',
+                border: '1px solid #ded6c9',
+                color: '#37322c',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -1954,7 +1954,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         <div
           style={{
             width: '100%',
-            backgroundColor: '#21262d',
+            backgroundColor: '#ded6c9',
             height: '3px',
             marginTop: '10px',
             borderRadius: '2px',
@@ -1963,7 +1963,7 @@ APPEND-ONLY LEDGER (corrections, overrides, claims w/ author & timestamp)
         >
           <div
             style={{
-              backgroundColor: '#f0883e',
+              backgroundColor: '#b85d3c',
               height: '100%',
               width: `${Math.min(100, (elapsedSeconds / 300) * 100).toFixed(1)}%`,
               transition: 'width 0.3s ease'
